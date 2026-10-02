@@ -149,26 +149,23 @@
             </span>
         </div>
     </div>
-    
-    <hr style="border-top: 1px dashed var(--b2); margin: 24px 0 16px 0;">
+        </div>
+    </section>
 
     <div class="bar-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
         {{-- ============ BAR CHART: BARANG RUSAK ============ --}}
-        <div aria-labelledby="h-chart-rusak">
-            <div style="margin-bottom: 16px;">
-                <h3 id="h-chart-rusak" style="margin-bottom: 4px; display:flex; align-items:center; gap:8px; font-size:1.1rem; color:var(--text-main); font-weight:700;">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--bad)"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
-                    Item Rusak / Perlu Diperbaiki
-                </h3>
-                <p style="color:var(--fg-muted); font-size:13px;">Bagian forklift yang dilaporkan rusak atau butuh perbaikan.</p>
+        <section class="panel" aria-labelledby="h-chart-rusak" style="margin-bottom: 0;">
+            <div class="panel-head">
+                <h2 id="h-chart-rusak">Item Rusak / Perlu Diperbaiki</h2>
+                <p>Bagian forklift yang dilaporkan rusak atau butuh perbaikan.</p>
             </div>
-            <div>
+            <div class="panel-body">
                 @php
                     $rusakData = [
-                        ['label' => 'Rem Blong / Kurang Pakem', 'count' => 5, 'tone' => 'bad'],
-                        ['label' => 'Lampu Utama Mati', 'count' => 3, 'tone' => 'warn'],
-                        ['label' => 'Klakson Tidak Bunyi', 'count' => 2, 'tone' => 'warn'],
-                        ['label' => 'Oli Bocor', 'count' => 1, 'tone' => 'bad'],
+                        ['label' => 'Rem Blong / Kurang Pakem', 'count' => 5, 'tone' => 'danger'],
+                        ['label' => 'Lampu Utama Mati', 'count' => 3, 'tone' => 'warning'],
+                        ['label' => 'Klakson Tidak Bunyi', 'count' => 2, 'tone' => 'warning'],
+                        ['label' => 'Oli Bocor', 'count' => 1, 'tone' => 'danger'],
                     ];
                     $maxRusak = max(1, (int) (collect($rusakData)->max('count') ?? 0));
                 @endphp
@@ -187,24 +184,21 @@
                     @endforeach
                 </div>
             </div>
-        </div>
+        </section>
 
         {{-- ============ BAR CHART: KEAKTIFAN OPERATOR ============ --}}
-        <div aria-labelledby="h-chart-operator">
-            <div style="margin-bottom: 16px;">
-                <h3 id="h-chart-operator" style="margin-bottom: 4px; display:flex; align-items:center; gap:8px; font-size:1.1rem; color:var(--text-main); font-weight:700;">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primary)"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                    Keaktifan Pengisian Operator
-                </h3>
-                <p style="color:var(--fg-muted); font-size:13px;">Operator yang rutin vs jarang mengisi form checklist.</p>
+        <section class="panel" aria-labelledby="h-chart-operator" style="margin-bottom: 0;">
+            <div class="panel-head">
+                <h2 id="h-chart-operator">Keaktifan Pengisian Operator</h2>
+                <p>Operator yang rutin vs jarang mengisi form checklist.</p>
             </div>
-            <div>
+            <div class="panel-body">
                 @php
                     $opData = [
-                        ['label' => 'Budi Santoso (Rutin)', 'count' => 24, 'tone' => 'accent'],
-                        ['label' => 'Andi Pratama (Rutin)', 'count' => 21, 'tone' => 'accent'],
-                        ['label' => 'Dion Permana (Sedang)', 'count' => 12, 'tone' => 'warn'],
-                        ['label' => 'Warto (Jarang)', 'count' => 4, 'tone' => 'bad'],
+                        ['label' => 'Budi Santoso (Rutin)', 'count' => 24, 'tone' => 'primary'],
+                        ['label' => 'Andi Pratama (Rutin)', 'count' => 21, 'tone' => 'primary'],
+                        ['label' => 'Dion Permana (Sedang)', 'count' => 12, 'tone' => 'warning'],
+                        ['label' => 'Warto (Jarang)', 'count' => 4, 'tone' => 'danger'],
                     ];
                     $maxOp = max(1, (int) (collect($opData)->max('count') ?? 0));
                 @endphp
@@ -223,10 +217,8 @@
                     @endforeach
                 </div>
             </div>
-        </div>
+        </section>
     </div>
-</div>
-</section>
 
     {{-- ============ TABEL RIWAYAT CHECKLIST ============ --}}
     <section class="panel" aria-labelledby="h-tabel">
