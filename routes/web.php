@@ -33,9 +33,8 @@ Route::get('/api/records', [HseController::class, 'apiRecords'])->name('api.reco
 Route::get('/konsumsi-listrik', [HseController::class, 'monitorKwh'])->name('konsumsi-listrik');
 
 // Monitoring Checklist Forklift
-Route::get('/checklist-forklift', function () {
-    return view('pages.monitor-forklift');
-})->name('checklist-forklift');
+Route::get('/checklist-forklift', [HseController::class, 'monitorForklift'])->name('checklist-forklift');
+Route::get('/api/forklift', [HseController::class, 'apiForklift'])->name('api.forklift');
 
 // Monitoring Data Kendaraan
 Route::get('/registrasi-kendaraan', [HseController::class, 'vehicleMonitoring'])->name('registrasi-kendaraan');

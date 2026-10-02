@@ -228,13 +228,10 @@
         </div>
         <div class="table-scroll">
             @php
-                $rows = [
-                    ['tgl' => '21/09/2026', 'waktu' => '07:15', 'operator' => 'Eko Prasetyo', 'unit' => '3179 Toyota 2,5 Ton Produksi', 'dept' => 'Produksi', 'shift' => '1', 'masalah' => 0, 'rusak' => false],
-                    ['tgl' => '21/09/2026', 'waktu' => '07:20', 'operator' => 'Budi Santoso', 'unit' => '3331 Toyota 2,5 Ton Material', 'dept' => 'Supply Chain', 'shift' => '1', 'masalah' => 2, 'rusak' => true],
-                    ['tgl' => '20/09/2026', 'waktu' => '15:10', 'operator' => 'Andi Pratama', 'unit' => '3181 Toyota 2,5 Ton MTC', 'dept' => 'Maintenance', 'shift' => '2', 'masalah' => 1, 'rusak' => false],
-                    ['tgl' => '20/09/2026', 'waktu' => '15:15', 'operator' => 'Dion Permana', 'unit' => '2564 TCM 5 Ton Produksi', 'dept' => 'Produksi', 'shift' => '2', 'masalah' => 0, 'rusak' => false],
-                    ['tgl' => '20/09/2026', 'waktu' => '23:05', 'operator' => 'Warto', 'unit' => '3229 TCM 5 Ton Logistik', 'dept' => 'Supply Chain', 'shift' => '3', 'masalah' => 0, 'rusak' => false],
-                ];
+                // Data \$rows di-passing dari HseController
+                if (!isset($rows)) {
+                    $rows = [];
+                }
             @endphp
 
             <table class="data" id="table-forklift">
@@ -248,6 +245,7 @@
                         <th>Shift</th>
                         <th>Item Masalah</th>
                         <th>Status</th>
+                        <th>Catatan</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -277,6 +275,9 @@
                             @else
                                 <span class="badge good">Semua Baik</span>
                             @endif
+                        </td>
+                        <td style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $r['catatan'] ?? '-' }}">
+                            {{ $r['catatan'] ?? '-' }}
                         </td>
                     </tr>
                     @endforeach
@@ -322,10 +323,114 @@
             element.style.width = value + '%';
         });
 
-        // Initialize Pagination
+        // Inisialisasi Pagination
+        var forkliftTable;
         if (typeof TablePagination !== 'undefined') {
-            new TablePagination('table-forklift', 'pag-forklift', 10);
+            forkliftTable = new TablePagination('table-forklift', 'pag-forklift', 10);
         }
+
+        // Script untuk filter bar
+        var filterBtns = document.querySelectorAll('.filter-btn[data-filter-scope="forklift"]');
+        var searchInput = document.getElementById('search-forklift');
+        var allRows = document.querySelectorAll('tr[data-filter-row="forklift"]');
+        var activeFilter = 'all';
+
+        function applyFilters() {
+            var keyword = searchInput ? searchInput.value.toLowerCase() : '';
+            allRows.forEach(function(row) {
+                var text = row.textContent.toLowerCase();
+                var matchesSearch = text.indexOf(keyword) !== -1;
+                
+                var masalahCount = parseInt(row.getAttribute('data-masalah') || '0');
+                var isRusak = row.getAttribute('data-rusak') === 'true';
+                
+                var matchesFilter = true;
+                if (activeFilter === 'good') {
+                    matchesFilter = (masalahCount === 0 && !isRusak);
+                } else if (activeFilter === 'warn') {
+                    matchesFilter = (masalahCount > 0 && !isRusak);
+                } else if (activeFilter === 'bad') {
+                    matchesFilter = isRusak;
+                }
+
+                if (matchesSearch && matchesFilter) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            if(forkliftTable) forkliftTable.update();
+        }
+
+        if(searchInput) {
+            searchInput.addEventListener('keyup', applyFilters);
+        }
+
+        filterBtns.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                activeFilter = this.getAttribute('data-filter');
+                applyFilters();
+            });
+        });
+
+        // AJAX Real-time Polling
+        var POLL_INTERVAL = 15000; 
+        
+        function updateDashboard() {
+            fetch('{{ route("api.forklift") }}')
+                .then(res => res.json())
+                .then(json => {
+                    if (json.status !== 'ok') return;
+                    
+                    var tbody = document.querySelector('#table-forklift tbody');
+                    if (tbody && json.data && json.data.length > 0) {
+                        var html = '';
+                        json.data.slice(0, 50).forEach(function (r) { // Render max 50 for memory
+                            var rowClass = r.rusak ? 'row-bad' : '';
+                            html += '<tr class="' + rowClass + '" data-filter-row="forklift" data-masalah="' + r.masalah + '" data-rusak="' + (r.rusak ? 'true' : 'false') + '">';
+                            html += '<td>' + r.tgl + '</td>';
+                            html += '<td>' + r.waktu + '</td>';
+                            html += '<td>' + r.operator + '</td>';
+                            html += '<td>' + r.unit + '</td>';
+                            html += '<td>' + r.dept + '</td>';
+                            html += '<td>' + r.shift + '</td>';
+                            
+                            var masalahHtml = '';
+                            if(r.masalah > 0) {
+                                var badgeClass = r.rusak ? 'bad' : 'warn';
+                                masalahHtml = '<span class="badge ' + badgeClass + '">' + r.masalah + ' item</span>';
+                            } else {
+                                masalahHtml = '<span class="badge good">0</span>';
+                            }
+                            html += '<td>' + masalahHtml + '</td>';
+                            
+                            var statusHtml = '';
+                            if(r.rusak) {
+                                statusHtml = '<span class="badge bad"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg> Ada Rusak</span>';
+                            } else if(r.masalah > 0) {
+                                statusHtml = '<span class="badge warn">Perlu Perbaikan</span>';
+                            } else {
+                                statusHtml = '<span class="badge good">Semua Baik</span>';
+                            }
+                            html += '<td>' + statusHtml + '</td>';
+                            
+                            var catatan = r.catatan || '-';
+                            html += '<td style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="' + catatan + '">' + catatan + '</td>';
+                            
+                            html += '</tr>';
+                        });
+                        
+                        tbody.innerHTML = html;
+                        allRows = document.querySelectorAll('tr[data-filter-row="forklift"]');
+                        applyFilters();
+                    }
+                })
+                .catch(err => console.error('Error fetching forklift data:', err));
+        }
+
+        setInterval(updateDashboard, POLL_INTERVAL);
     });
 </script>
 @endsection
