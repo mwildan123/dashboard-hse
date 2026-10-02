@@ -148,17 +148,16 @@
                 42 checklist
             </span>
         </div>
-        </div>
     </div>
     
-    <hr style="margin: 32px 0; border: none; border-top: 1px solid var(--border-color);">
+    <hr style="border-top: 1px dashed var(--b2); margin: 24px 0 16px 0;">
 
     <div class="bar-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
         {{-- ============ BAR CHART: BARANG RUSAK ============ --}}
         <div aria-labelledby="h-chart-rusak">
             <div style="margin-bottom: 16px;">
                 <h3 id="h-chart-rusak" style="margin-bottom: 4px; display:flex; align-items:center; gap:8px; font-size:1.1rem; color:var(--text-main); font-weight:700;">
-                    <div style="width: 4px; height: 16px; background: var(--primary); border-radius: 4px;"></div>
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--bad)"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
                     Item Rusak / Perlu Diperbaiki
                 </h3>
                 <p style="color:var(--fg-muted); font-size:13px;">Bagian forklift yang dilaporkan rusak atau butuh perbaikan.</p>
@@ -194,7 +193,7 @@
         <div aria-labelledby="h-chart-operator">
             <div style="margin-bottom: 16px;">
                 <h3 id="h-chart-operator" style="margin-bottom: 4px; display:flex; align-items:center; gap:8px; font-size:1.1rem; color:var(--text-main); font-weight:700;">
-                    <div style="width: 4px; height: 16px; background: var(--primary); border-radius: 4px;"></div>
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primary)"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                     Keaktifan Pengisian Operator
                 </h3>
                 <p style="color:var(--fg-muted); font-size:13px;">Operator yang rutin vs jarang mengisi form checklist.</p>
