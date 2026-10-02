@@ -165,10 +165,10 @@
             <div>
                 @php
                     $rusakData = [
-                        ['label' => 'Rem Blong / Kurang Pakem', 'count' => 5, 'tone' => 'danger'],
-                        ['label' => 'Lampu Utama Mati', 'count' => 3, 'tone' => 'warning'],
-                        ['label' => 'Klakson Tidak Bunyi', 'count' => 2, 'tone' => 'warning'],
-                        ['label' => 'Oli Bocor', 'count' => 1, 'tone' => 'danger'],
+                        ['label' => 'Rem Blong / Kurang Pakem', 'count' => 5, 'tone' => 'bad'],
+                        ['label' => 'Lampu Utama Mati', 'count' => 3, 'tone' => 'warn'],
+                        ['label' => 'Klakson Tidak Bunyi', 'count' => 2, 'tone' => 'warn'],
+                        ['label' => 'Oli Bocor', 'count' => 1, 'tone' => 'bad'],
                     ];
                     $maxRusak = max(1, (int) (collect($rusakData)->max('count') ?? 0));
                 @endphp
@@ -201,10 +201,10 @@
             <div>
                 @php
                     $opData = [
-                        ['label' => 'Budi Santoso (Rutin)', 'count' => 24, 'tone' => 'primary'],
-                        ['label' => 'Andi Pratama (Rutin)', 'count' => 21, 'tone' => 'primary'],
-                        ['label' => 'Dion Permana (Sedang)', 'count' => 12, 'tone' => 'warning'],
-                        ['label' => 'Warto (Jarang)', 'count' => 4, 'tone' => 'danger'],
+                        ['label' => 'Budi Santoso (Rutin)', 'count' => 24, 'tone' => 'accent'],
+                        ['label' => 'Andi Pratama (Rutin)', 'count' => 21, 'tone' => 'accent'],
+                        ['label' => 'Dion Permana (Sedang)', 'count' => 12, 'tone' => 'warn'],
+                        ['label' => 'Warto (Jarang)', 'count' => 4, 'tone' => 'bad'],
                     ];
                     $maxOp = max(1, (int) (collect($opData)->max('count') ?? 0));
                 @endphp
