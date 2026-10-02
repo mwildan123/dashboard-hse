@@ -41,7 +41,8 @@
     {{-- ============ FILTER ============ --}}
     <section class="panel" aria-labelledby="h-filter">
         <div class="panel-head">
-            <h2 id="h-filter">Filter</h2>
+            <h2 id="h-filter">Filter & Ringkasan Data</h2>
+            <p>Cari data checklist, filter berdasarkan tanggal/unit, dan ringkasan statistik.</p>
         </div>
         <div class="panel-body">
             <div class="filter-bar" data-filter-scope="forklift" style="display: grid; grid-template-columns: repeat(5, 1fr) auto; gap: 12px; align-items: flex-end;">
@@ -121,13 +122,10 @@
                     </button>
                 </div>
             </div>
-        </div>
-    </section>
-
-    {{-- ============ STAT CARDS ============ --}}
-    <div class="stat-row">
-        <div class="stat-card">
-            <span class="stat-label">Total Checklist Bulan Ini</span>
+            
+            <div class="stat-row" style="margin-top: 24px;">
+                <div class="stat-card">
+                    <span class="stat-label">Total Checklist Bulan Ini</span>
             <span class="stat-value">0</span>
             <span class="stat-delta up">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
@@ -151,6 +149,8 @@
             </span>
         </div>
     </div>
+        </div>
+    </section>
 
     <div class="bar-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
         {{-- ============ BAR CHART: BARANG RUSAK ============ --}}
