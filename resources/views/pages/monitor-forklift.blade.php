@@ -148,18 +148,22 @@
                 42 checklist
             </span>
         </div>
-    </div>
         </div>
-    </section>
+    </div>
+    
+    <hr style="margin: 32px 0; border: none; border-top: 1px solid var(--border-color);">
 
     <div class="bar-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
         {{-- ============ BAR CHART: BARANG RUSAK ============ --}}
-        <section class="panel" aria-labelledby="h-chart-rusak" style="margin-bottom: 0;">
-            <div class="panel-head">
-                <h2 id="h-chart-rusak">Item Rusak / Perlu Diperbaiki</h2>
-                <p>Bagian forklift yang dilaporkan rusak atau butuh perbaikan.</p>
+        <div aria-labelledby="h-chart-rusak">
+            <div style="margin-bottom: 16px;">
+                <h3 id="h-chart-rusak" style="margin-bottom: 4px; display:flex; align-items:center; gap:8px; font-size:1.1rem; color:var(--text-main); font-weight:700;">
+                    <div style="width: 4px; height: 16px; background: var(--primary); border-radius: 4px;"></div>
+                    Item Rusak / Perlu Diperbaiki
+                </h3>
+                <p style="color:var(--fg-muted); font-size:13px;">Bagian forklift yang dilaporkan rusak atau butuh perbaikan.</p>
             </div>
-            <div class="panel-body">
+            <div>
                 @php
                     $rusakData = [
                         ['label' => 'Rem Blong / Kurang Pakem', 'count' => 5, 'tone' => 'danger'],
@@ -184,15 +188,18 @@
                     @endforeach
                 </div>
             </div>
-        </section>
+        </div>
 
         {{-- ============ BAR CHART: KEAKTIFAN OPERATOR ============ --}}
-        <section class="panel" aria-labelledby="h-chart-operator" style="margin-bottom: 0;">
-            <div class="panel-head">
-                <h2 id="h-chart-operator">Keaktifan Pengisian Operator</h2>
-                <p>Operator yang rutin vs jarang mengisi form checklist.</p>
+        <div aria-labelledby="h-chart-operator">
+            <div style="margin-bottom: 16px;">
+                <h3 id="h-chart-operator" style="margin-bottom: 4px; display:flex; align-items:center; gap:8px; font-size:1.1rem; color:var(--text-main); font-weight:700;">
+                    <div style="width: 4px; height: 16px; background: var(--primary); border-radius: 4px;"></div>
+                    Keaktifan Pengisian Operator
+                </h3>
+                <p style="color:var(--fg-muted); font-size:13px;">Operator yang rutin vs jarang mengisi form checklist.</p>
             </div>
-            <div class="panel-body">
+            <div>
                 @php
                     $opData = [
                         ['label' => 'Budi Santoso (Rutin)', 'count' => 24, 'tone' => 'primary'],
@@ -217,8 +224,10 @@
                     @endforeach
                 </div>
             </div>
-        </section>
+        </div>
     </div>
+</div>
+</section>
 
     {{-- ============ TABEL RIWAYAT CHECKLIST ============ --}}
     <section class="panel" aria-labelledby="h-tabel">
