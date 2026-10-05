@@ -232,9 +232,23 @@
 
     {{-- ============ TABEL RIWAYAT CHECKLIST ============ --}}
     <section class="panel" aria-labelledby="h-tabel">
-        <div class="panel-head">
-            <h2 id="h-tabel">Riwayat Checklist Terbaru</h2>
-            <p>100 checklist terakhir yang masuk.</p>
+        <div class="panel-head" style="display: flex; flex-direction: column; gap: 16px;">
+            <div>
+                <h2 id="h-tabel">Riwayat Checklist Terbaru</h2>
+                <p>100 checklist terakhir yang masuk.</p>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                <div class="tabs">
+                    <button class="tab-btn active filter-btn" data-filter-scope="forklift" data-filter="all">Semua Data</button>
+                    <button class="tab-btn filter-btn" data-filter-scope="forklift" data-filter="good">Semua Baik</button>
+                    <button class="tab-btn filter-btn" data-filter-scope="forklift" data-filter="warn">Perlu Perhatian</button>
+                    <button class="tab-btn filter-btn" data-filter-scope="forklift" data-filter="bad">Ada Rusak</button>
+                </div>
+                <div class="search-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" id="search-forklift" placeholder="Cari di riwayat..." class="input">
+                </div>
+            </div>
         </div>
         <div class="table-scroll">
             @php
@@ -328,6 +342,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // Animate bar fills
         document.querySelectorAll('.bar-fill[data-width]').forEach(function (element) {
             const value = Number(element.dataset.width || 0);
             element.style.width = value + '%';
@@ -342,15 +357,24 @@
         // Script untuk filter bar
         var filterBtns = document.querySelectorAll('.filter-btn[data-filter-scope="forklift"]');
         var searchInput = document.getElementById('search-forklift');
-        var allRows = document.querySelectorAll('tr[data-filter-row="forklift"]');
         var activeFilter = 'all';
 
-        function parseDateDDMMYYYY(str) {
+        function getRows() {
+            return document.querySelectorAll('#table-forklift tbody tr[data-filter-row="forklift"]');
+        }
+
+        function parseDateFromCell(str) {
             if (!str) return null;
-            var dateOnly = str.split(' ')[0];
+            // Format bisa "DD/MM/YYYY" atau "DD/MM/YYYY HH:MM:SS"
+            var dateOnly = str.trim().split(' ')[0];
             var parts = dateOnly.split('/');
             if (parts.length === 3) {
-                return new Date(parts[2], parts[1] - 1, parts[0]).getTime();
+                var day = parseInt(parts[0], 10);
+                var month = parseInt(parts[1], 10);
+                var year = parseInt(parts[2], 10);
+                if (day > 0 && month > 0 && month <= 12 && year > 2000) {
+                    return new Date(year, month - 1, day).getTime();
+                }
             }
             return null;
         }
@@ -363,190 +387,206 @@
             var fOp = document.getElementById('f_operator') ? document.getElementById('f_operator').value.toLowerCase().trim() : '';
             var keyword = searchInput ? searchInput.value.toLowerCase() : '';
 
-            var dariTime = fDari ? new Date(fDari).getTime() : 0;
-            var sampaiTime = fSampai ? new Date(fSampai).getTime() + 86400000 : Infinity;
+            // Parse filter date range (input type=date gives YYYY-MM-DD)
+            var dariTime = fDari ? new Date(fDari + 'T00:00:00').getTime() : 0;
+            var sampaiTime = fSampai ? new Date(fSampai + 'T23:59:59').getTime() : Infinity;
 
-            allRows.forEach(function(row) {
-                var text = row.textContent.toLowerCase();
-                var matchesSearch = keyword === '' || text.indexOf(keyword) !== -1;
-                
+            var rows = getRows();
+            rows.forEach(function(row) {
                 var cells = row.querySelectorAll('td');
-                if (cells.length < 5) return;
-                
+                if (cells.length < 5) { row.hidden = true; return; }
+
                 var tgl = cells[0].textContent.trim();
-                var op = cells[2].textContent.toLowerCase();
-                var unit = cells[3].textContent.toLowerCase();
-                var dept = cells[4].textContent.toLowerCase();
+                var op = cells[2].textContent.trim().toLowerCase();
+                var unit = cells[3].textContent.trim().toLowerCase();
+                var dept = cells[4].textContent.trim().toLowerCase();
+                var text = row.textContent.toLowerCase();
 
-                var rowTime = parseDateDDMMYYYY(tgl);
+                // Search keyword
+                var matchesSearch = keyword === '' || text.indexOf(keyword) !== -1;
 
+                // Date filter
+                var rowTime = parseDateFromCell(tgl);
                 var matchDate = true;
                 if (rowTime !== null) {
                     if (dariTime && rowTime < dariTime) matchDate = false;
-                    if (sampaiTime && rowTime > sampaiTime) matchDate = false;
+                    if (sampaiTime !== Infinity && rowTime > sampaiTime) matchDate = false;
                 }
 
-                var matchUnit = fUnit === '' || unit.indexOf(fUnit.split(' ')[0]) !== -1;
-                var matchDept = fDept === '' || dept.indexOf(fDept) !== -1;
-                var matchOp = fOp === '' || op.indexOf(fOp) !== -1;
+                // Unit filter - compare first number/word
+                var matchUnit = true;
+                if (fUnit !== '') {
+                    var filterKey = fUnit.split(' ')[0];
+                    matchUnit = unit.indexOf(filterKey) !== -1;
+                }
 
+                // Dept filter
+                var matchDept = fDept === '' || dept.indexOf(fDept) !== -1;
+
+                // Operator filter
+                var matchOp = fOp === '' || op.indexOf(fOp.toLowerCase()) !== -1;
+
+                // Status filter (Semua/Baik/Perhatian/Rusak)
                 var masalahCount = parseInt(row.getAttribute('data-masalah') || '0');
                 var isRusak = row.getAttribute('data-rusak') === 'true';
-                
-                var matchesFilter = true;
+                var matchesStatus = true;
                 if (activeFilter === 'good') {
-                    matchesFilter = (masalahCount === 0 && !isRusak);
+                    matchesStatus = (masalahCount === 0 && !isRusak);
                 } else if (activeFilter === 'warn') {
-                    matchesFilter = (masalahCount > 0 && !isRusak);
+                    matchesStatus = (masalahCount > 0 && !isRusak);
                 } else if (activeFilter === 'bad') {
-                    matchesFilter = isRusak;
+                    matchesStatus = isRusak;
                 }
 
-                if (matchesSearch && matchDate && matchUnit && matchDept && matchOp && matchesFilter) {
-                    row.hidden = false;
-                    row.style.display = '';
-                } else {
-                    row.hidden = true;
-                    row.style.display = 'none';
-                }
+                // Combined
+                var show = matchesSearch && matchDate && matchUnit && matchDept && matchOp && matchesStatus;
+                row.hidden = !show;
             });
-            if(forkliftTable) forkliftTable.refresh();
+
+            // Refresh pagination after filtering
+            if (forkliftTable) forkliftTable.refresh();
         }
 
+        // Filter button
         var btnFilter = document.querySelector('[data-filter-trigger="forklift"]');
         if (btnFilter) {
-            btnFilter.addEventListener('click', applyFilters);
+            btnFilter.addEventListener('click', function() {
+                applyFilters();
+            });
         }
 
-        if(searchInput) {
-            searchInput.addEventListener('keyup', applyFilters);
+        // Search input
+        if (searchInput) {
+            searchInput.addEventListener('keyup', function() {
+                applyFilters();
+            });
         }
 
+        // Status filter buttons
         filterBtns.forEach(function(btn) {
             btn.addEventListener('click', function() {
-                filterBtns.forEach(b => b.classList.remove('active'));
+                filterBtns.forEach(function(b) { b.classList.remove('active'); });
                 this.classList.add('active');
                 activeFilter = this.getAttribute('data-filter');
                 applyFilters();
             });
         });
 
-        // AJAX Real-time Polling
-        var POLL_INTERVAL = 15000; 
-        
+        // ========== AJAX Real-time Polling ==========
+        var POLL_INTERVAL = 15000;
+
         function updateDashboard() {
             fetch('{{ route("api.forklift") }}')
-                .then(res => res.json())
-                .then(json => {
+                .then(function(res) { return res.json(); })
+                .then(function(json) {
                     if (json.status !== 'ok') return;
-                    
+
                     var tbody = document.querySelector('#table-forklift tbody');
                     if (tbody && json.data && json.data.length > 0) {
                         var html = '';
-                        json.data.slice(0, 100).forEach(function (r) { // Render max 100
+                        json.data.forEach(function (r) {
                             var rowClass = r.rusak ? 'row-bad' : '';
                             html += '<tr class="' + rowClass + '" data-filter-row="forklift" data-masalah="' + r.masalah + '" data-rusak="' + (r.rusak ? 'true' : 'false') + '">';
-                            html += '<td>' + r.tgl + '</td>';
-                            html += '<td>' + r.waktu + '</td>';
-                            html += '<td>' + r.operator + '</td>';
-                            html += '<td>' + r.unit + '</td>';
-                            html += '<td>' + r.dept + '</td>';
-                            html += '<td>' + r.shift + '</td>';
-                            
-                            var masalahHtml = '';
-                            if(r.masalah > 0) {
+                            html += '<td>' + (r.tgl || '') + '</td>';
+                            html += '<td>' + (r.waktu || '-') + '</td>';
+                            html += '<td>' + (r.operator || '') + '</td>';
+                            html += '<td>' + (r.unit || '') + '</td>';
+                            html += '<td>' + (r.dept || '') + '</td>';
+                            html += '<td>' + (r.shift || '') + '</td>';
+
+                            if (r.masalah > 0) {
                                 var badgeClass = r.rusak ? 'bad' : 'warn';
-                                masalahHtml = '<span class="badge ' + badgeClass + '">' + r.masalah + ' item</span>';
+                                html += '<td><span class="badge ' + badgeClass + '">' + r.masalah + ' item</span></td>';
                             } else {
-                                masalahHtml = '<span class="badge good">0</span>';
+                                html += '<td><span class="badge good">0</span></td>';
                             }
-                            html += '<td>' + masalahHtml + '</td>';
-                            
-                            var statusHtml = '';
-                            if(r.rusak) {
-                                statusHtml = '<span class="badge bad"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg> Ada Rusak</span>';
-                            } else if(r.masalah > 0) {
-                                statusHtml = '<span class="badge warn">Perlu Perbaikan</span>';
+
+                            if (r.rusak) {
+                                html += '<td><span class="badge bad"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg> Ada Rusak</span></td>';
+                            } else if (r.masalah > 0) {
+                                html += '<td><span class="badge warn">Perlu Perbaikan</span></td>';
                             } else {
-                                statusHtml = '<span class="badge good">Semua Baik</span>';
+                                html += '<td><span class="badge good">Semua Baik</span></td>';
                             }
-                            html += '<td>' + statusHtml + '</td>';
-                            
+
                             var catatan = r.catatan || '-';
                             html += '<td style="white-space: normal; min-width: 250px;">' + catatan + '</td>';
-                            
                             html += '</tr>';
                         });
-                        
+
                         tbody.innerHTML = html;
-                        allRows = document.querySelectorAll('tr[data-filter-row="forklift"]');
-                        
-                        if (json.lastSync) {
-                            var syncEl = document.getElementById('sync-time');
-                            if (syncEl) syncEl.innerHTML = json.lastSync;
+
+                        // Re-init pagination after replacing DOM
+                        if (typeof window.initTablePagination === 'function') {
+                            forkliftTable = window.initTablePagination('table-forklift', 'pag-forklift', 15);
                         }
-                        
-                        if (json.stats) {
-                            var elTotal = document.getElementById('stat-total');
-                            if (elTotal) elTotal.innerHTML = parseInt(json.stats.total).toLocaleString('id-ID');
-                            
-                            var elPerhatian = document.getElementById('stat-perhatian');
-                            if (elPerhatian) elPerhatian.innerHTML = parseInt(json.stats.perhatian).toLocaleString('id-ID');
-                            
-                            var elTopUnit = document.getElementById('stat-top-unit');
-                            if (elTopUnit) elTopUnit.innerHTML = json.stats.topUnit;
-                            
-                            var elTopCount = document.getElementById('stat-top-count');
-                            if (elTopCount) elTopCount.innerHTML = parseInt(json.stats.topUnitCount).toLocaleString('id-ID');
-                            
-                            if (json.stats.opData) {
-                                var opChart = document.getElementById('chart-operator');
-                                if (opChart) {
-                                    var opHtml = '';
-                                    var maxOp = json.stats.opData.reduce(function(max, item) { return Math.max(max, item.count); }, 1);
-                                    json.stats.opData.forEach(function(s) {
-                                        var pct = Math.round((s.count / maxOp) * 100);
-                                        opHtml += '<div class="bar-row">';
-                                        opHtml += '<span class="bar-label">' + s.label + '</span>';
-                                        opHtml += '<div class="bar-track"><div class="bar-fill ' + s.tone + '" style="width: ' + pct + '%;"></div></div>';
-                                        opHtml += '<span class="bar-count">' + parseInt(s.count).toLocaleString('id-ID') + '</span>';
-                                        opHtml += '</div>';
-                                    });
-                                    if(json.stats.opData.length === 0) {
-                                        opHtml = '<div style="text-align:center;color:var(--text-muted);padding:20px;">Tidak ada data.</div>';
-                                    }
-                                    opChart.innerHTML = opHtml;
+                    }
+
+                    // Update stats
+                    if (json.lastSync) {
+                        var syncEl = document.getElementById('sync-time');
+                        if (syncEl) syncEl.innerHTML = json.lastSync;
+                    }
+
+                    if (json.stats) {
+                        var elTotal = document.getElementById('stat-total');
+                        if (elTotal) elTotal.innerHTML = parseInt(json.stats.total).toLocaleString('id-ID');
+
+                        var elPerhatian = document.getElementById('stat-perhatian');
+                        if (elPerhatian) elPerhatian.innerHTML = parseInt(json.stats.perhatian).toLocaleString('id-ID');
+
+                        var elTopUnit = document.getElementById('stat-top-unit');
+                        if (elTopUnit) elTopUnit.innerHTML = json.stats.topUnit;
+
+                        var elTopCount = document.getElementById('stat-top-count');
+                        if (elTopCount) elTopCount.innerHTML = parseInt(json.stats.topUnitCount).toLocaleString('id-ID');
+
+                        if (json.stats.opData) {
+                            var opChart = document.getElementById('chart-operator');
+                            if (opChart) {
+                                var opHtml = '';
+                                var maxOp = json.stats.opData.reduce(function(max, item) { return Math.max(max, item.count); }, 1);
+                                json.stats.opData.forEach(function(s) {
+                                    var pct = Math.round((s.count / maxOp) * 100);
+                                    opHtml += '<div class="bar-row">';
+                                    opHtml += '<span class="bar-label">' + s.label + '</span>';
+                                    opHtml += '<div class="bar-track"><div class="bar-fill ' + s.tone + '" style="width: ' + pct + '%;"></div></div>';
+                                    opHtml += '<span class="bar-count">' + parseInt(s.count).toLocaleString('id-ID') + '</span>';
+                                    opHtml += '</div>';
+                                });
+                                if (json.stats.opData.length === 0) {
+                                    opHtml = '<div style="text-align:center;color:var(--text-muted);padding:20px;">Tidak ada data.</div>';
                                 }
-                            }
-                            
-                            if (json.stats.rusakData) {
-                                var rusakChart = document.getElementById('chart-rusak');
-                                if (rusakChart) {
-                                    var rHtml = '';
-                                    var maxR = json.stats.rusakData.reduce(function(max, item) { return Math.max(max, item.count); }, 1);
-                                    json.stats.rusakData.forEach(function(s) {
-                                        var pct = Math.round((s.count / maxR) * 100);
-                                        rHtml += '<div class="bar-row">';
-                                        rHtml += '<span class="bar-label">' + s.label + '</span>';
-                                        rHtml += '<div class="bar-track"><div class="bar-fill ' + s.tone + '" style="width: ' + pct + '%;"></div></div>';
-                                        rHtml += '<span class="bar-count">' + parseInt(s.count).toLocaleString('id-ID') + '</span>';
-                                        rHtml += '</div>';
-                                    });
-                                    if(json.stats.rusakData.length === 0) {
-                                        rHtml = '<div style="text-align:center;color:var(--text-muted);padding:20px;">Tidak ada item rusak / perlu perbaikan.</div>';
-                                    }
-                                    rusakChart.innerHTML = rHtml;
-                                }
+                                opChart.innerHTML = opHtml;
                             }
                         }
 
-                        // Jangan auto-apply filter setelah AJAX, biarkan user klik tombol sendiri
+                        if (json.stats.rusakData) {
+                            var rusakChart = document.getElementById('chart-rusak');
+                            if (rusakChart) {
+                                var rHtml = '';
+                                var maxR = json.stats.rusakData.reduce(function(max, item) { return Math.max(max, item.count); }, 1);
+                                json.stats.rusakData.forEach(function(s) {
+                                    var pct = Math.round((s.count / maxR) * 100);
+                                    rHtml += '<div class="bar-row">';
+                                    rHtml += '<span class="bar-label">' + s.label + '</span>';
+                                    rHtml += '<div class="bar-track"><div class="bar-fill ' + s.tone + '" style="width: ' + pct + '%;"></div></div>';
+                                    rHtml += '<span class="bar-count">' + parseInt(s.count).toLocaleString('id-ID') + '</span>';
+                                    rHtml += '</div>';
+                                });
+                                if (json.stats.rusakData.length === 0) {
+                                    rHtml = '<div style="text-align:center;color:var(--text-muted);padding:20px;">Tidak ada item rusak / perlu perbaikan.</div>';
+                                }
+                                rusakChart.innerHTML = rHtml;
+                            }
+                        }
                     }
                 })
-                .catch(err => console.error('Error fetching forklift data:', err));
+                .catch(function(err) { console.error('Error fetching forklift data:', err); });
         }
 
         setInterval(updateDashboard, POLL_INTERVAL);
     });
 </script>
 @endsection
+
