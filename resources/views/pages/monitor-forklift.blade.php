@@ -62,11 +62,11 @@
             <div class="filter-bar filter-forklift-responsive" data-filter-scope="forklift">
                 <div class="field">
                     <label class="label" for="f_dari">Dari</label>
-                    <input class="input" type="date" id="f_dari" value="2026-09-01">
+                    <input class="input" type="date" id="f_dari" value="{{ now()->startOfMonth()->format('Y-m-d') }}">
                 </div>
                 <div class="field">
                     <label class="label" for="f_sampai">Sampai</label>
-                    <input class="input" type="date" id="f_sampai" value="2026-09-21">
+                    <input class="input" type="date" id="f_sampai" value="{{ now()->format('Y-m-d') }}">
                 </div>
                 <div class="field">
                     <label class="label" for="f_unit">Unit Forklift</label>
@@ -234,7 +234,7 @@
     <section class="panel" aria-labelledby="h-tabel">
         <div class="panel-head">
             <h2 id="h-tabel">Riwayat Checklist Terbaru</h2>
-            <p>300 checklist terakhir yang masuk.</p>
+            <p>100 checklist terakhir yang masuk.</p>
         </div>
         <div class="table-scroll">
             @php
@@ -260,7 +260,7 @@
                 </thead>
                 <tbody>
                     @foreach($rows as $r)
-                    <tr class="{{ $r['rusak'] ? 'row-bad' : '' }}" data-filter-row="forklift">
+                    <tr class="{{ $r['rusak'] ? 'row-bad' : '' }}" data-filter-row="forklift" data-masalah="{{ $r['masalah'] }}" data-rusak="{{ $r['rusak'] ? 'true' : 'false' }}">
                         <td>{{ $r['tgl'] }}</td>
                         <td>{{ $r['waktu'] }}</td>
                         <td>{{ $r['operator'] }}</td>
@@ -540,7 +540,7 @@
                             }
                         }
 
-                        applyFilters();
+                        // Jangan auto-apply filter setelah AJAX, biarkan user klik tombol sendiri
                     }
                 })
                 .catch(err => console.error('Error fetching forklift data:', err));
