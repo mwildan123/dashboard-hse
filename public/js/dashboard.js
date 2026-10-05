@@ -558,6 +558,11 @@
             var goodSimList = [];
             var badSimList = [];
             var emptySimList = [];
+            var totalVehicles = 0;
+            var motorCount = 0;
+            var mobilCount = 0;
+            var bothCount = 0;
+            var warnCount = 0;
 
             rows.forEach(function(row) {
                 var rowDate = row.getAttribute('data-date') || '';
@@ -635,6 +640,15 @@
                 if (matches && scope === 'kendaraan') {
                     var nama = (row.getAttribute('data-nama') || '').trim();
                     var plat = (row.getAttribute('data-plat') || '').trim();
+                    var jenisVeh = rowJenis.toLowerCase();
+                    
+                    totalVehicles++;
+                    if (jenisVeh === 'motor') motorCount++;
+                    else if (jenisVeh === 'mobil') mobilCount++;
+                    else if (jenisVeh === 'motor & mobil') bothCount++;
+                    
+                    if (row.classList.contains('row-warn') || rowStatus === 'Peringatan') warnCount++;
+
                     if (rowStatus === 'SIM Aktif') {
                         totalGoodSim++;
                         goodSimList.push({ nama: nama, plat: plat });
@@ -751,6 +765,12 @@
             }
 
             if (scope === 'kendaraan') {
+                // Update Stat Cards
+                var statCards = document.querySelectorAll('.stat-value');
+                if (statCards.length >= 1) statCards[0].textContent = totalVehicles;
+                if (statCards.length >= 2) statCards[1].innerHTML = motorCount + ' <small>/ ' + mobilCount + ' / ' + bothCount + '</small>';
+                if (statCards.length >= 3) statCards[2].textContent = warnCount;
+
                 var totalVeh = totalGoodSim + totalBadSim;
                 var boxGood = document.getElementById('summary-box-good');
                 var boxBad = document.getElementById('summary-box-bad');
@@ -961,7 +981,7 @@
     initChartTooltip();
 
     /* ---------- Table Pagination (15 rows per page) ---------- */
-    function initTablePagination(tableId, pagContainerId, perPage) {
+    window.initTablePagination = function(tableId, pagContainerId, perPage) {
         var table = document.getElementById(tableId);
         var pagContainer = document.getElementById(pagContainerId);
         if (!table || !pagContainer) return;
@@ -1097,10 +1117,10 @@
     }
 
     // Initialize pagination for all tables
-    var pagFoto = initTablePagination('table-foto', 'pag-foto', 15);
-    var pagPencatatan = initTablePagination('table-pencatatan', 'pag-pencatatan', 15);
-    var pagInput = initTablePagination('table-input', 'pag-input', 15);
-    var pagKendaraan = initTablePagination('table-kendaraan', 'pag-kendaraan', 15);
+    var pagFoto = window.initTablePagination('table-foto', 'pag-foto', 15);
+    var pagPencatatan = window.initTablePagination('table-pencatatan', 'pag-pencatatan', 15);
+    var pagInput = window.initTablePagination('table-input', 'pag-input', 15);
+    var pagKendaraan = window.initTablePagination('table-kendaraan', 'pag-kendaraan', 15);
 
     // Hook pagination refresh into filter system
     var origFilterTrigger = document.querySelector('[data-filter-trigger="kwh"]');

@@ -114,10 +114,6 @@
         </p>
     </div>
     <div class="page-actions">
-        <button type="button" class="btn btn-primary" onclick="HSE.downloadPdf('Laporan-Monitoring-Data-Kendaraan')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            <span>Download PDF</span>
-        </button>
     </div>
 </div>
 
@@ -154,7 +150,7 @@
                     </select>
                 </div>
                 <div class="field" style="display:flex; align-items:flex-end;">
-                    <button type="button" class="btn btn-primary" data-filter-trigger="kendaraan" title="Cari" style="padding: 0; width: 44px; height: 44px; justify-content: center; flex-shrink: 0;">
+                    <button type="button" class="btn btn-primary" data-filter-trigger="kendaraan" title="Cari" style="padding: 0; min-width: 0; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                     </button>
                 </div>
@@ -273,6 +269,17 @@
                             } elseif ($k['sim_status'] === 'warn' || $k['stnk_status'] === 'warn') {
                                 $rowClass = 'row-warn';
                             }
+                            
+                            if (!function_exists('getDriveThumbnailUrl')) {
+                                function getDriveThumbnailUrl($url) {
+                                    if (preg_match('/id=([^&]+)/', $url, $matches)) {
+                                        return "https://lh3.googleusercontent.com/d/" . $matches[1];
+                                    } elseif (preg_match('/file\/d\/([^\/]+)/', $url, $matches)) {
+                                        return "https://lh3.googleusercontent.com/d/" . $matches[1];
+                                    }
+                                    return $url;
+                                }
+                            }
                         @endphp
                         <tr class="{{ $rowClass }}" data-filter-row="kendaraan" data-nama="{{ $k['nama'] }}" data-jenis="{{ $k['jenis'] }}" data-plat="{{ $k['plat'] }}" data-status="{{ $statusLabel[$k['sim_status']] ?? 'SIM Aktif' }}">
                             <td>
@@ -307,14 +314,18 @@
                                     $fotoSim = !empty($k['foto_sim_a']) ? $k['foto_sim_a'] : (!empty($k['foto_sim_c']) ? $k['foto_sim_c'] : '');
                                 @endphp
                                 @if(!empty($fotoSim))
-                                    <a href="{{ $fotoSim }}" target="_blank" class="btn-photo" title="Lihat Foto SIM">📸 Klik untuk melihat foto</a>
+                                    <a href="{{ $fotoSim }}" target="_blank" title="Lihat Foto SIM">
+                                        <img src="{{ getDriveThumbnailUrl($fotoSim) }}" alt="Foto SIM" class="img-thumbnail" loading="lazy" onerror="this.outerHTML='<div class=\'img-placeholder\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\' style=\'width:20px; height:20px; color:#64748b;\'><rect x=\'3\' y=\'3\' width=\'18\' height=\'18\' rx=\'2\' ry=\'2\'></rect><circle cx=\'8.5\' cy=\'8.5\' r=\'1.5\'></circle><polyline points=\'21 15 16 10 5 21\'></polyline></svg></div>'">
+                                    </a>
                                 @else
                                     -
                                 @endif
                             </td>
                             <td>
                                 @if(!empty($k['foto_stnk']))
-                                    <a href="{{ $k['foto_stnk'] }}" target="_blank" class="btn-photo" title="Lihat Foto STNK">📸 Klik untuk melihat foto</a>
+                                    <a href="{{ $k['foto_stnk'] }}" target="_blank" title="Lihat Foto STNK">
+                                        <img src="{{ getDriveThumbnailUrl($k['foto_stnk']) }}" alt="Foto STNK" class="img-thumbnail" loading="lazy" onerror="this.outerHTML='<div class=\'img-placeholder\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\' style=\'width:20px; height:20px; color:#64748b;\'><rect x=\'3\' y=\'3\' width=\'18\' height=\'18\' rx=\'2\' ry=\'2\'></rect><circle cx=\'8.5\' cy=\'8.5\' r=\'1.5\'></circle><polyline points=\'21 15 16 10 5 21\'></polyline></svg></div>'">
+                                    </a>
                                 @else
                                     -
                                 @endif
@@ -381,16 +392,7 @@
                         syncInfoEl.textContent = json.lastSync;
                     }
 
-                    // Update stat cards
-                    if (statCards.length >= 1) {
-                        statCards[0].textContent = json.count;
-                    }
-                    if (statCards.length >= 2) {
-                        statCards[1].innerHTML = json.motorCount + ' <small>/ ' + json.mobilCount + ' / ' + json.bothCount + '</small>';
-                    }
-                    if (statCards.length >= 3) {
-                        statCards[2].textContent = json.warnCount;
-                    }
+                    // Update stat cards (dihandle oleh filter JS setelah ini)
 
                     // Update table
                     var tbody = document.getElementById('kendaraan-table-body');
@@ -410,7 +412,7 @@
 
                             var simDate = k.sim_exp !== '-' ? k.sim_exp : '-';
 
-                            var timestampDate = new Date(k.updated_at);
+                            var timestampDate = new Date(k.updated_at.replace(' ', 'T'));
                             var formattedTime = ('0' + timestampDate.getDate()).slice(-2) + '/' + ('0' + (timestampDate.getMonth()+1)).slice(-2) + '/' + timestampDate.getFullYear() + ' ' + ('0' + timestampDate.getHours()).slice(-2) + ':' + ('0' + timestampDate.getMinutes()).slice(-2);
                             
                             html += '<tr class="' + rowClass + '" data-filter-row="kendaraan" data-nama="' + k.nama + '" data-jenis="' + k.jenis + '" data-plat="' + k.plat + '" data-status="' + simLabel + '">';
@@ -435,15 +437,26 @@
                             }
                             html += '<td>' + statusBadge + '</td>';
                             
+                            var getDriveThumb = function(url) {
+                                if (!url) return '';
+                                var match = url.match(/id=([^&]+)/);
+                                if (match) return 'https://lh3.googleusercontent.com/d/' + match[1];
+                                match = url.match(/file\/d\/([^\/]+)/);
+                                if (match) return 'https://lh3.googleusercontent.com/d/' + match[1];
+                                return url;
+                            };
+                            
                             var fotoSimHtml = '-';
                             var fotoSimLink = k.foto_sim_a ? k.foto_sim_a : (k.foto_sim_c ? k.foto_sim_c : '');
+                            var svgPlaceholder = '<div class=\\'img-placeholder\\'><svg viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'2\\' stroke-linecap=\\'round\\' stroke-linejoin=\\'round\\' style=\\'width:20px; height:20px; color:#64748b;\\'><rect x=\\'3\\' y=\\'3\\' width=\\'18\\' height=\\'18\\' rx=\\'2\\' ry=\\'2\\'></rect><circle cx=\\'8.5\\' cy=\\'8.5\\' r=\\'1.5\\'></circle><polyline points=\\'21 15 16 10 5 21\\'></polyline></svg></div>';
+                            
                             if (fotoSimLink) {
-                                fotoSimHtml = '<a href="' + fotoSimLink + '" target="_blank" class="btn-photo" title="Lihat Foto SIM">📸 Klik untuk melihat foto</a>';
+                                fotoSimHtml = '<a href="' + fotoSimLink + '" target="_blank" title="Lihat Foto SIM"><img src="' + getDriveThumb(fotoSimLink) + '" alt="Foto SIM" class="img-thumbnail" loading="lazy" onerror="this.outerHTML=\'' + svgPlaceholder + '\'"></a>';
                             }
                             html += '<td>' + fotoSimHtml + '</td>';
                             
                             if (k.foto_stnk) {
-                                html += '<td><a href="' + k.foto_stnk + '" target="_blank" class="btn-photo" title="Lihat Foto STNK">📸 Klik untuk melihat foto</a></td>';
+                                html += '<td><a href="' + k.foto_stnk + '" target="_blank" title="Lihat Foto STNK"><img src="' + getDriveThumb(k.foto_stnk) + '" alt="Foto STNK" class="img-thumbnail" loading="lazy" onerror="this.outerHTML=\'' + svgPlaceholder + '\'"></a></td>';
                             } else {
                                 html += '<td>-</td>';
                             }

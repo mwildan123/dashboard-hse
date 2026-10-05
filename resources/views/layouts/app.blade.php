@@ -61,5 +61,55 @@
 
     @yield('scripts')
     <script src="{{ asset('js/dashboard.js') }}"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const animateValue = (obj, duration) => {
+            const rawHtml = obj.innerHTML.trim();
+            // Match numbers formatted with dots, optionally followed by other HTML/text
+            const match = rawHtml.match(/^([0-9.]+)([\s\S]*)$/);
+            if (!match) return;
+            
+            const rawNum = match[1].replace(/\./g, '');
+            const finalVal = parseInt(rawNum, 10);
+            if (isNaN(finalVal)) return;
+            
+            const suffix = match[2] || '';
+            
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const easeProgress = 1 - Math.pow(1 - progress, 4);
+                let currentVal = Math.floor(easeProgress * finalVal);
+                
+                obj.innerHTML = currentVal.toLocaleString('id-ID') + suffix;
+                
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                } else {
+                    obj.innerHTML = finalVal.toLocaleString('id-ID') + suffix;
+                }
+            };
+            window.requestAnimationFrame(step);
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    let el = entry.target;
+                    if (!el.hasAttribute('data-animated')) {
+                        el.setAttribute('data-animated', 'true');
+                        animateValue(el, 1200);
+                    }
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        // Wait a small delay so elements have time to render before animation starts
+        setTimeout(() => {
+            document.querySelectorAll('.stat-value').forEach(el => observer.observe(el));
+        }, 100);
+    });
+    </script>
 </body>
 </html>

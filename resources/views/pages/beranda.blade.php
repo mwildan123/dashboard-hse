@@ -448,10 +448,10 @@
                 </div>
                 <div class="metric-body">
                     <div class="metric-data">
-                        <span class="metric-value">0</span>
+                        <span class="metric-value">{{ number_format($kwhToday ?? 0, 1, ',', '.') }}</span>
                         <span class="metric-unit">kWh</span>
                     </div>
-                    <span class="metric-status-pill good">Normal</span>
+                    <span class="metric-status-pill {{ ($kwhToday ?? 0) > 0 ? 'good' : 'slate' }}">{{ ($kwhToday ?? 0) > 0 ? 'Normal' : 'Menunggu Data' }}</span>
                 </div>
             </div>
 
@@ -462,11 +462,14 @@
                 </div>
                 <div class="forklift-box">
                     <div class="forklift-readout">
-                        <strong>0 / 0</strong>
+                        <strong>{{ $forkliftReady ?? 0 }} / {{ $forkliftTotal ?? 0 }}</strong>
                         <span>Unit Siap Pakai</span>
                     </div>
                     <div class="mini-progress">
-                        <span style="width: 0%;"></span>
+                        @php 
+                            $percentage = ($forkliftTotal ?? 0) > 0 ? (($forkliftReady ?? 0) / ($forkliftTotal ?? 1)) * 100 : 0; 
+                        @endphp
+                        <span style="width: {{ $percentage }}%;"></span>
                     </div>
                 </div>
             </div>
@@ -477,11 +480,25 @@
                     <span class="metric-tag">Operasional</span>
                 </div>
                 <div class="vehicle-box">
-                    <div class="vehicle-number">0 <span style="font-size: 1rem; font-weight: 500; color: var(--ink-3);">Unit</span></div>
+                    <div class="vehicle-number">{{ $vehicleTotal ?? 0 }} <span style="font-size: 1rem; font-weight: 500; color: var(--ink-3);">Unit</span></div>
                     <div class="vehicle-badge">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                        <span>Semua Dokumen Valid</span>
+                        <span>Data Terupdate</span>
                     </div>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-head">
+                    <span class="metric-label">Input Data Prycam</span>
+                    <span class="metric-tag">Monitoring</span>
+                </div>
+                <div class="metric-body">
+                    <div class="metric-data">
+                        <span class="metric-value">{{ number_format($prycamKw ?? 0, 1, ',', '.') }}</span>
+                        <span class="metric-unit">kW</span>
+                    </div>
+                    <span class="metric-status-pill {{ ($prycamCount ?? 0) > 0 ? 'good' : 'slate' }}">{{ ($prycamCount ?? 0) > 0 ? ($prycamCount . ' Panel Dicek') : 'Belum Ada Data' }}</span>
                 </div>
             </div>
         </div>

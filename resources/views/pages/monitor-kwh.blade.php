@@ -28,10 +28,6 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
             <span>Input Data</span>
         </a>
-        <button type="button" class="btn btn-primary" onclick="HSE.downloadPdf('Laporan-Monitoring-Konsumsi-kWh')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            <span>Download PDF</span>
-        </button>
     </div>
 </div>
 
@@ -55,7 +51,7 @@
                     <input class="input" type="date" id="f_sampai" value="">
                 </div>
                 <div class="field" style="display:flex; align-items:flex-end;">
-                    <button type="button" class="btn btn-primary" data-filter-trigger="kwh" title="Cari" style="padding: 0; width: 44px; height: 44px; justify-content: center; flex-shrink: 0;">
+                    <button type="button" class="btn btn-primary" data-filter-trigger="kwh" title="Cari" style="padding: 0; min-width: 0; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                     </button>
                 </div>
@@ -306,8 +302,20 @@
                         <tr data-filter-row="kwh" data-date="{{ $r['date_key'] ?? ($r['tgl'] ?? '') }}" data-panel="Utama, Office" data-c-utama="{{ $r['_float_consumed_utama'] ?? 0 }}" data-c-office="{{ $r['_float_consumed_office'] ?? 0 }}">
                             <td>{{ $r['tgl'] ?? '-' }}</td>
                             <td>
-                                <a href="{{ $r['picture'] }}" target="_blank" rel="noopener noreferrer" style="display: inline-block; padding: 6px 14px; background: #e0f2fe; color: #0369a1; border-radius: 6px; font-weight: 500; text-decoration: none; border: 1px solid #bae6fd; font-size: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);" title="Buka foto ({{ $r['tgl'] ?? '' }})">
-                                    📸 Klik untuk melihat foto
+                                @php
+                                    if (!function_exists('getDriveThumbnailUrl')) {
+                                        function getDriveThumbnailUrl($url) {
+                                            if (preg_match('/id=([^&]+)/', $url, $matches)) {
+                                                return "https://lh3.googleusercontent.com/d/" . $matches[1];
+                                            } elseif (preg_match('/file\/d\/([^\/]+)/', $url, $matches)) {
+                                                return "https://lh3.googleusercontent.com/d/" . $matches[1];
+                                            }
+                                            return $url;
+                                        }
+                                    }
+                                @endphp
+                                <a href="{{ $r['picture'] }}" target="_blank" rel="noopener noreferrer" title="Buka foto ({{ $r['tgl'] ?? '' }})">
+                                    <img src="{{ getDriveThumbnailUrl($r['picture']) }}" alt="Foto Pencatatan" class="img-thumbnail" loading="lazy" onerror="this.outerHTML='<div class=\'img-placeholder\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\' style=\'width:20px; height:20px; color:#64748b;\'><rect x=\'3\' y=\'3\' width=\'18\' height=\'18\' rx=\'2\' ry=\'2\'></rect><circle cx=\'8.5\' cy=\'8.5\' r=\'1.5\'></circle><polyline points=\'21 15 16 10 5 21\'></polyline></svg></div>'">
                                 </a>
                             </td>
                         </tr>
@@ -434,7 +442,7 @@
                     </select>
                 </div>
                 <div class="field" style="display:flex; align-items:flex-end;">
-                    <button type="button" class="btn btn-primary" data-filter-trigger="input_monitoring" title="Terapkan Filter" style="padding: 0; width: 44px; height: 44px; justify-content: center; flex-shrink: 0;">
+                    <button type="button" class="btn btn-primary" data-filter-trigger="input_monitoring" title="Terapkan Filter" style="padding: 0; min-width: 0; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="20" height="20"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                     </button>
                 </div>

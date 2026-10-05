@@ -188,6 +188,85 @@ class HseController extends Controller
     /**
      * Display the HSE dashboard.
      */
+    public function beranda()
+    {
+        // 1. KWh sum for today
+        $kwhToday = 0;
+        try {
+            $records = $this->readRecords(); // Array of records
+            $todayStr1 = now()->format('Y-m-d');
+            $todayStr2 = now()->format('d/m/Y');
+            
+            foreach ($records as $r) {
+                $tgl = $r['tanggal'] ?? ($r['timestamp'] ?? '');
+                if (strpos($tgl, $todayStr1) !== false || strpos($tgl, $todayStr2) !== false) {
+                    $kwUtama = floatval(str_replace(',', '.', $r['kw_utama'] ?? ($r['kw'] ?? '0')));
+                    $kwOffice = floatval(str_replace(',', '.', $r['kw_office'] ?? '0'));
+                    $kwhToday += ($kwUtama + $kwOffice);
+                }
+            }
+        } catch (\Throwable $e) {
+            // Ignore error for homepage summary
+        }
+
+        // 2. Forklift Stats
+        $forkliftReady = 0;
+        $forkliftTotal = 0;
+        try {
+            $allForklifts = $this->getForkliftData();
+            $todayStr = now()->format('Y-m-d');
+            foreach ($allForklifts as $f) {
+                if (strpos($f['timestamp'] ?? '', $todayStr) !== false) {
+                    $forkliftTotal++;
+                    if ((int)($f['masalah'] ?? 0) === 0) {
+                        $forkliftReady++;
+                    }
+                }
+            }
+        } catch (\Throwable $e) {
+            // Ignore error
+        }
+
+        // 3. Vehicles
+        $vehicleTotal = 0;
+        try {
+            $vehicleTotal = count($this->readVehicleData());
+        } catch (\Throwable $e) {
+            // Ignore error
+        }
+
+        // 4. Prycam (Session Data)
+        $prycamCount = 0;
+        $prycamKw = 0;
+        try {
+            $sessionRecords = session('temp_monitoring_data', []);
+            $todayStr1 = now()->format('Y-m-d');
+            $todayStr2 = now()->format('d/m/Y');
+            foreach ($sessionRecords as $r) {
+                $tgl = $r['timestamp'] ?? '';
+                if (strpos($tgl, $todayStr1) !== false || strpos($tgl, $todayStr2) !== false) {
+                    $prycamCount++;
+                    $kwValue = floatval(str_replace(',', '.', $r['kw'] ?? '0'));
+                    if ($kwValue == 0 && !empty($r['kwh'])) {
+                         $kwValue = floatval(str_replace(',', '.', $r['kwh'])) / 1000;
+                    }
+                    $prycamKw += $kwValue;
+                }
+            }
+        } catch (\Throwable $e) {
+            // Ignore error
+        }
+
+        return view('pages.beranda', [
+            'kwhToday' => $kwhToday,
+            'forkliftReady' => $forkliftReady,
+            'forkliftTotal' => $forkliftTotal,
+            'vehicleTotal' => $vehicleTotal,
+            'prycamCount' => $prycamCount,
+            'prycamKw' => $prycamKw
+        ]);
+    }
+
     public function index()
     {
         $googleRecords = collect($this->readRecords())
@@ -723,6 +802,7 @@ class HseController extends Controller
                     'no' => $index + 1,
                 ];
             })
+            ->reverse()
             ->values()
             ->all();
 
@@ -970,8 +1050,8 @@ class HseController extends Controller
             }
         }
 
-        // Keep oldest first to match Excel ordering
-        // $formattedRecords = array_reverse($formattedRecords);
+        // Newest first — data terbaru di paling atas tabel
+        $formattedRecords = array_reverse($formattedRecords);
 
         $trendData = collect($formattedRecords)
             ->groupBy(fn ($record) => $record['date_key'] ?? ($record['tgl'] ?? ''))
@@ -1039,7 +1119,7 @@ class HseController extends Controller
                     '_date_key' => $syntheticDate,
                 ];
             })
-            ->sortBy('_timestamp')
+            ->reverse()
             ->values()
             ->map(function ($row, $index) {
                 $row['No'] = $index + 1;
@@ -1117,9 +1197,13 @@ class HseController extends Controller
             'keterangan' => $validated['keterangan'] ?? '',
         ];
 
-        $existingSessionData = session('temp_monitoring_data', []);
-        $existingSessionData[] = $row;
-        session(['temp_monitoring_data' => $existingSessionData]);
+        $jsonPath = storage_path('app/prycam_kwh.json');
+        $permanentInput = [];
+        if (file_exists($jsonPath)) {
+            $permanentInput = json_decode(file_get_contents($jsonPath), true) ?: [];
+        }
+        $permanentInput[] = $row;
+        file_put_contents($jsonPath, json_encode($permanentInput, JSON_PRETTY_PRINT));
 
         return redirect()->route('hse.form')->with('success', 'Data tersimpan! Silakan cek di Dashboard jika diperlukan.');
     }
@@ -1212,7 +1296,7 @@ class HseController extends Controller
     /**
      * API endpoint untuk AJAX polling data kendaraan (real-time refresh).
      */
-    public function apiVehicles()
+    public function apiVehicles(Request $request)
     {
         $vehicles = collect($this->readVehicleData())
             ->map(function ($vehicle, $index) {
@@ -1245,18 +1329,52 @@ class HseController extends Controller
             ->values()
             ->all();
 
-        $withSim = collect($vehicles)->filter(fn ($item) => $item['sim_status'] !== 'bad')->count();
-        $withoutSim = collect($vehicles)->filter(fn ($item) => $item['sim_status'] === 'bad')->count();
+        // Server-side filtering
+        $fJenis = strtolower(trim($request->input('jenis', '')));
+        $fStatus = strtolower(trim($request->input('status', '')));
+        $fQ = strtolower(trim($request->input('q', '')));
+
+        $statusLabelMap = [
+            'good' => 'sim aktif',
+            'warn' => 'peringatan',
+            'bad' => 'sim tidak aktif',
+            'empty' => 'belum mengisi',
+        ];
+
+        if ($fJenis || $fStatus || $fQ) {
+            $vehicles = array_values(array_filter($vehicles, function ($v) use ($fJenis, $fStatus, $fQ, $statusLabelMap) {
+                if ($fJenis && strtolower($v['jenis']) !== $fJenis) return false;
+                if ($fStatus) {
+                    $vStatusLabel = $statusLabelMap[$v['sim_status']] ?? 'sim aktif';
+                    if ($vStatusLabel !== $fStatus) return false;
+                }
+                if ($fQ) {
+                    $searchText = strtolower($v['nama'] . ' ' . $v['plat']);
+                    if (strpos($searchText, $fQ) === false) return false;
+                }
+                return true;
+            }));
+        }
+
+        $collection = collect($vehicles);
 
         return response()->json([
             'status' => 'ok',
             'count' => count($vehicles),
-            'withSim' => $withSim,
-            'withoutSim' => $withoutSim,
-            'motorCount' => collect($vehicles)->filter(fn ($v) => strtolower($v['jenis']) === 'motor')->count(),
-            'mobilCount' => collect($vehicles)->filter(fn ($v) => strtolower($v['jenis']) === 'mobil')->count(),
-            'bothCount' => collect($vehicles)->filter(fn ($v) => strtolower($v['jenis']) === 'motor & mobil')->count(),
-            'warnCount' => collect($vehicles)->filter(fn ($v) => $v['sim_status'] === 'warn' || $v['stnk_status'] === 'warn')->count(),
+            'withSim' => $collection->filter(fn ($item) => $item['sim_status'] !== 'bad')->count(),
+            'withoutSim' => $collection->filter(fn ($item) => $item['sim_status'] === 'bad')->count(),
+            'motorCount' => $collection->filter(fn ($v) => strtolower($v['jenis']) === 'motor')->count(),
+            'mobilCount' => $collection->filter(fn ($v) => strtolower($v['jenis']) === 'mobil')->count(),
+            'bothCount' => $collection->filter(fn ($v) => strtolower($v['jenis']) === 'motor & mobil')->count(),
+            'warnCount' => $collection->filter(fn ($v) => $v['sim_status'] === 'warn' || $v['stnk_status'] === 'warn')->count(),
+            'simSummary' => [
+                'good' => $collection->filter(fn ($v) => $v['sim_status'] === 'good' || $v['sim_status'] === 'warn')
+                    ->map(fn ($v) => ['nama' => $v['nama'], 'plat' => $v['plat']])->values()->all(),
+                'bad' => $collection->filter(fn ($v) => $v['sim_status'] === 'bad')
+                    ->map(fn ($v) => ['nama' => $v['nama'], 'plat' => $v['plat']])->values()->all(),
+                'empty' => $collection->filter(fn ($v) => $v['sim_status'] === 'empty')
+                    ->map(fn ($v) => ['nama' => $v['nama'], 'plat' => $v['plat']])->values()->all(),
+            ],
             'data' => $vehicles,
             'lastSync' => now()->translatedFormat('d M Y, H:i'),
         ]);
@@ -1376,7 +1494,9 @@ class HseController extends Controller
                         try {
                             // Coba parsing ke format m/d/Y H:i:s atau d/m/Y H:i:s
                             if ($timestampStr) {
-                                $dateObj = \Carbon\Carbon::parse($timestampStr);
+                                // Ganti slash dengan dash agar PHP membaca format sebagai d-m-Y (UK/Indo) bukan m/d/Y (US)
+                                $safeTimestampStr = str_replace('/', '-', $timestampStr);
+                                $dateObj = \Carbon\Carbon::parse($safeTimestampStr);
                                 $tgl = $dateObj->format('d/m/Y');
                                 $waktu = $dateObj->format('H:i');
                             } else {
@@ -1454,7 +1574,7 @@ class HseController extends Controller
         return $googleData;
     }
 
-    private function getForkliftStats(array $allRows): array
+    private function getForkliftStats(array $allRows, $filterOp = null): array
     {
         $total = count($allRows);
         $perhatian = collect($allRows)->where('masalah', '>', 0)->count();
@@ -1463,33 +1583,81 @@ class HseController extends Controller
         $topUnit = $unitCounts->sortDesc()->keys()->first() ?? '-';
         $topUnitCount = $unitCounts->sortDesc()->first() ?? 0;
         
-        $opCounts = collect($allRows)->countBy('operator')->sortDesc();
-        $opData = [];
-        foreach($opCounts->take(10) as $op => $count) {
-            $tone = $count > 10 ? 'primary' : ($count > 5 ? 'warning' : 'danger');
-            $label = $op . ' (' . ($count > 10 ? 'Rutin' : ($count > 5 ? 'Sedang' : 'Jarang')) . ')';
-            $opData[] = ['label' => $label, 'count' => $count, 'tone' => $tone];
+        // Daftar lengkap semua operator sesuai dropdown
+        $masterOperators = [
+            "Abdurahman Soleh", "Ade Rohmat", "Ahmad Hasan", "Amar Saidin", "Asep Dedi", "Asep Mulyana",
+            "Bambang Wiyono", "Catur Febriawan", "Deni Hermawan", "Dudi Rusdi", "Ego Setyadi Prakoso",
+            "Eko Dwi Prasetyo", "Fadzri Aprimursid", "Iprul Zupri", "Irfan Zidny", "Isminto", "Iwan",
+            "Jamal Lulail", "M. Ridwansyah", "Sobari", "Suady Iskandar", "Syamsul Bahri", "Tohid",
+            "Williyanto Adi Sumantri", "Yordiansyah Hari Pangestu", "Yulianto (QC)", "Dwi Syahrudin (Forklift & Scissor Lift)",
+            "Dwiyanto (Forklift & Scissor Lift)", "Mas'ud (Forklift & Scissor Lift)", "Nanang Budianto (Scissor Lift)",
+            "Refa Diyatu Lukmana (Scissor Lift)", "Muhamad Maulana (Scissor Lift)", "Dion Permana (Scissor Lift)", "Warto (Scissor Lift)"
+        ];
+
+        // Inisialisasi operator dengan 0
+        $opArray = [];
+        foreach ($masterOperators as $opName) {
+            // Jika user memilih filter spesifik, abaikan nama lain
+            if ($filterOp && strpos(strtolower($opName), strtolower($filterOp)) === false) {
+                continue;
+            }
+            $opArray[$opName] = 0;
         }
 
-        // Hitung item rusak (hanya count dari kolom bermasalah yang disimpan)
-        $issueCounts = [];
+        // Tambah hasil perhitungan dari data CSV dengan normalisasi
         foreach ($allRows as $r) {
-            if (!empty($r['issues'])) {
-                foreach ($r['issues'] as $issue) {
-                    if (!isset($issueCounts[$issue])) {
-                        $issueCounts[$issue] = 0;
-                    }
-                    $issueCounts[$issue]++;
+            $opRaw = trim($r['operator'] ?? '');
+            if (!$opRaw) continue;
+
+            $matched = false;
+            foreach ($masterOperators as $masterOp) {
+                if (strtolower($masterOp) === strtolower($opRaw)) {
+                    $opArray[$masterOp]++;
+                    $matched = true;
+                    break;
                 }
+            }
+
+            // Jika ada operator di CSV tapi tidak ada di dropdown (misal typo)
+            if (!$matched) {
+                $cleanOp = ucwords(strtolower($opRaw)); // Normalisasi jadi Title Case
+                if (!isset($opArray[$cleanOp])) {
+                    $opArray[$cleanOp] = 0;
+                }
+                $opArray[$cleanOp]++;
             }
         }
         
-        arsort($issueCounts);
+        // Urutkan dari yang terbanyak ke terkecil
+        arsort($opArray);
+
+        $opData = [];
+        $i = 0;
+        foreach($opArray as $op => $count) {
+            $tone = $i === 0 ? 'blue-dark' : 'blue';
+            $label = $op;
+            $opData[] = ['label' => $label, 'count' => $count, 'tone' => $tone];
+            $i++;
+        }
+
+        // Hitung unit mana saja yang paling banyak dilaporkan rusak / perlu perhatian
+        $unitIssueCounts = [];
+        foreach ($allRows as $r) {
+            if ($r['masalah'] > 0 || $r['rusak']) {
+                $u = $r['unit'] ?? 'Unknown';
+                if (!isset($unitIssueCounts[$u])) {
+                    $unitIssueCounts[$u] = 0;
+                }
+                $unitIssueCounts[$u]++;
+            }
+        }
+        
+        arsort($unitIssueCounts);
         $rusakData = [];
         $limit = 0;
-        foreach ($issueCounts as $label => $count) {
+        foreach ($unitIssueCounts as $label => $count) {
             if ($limit >= 10) break;
-            $tone = $count > 5 ? 'danger' : 'warning';
+            $tone = $limit === 0 ? 'blue-dark' : 'blue';
             $rusakData[] = ['label' => $label, 'count' => $count, 'tone' => $tone];
             $limit++;
         }
@@ -1515,10 +1683,58 @@ class HseController extends Controller
         return view('pages.monitor-forklift', compact('rows', 'stats'));
     }
 
-    public function apiForklift()
+    public function apiForklift(\Illuminate\Http\Request $request)
     {
         $allRows = $this->readForkliftData();
-        $stats = $this->getForkliftStats($allRows);
+
+        // Server-side filtering
+        if ($request->anyFilled(['dari', 'sampai', 'unit', 'dept', 'op', 'status', 'q'])) {
+            $dariTime = $request->dari ? strtotime($request->dari . ' 00:00:00') : 0;
+            $sampaiTime = $request->sampai ? strtotime($request->sampai . ' 23:59:59') : PHP_INT_MAX;
+            
+            $fUnit = strtolower(trim($request->unit ?? ''));
+            $fDept = strtolower(trim($request->dept ?? ''));
+            $fOp = strtolower(trim($request->op ?? ''));
+            $fStatus = $request->status ?? 'all';
+            $fQ = strtolower(trim($request->q ?? ''));
+
+            $allRows = array_filter($allRows, function($r) use ($dariTime, $sampaiTime, $fUnit, $fDept, $fOp, $fStatus, $fQ) {
+                // 1. Date Filter
+                $rowTime = strtotime(str_replace('/', '-', $r['raw_timestamp']));
+                if ($rowTime < $dariTime || $rowTime > $sampaiTime) return false;
+
+                // 2. Unit Filter (first word match)
+                if ($fUnit !== '') {
+                    $unitKey = explode(' ', $fUnit)[0];
+                    if (strpos(strtolower($r['unit']), $unitKey) === false) return false;
+                }
+
+                // 3. Dept Filter
+                if ($fDept !== '' && strpos(strtolower($r['dept']), $fDept) === false) return false;
+
+                // 4. Operator Filter
+                if ($fOp !== '' && strpos(strtolower($r['operator']), $fOp) === false) return false;
+
+                // 5. Status Filter
+                if ($fStatus === 'rusak' && empty($r['rusak'])) return false;
+                if ($fStatus === 'baik' && !empty($r['rusak'])) return false;
+
+                // 6. Search Filter
+                if ($fQ !== '') {
+                    $rowText = strtolower(implode(' ', [
+                        $r['tgl'], $r['waktu'], $r['operator'], $r['unit'], $r['dept']
+                    ]));
+                    if (strpos($rowText, $fQ) === false) return false;
+                }
+
+                return true;
+            });
+            // Re-index array after filter
+            $allRows = array_values($allRows);
+        }
+
+        $fOpParam = $request->anyFilled(['op']) ? strtolower(trim($request->op)) : null;
+        $stats = $this->getForkliftStats($allRows, $fOpParam);
         $rows = array_slice($allRows, 0, 100);
 
         return response()->json([

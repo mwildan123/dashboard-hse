@@ -62,11 +62,11 @@
             <div class="filter-bar filter-forklift-responsive" data-filter-scope="forklift">
                 <div class="field">
                     <label class="label" for="f_dari">Dari</label>
-                    <input class="input" type="date" id="f_dari" value="{{ now()->startOfMonth()->format('Y-m-d') }}">
+                    <input class="input" type="date" id="f_dari">
                 </div>
                 <div class="field">
                     <label class="label" for="f_sampai">Sampai</label>
-                    <input class="input" type="date" id="f_sampai" value="{{ now()->format('Y-m-d') }}">
+                    <input class="input" type="date" id="f_sampai">
                 </div>
                 <div class="field">
                     <label class="label" for="f_unit">Unit Forklift</label>
@@ -166,14 +166,14 @@
         </div>
     </section>
 
-    <div class="bar-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+    <div class="charts-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; align-items: stretch;">
         {{-- ============ BAR CHART: BARANG RUSAK ============ --}}
-        <section class="panel" aria-labelledby="h-chart-rusak" style="margin-bottom: 0;">
-            <div class="panel-head">
-                <h2 id="h-chart-rusak">Item Rusak / Perlu Diperbaiki</h2>
-                <p>Bagian forklift yang dilaporkan rusak atau butuh perbaikan.</p>
+        <section class="panel" aria-labelledby="h-chart-rusak" style="margin-bottom: 0; display: flex; flex-direction: column;">
+            <div class="panel-head" style="flex-shrink: 0;">
+                <h2 id="h-chart-rusak">Unit Paling Sering Bermasalah</h2>
+                <p>Unit forklift yang paling banyak memiliki laporan rusak/perlu perbaikan.</p>
             </div>
-            <div class="panel-body">
+            <div class="panel-body" style="max-height: 380px; overflow-y: auto; padding-right: 15px; flex-grow: 1;">
                 @php
                     $rusakData = $stats['rusakData'] ?? [];
                     $maxRusak = max(1, (int) (collect($rusakData)->max('count') ?? 0));
@@ -194,7 +194,7 @@
                     
                     @if(empty($rusakData))
                         <div class="empty-state" style="text-align: center; color: var(--text-muted); padding: 20px;">
-                            <p>Tidak ada item rusak / perlu perbaikan.</p>
+                            <p>Tidak ada unit rusak / perlu perbaikan.</p>
                         </div>
                     @endif
                 </div>
@@ -202,12 +202,12 @@
         </section>
 
         {{-- ============ BAR CHART: KEAKTIFAN OPERATOR ============ --}}
-        <section class="panel" aria-labelledby="h-chart-operator" style="margin-bottom: 0;">
-            <div class="panel-head">
+        <section class="panel" aria-labelledby="h-chart-operator" style="margin-bottom: 0; display: flex; flex-direction: column;">
+            <div class="panel-head" style="flex-shrink: 0;">
                 <h2 id="h-chart-operator">Keaktifan Pengisian Operator</h2>
                 <p>Operator yang rutin vs jarang mengisi form checklist.</p>
             </div>
-            <div class="panel-body">
+            <div class="panel-body" style="max-height: 380px; overflow-y: auto; padding-right: 15px; flex-grow: 1;">
                 @php
                     $opData = $stats['opData'] ?? [];
                     $maxOp = max(1, (int) (collect($opData)->max('count') ?? 0));
@@ -232,23 +232,9 @@
 
     {{-- ============ TABEL RIWAYAT CHECKLIST ============ --}}
     <section class="panel" aria-labelledby="h-tabel">
-        <div class="panel-head" style="display: flex; flex-direction: column; gap: 16px;">
-            <div>
-                <h2 id="h-tabel">Riwayat Checklist Terbaru</h2>
-                <p>100 checklist terakhir yang masuk.</p>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-                <div class="tabs">
-                    <button class="tab-btn active filter-btn" data-filter-scope="forklift" data-filter="all">Semua Data</button>
-                    <button class="tab-btn filter-btn" data-filter-scope="forklift" data-filter="good">Semua Baik</button>
-                    <button class="tab-btn filter-btn" data-filter-scope="forklift" data-filter="warn">Perlu Perhatian</button>
-                    <button class="tab-btn filter-btn" data-filter-scope="forklift" data-filter="bad">Ada Rusak</button>
-                </div>
-                <div class="search-box">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                    <input type="text" id="search-forklift" placeholder="Cari di riwayat..." class="input">
-                </div>
-            </div>
+        <div class="panel-head">
+            <h2 id="h-tabel">Riwayat Checklist Terbaru</h2>
+            <p>100 checklist terakhir yang masuk.</p>
         </div>
         <div class="table-scroll">
             @php
@@ -359,92 +345,8 @@
         var searchInput = document.getElementById('search-forklift');
         var activeFilter = 'all';
 
-        function getRows() {
-            return document.querySelectorAll('#table-forklift tbody tr[data-filter-row="forklift"]');
-        }
-
-        function parseDateFromCell(str) {
-            if (!str) return null;
-            // Format bisa "DD/MM/YYYY" atau "DD/MM/YYYY HH:MM:SS"
-            var dateOnly = str.trim().split(' ')[0];
-            var parts = dateOnly.split('/');
-            if (parts.length === 3) {
-                var day = parseInt(parts[0], 10);
-                var month = parseInt(parts[1], 10);
-                var year = parseInt(parts[2], 10);
-                if (day > 0 && month > 0 && month <= 12 && year > 2000) {
-                    return new Date(year, month - 1, day).getTime();
-                }
-            }
-            return null;
-        }
-
         function applyFilters() {
-            var fDari = document.getElementById('f_dari') ? document.getElementById('f_dari').value : '';
-            var fSampai = document.getElementById('f_sampai') ? document.getElementById('f_sampai').value : '';
-            var fUnit = document.getElementById('f_unit') ? document.getElementById('f_unit').value.toLowerCase().trim() : '';
-            var fDept = document.getElementById('f_dept') ? document.getElementById('f_dept').value.toLowerCase().trim() : '';
-            var fOp = document.getElementById('f_operator') ? document.getElementById('f_operator').value.toLowerCase().trim() : '';
-            var keyword = searchInput ? searchInput.value.toLowerCase() : '';
-
-            // Parse filter date range (input type=date gives YYYY-MM-DD)
-            var dariTime = fDari ? new Date(fDari + 'T00:00:00').getTime() : 0;
-            var sampaiTime = fSampai ? new Date(fSampai + 'T23:59:59').getTime() : Infinity;
-
-            var rows = getRows();
-            rows.forEach(function(row) {
-                var cells = row.querySelectorAll('td');
-                if (cells.length < 5) { row.hidden = true; return; }
-
-                var tgl = cells[0].textContent.trim();
-                var op = cells[2].textContent.trim().toLowerCase();
-                var unit = cells[3].textContent.trim().toLowerCase();
-                var dept = cells[4].textContent.trim().toLowerCase();
-                var text = row.textContent.toLowerCase();
-
-                // Search keyword
-                var matchesSearch = keyword === '' || text.indexOf(keyword) !== -1;
-
-                // Date filter
-                var rowTime = parseDateFromCell(tgl);
-                var matchDate = true;
-                if (rowTime !== null) {
-                    if (dariTime && rowTime < dariTime) matchDate = false;
-                    if (sampaiTime !== Infinity && rowTime > sampaiTime) matchDate = false;
-                }
-
-                // Unit filter - compare first number/word
-                var matchUnit = true;
-                if (fUnit !== '') {
-                    var filterKey = fUnit.split(' ')[0];
-                    matchUnit = unit.indexOf(filterKey) !== -1;
-                }
-
-                // Dept filter
-                var matchDept = fDept === '' || dept.indexOf(fDept) !== -1;
-
-                // Operator filter
-                var matchOp = fOp === '' || op.indexOf(fOp.toLowerCase()) !== -1;
-
-                // Status filter (Semua/Baik/Perhatian/Rusak)
-                var masalahCount = parseInt(row.getAttribute('data-masalah') || '0');
-                var isRusak = row.getAttribute('data-rusak') === 'true';
-                var matchesStatus = true;
-                if (activeFilter === 'good') {
-                    matchesStatus = (masalahCount === 0 && !isRusak);
-                } else if (activeFilter === 'warn') {
-                    matchesStatus = (masalahCount > 0 && !isRusak);
-                } else if (activeFilter === 'bad') {
-                    matchesStatus = isRusak;
-                }
-
-                // Combined
-                var show = matchesSearch && matchDate && matchUnit && matchDept && matchOp && matchesStatus;
-                row.hidden = !show;
-            });
-
-            // Refresh pagination after filtering
-            if (forkliftTable) forkliftTable.refresh();
+            updateDashboard();
         }
 
         // Filter button
@@ -475,16 +377,39 @@
         // ========== AJAX Real-time Polling ==========
         var POLL_INTERVAL = 15000;
 
+        var isFetching = false;
         function updateDashboard() {
-            fetch('{{ route("api.forklift") }}')
+            if (isFetching) return;
+            isFetching = true;
+
+            var url = new URL('{{ route("api.forklift") }}', window.location.origin);
+            
+            var fDari = document.getElementById('f_dari') ? document.getElementById('f_dari').value : '';
+            var fSampai = document.getElementById('f_sampai') ? document.getElementById('f_sampai').value : '';
+            var fUnit = document.getElementById('f_unit') ? document.getElementById('f_unit').value : '';
+            var fDept = document.getElementById('f_dept') ? document.getElementById('f_dept').value : '';
+            var fOp = document.getElementById('f_operator') ? document.getElementById('f_operator').value : '';
+            var searchInput = document.getElementById('search-forklift');
+            var fQ = searchInput ? searchInput.value : '';
+
+            if (fDari) url.searchParams.append('dari', fDari);
+            if (fSampai) url.searchParams.append('sampai', fSampai);
+            if (fUnit) url.searchParams.append('unit', fUnit);
+            if (fDept) url.searchParams.append('dept', fDept);
+            if (fOp) url.searchParams.append('op', fOp);
+            if (activeFilter && activeFilter !== 'all') url.searchParams.append('status', activeFilter);
+            if (fQ) url.searchParams.append('q', fQ);
+
+            fetch(url.toString())
                 .then(function(res) { return res.json(); })
                 .then(function(json) {
                     if (json.status !== 'ok') return;
 
                     var tbody = document.querySelector('#table-forklift tbody');
-                    if (tbody && json.data && json.data.length > 0) {
-                        var html = '';
-                        json.data.forEach(function (r) {
+                    if (tbody && json.data) {
+                        if (json.data.length > 0) {
+                            var html = '';
+                            json.data.forEach(function (r) {
                             var rowClass = r.rusak ? 'row-bad' : '';
                             html += '<tr class="' + rowClass + '" data-filter-row="forklift" data-masalah="' + r.masalah + '" data-rusak="' + (r.rusak ? 'true' : 'false') + '">';
                             html += '<td>' + (r.tgl || '') + '</td>';
@@ -514,7 +439,10 @@
                             html += '</tr>';
                         });
 
-                        tbody.innerHTML = html;
+                            tbody.innerHTML = html;
+                        } else {
+                            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 30px; color: var(--text-muted);">Tidak ada data yang sesuai dengan filter.</td></tr>';
+                        }
 
                         // Re-init pagination after replacing DOM
                         if (typeof window.initTablePagination === 'function') {
@@ -575,17 +503,21 @@
                                     rHtml += '</div>';
                                 });
                                 if (json.stats.rusakData.length === 0) {
-                                    rHtml = '<div style="text-align:center;color:var(--text-muted);padding:20px;">Tidak ada item rusak / perlu perbaikan.</div>';
+                                    rHtml = '<div style="text-align:center;color:var(--text-muted);padding:20px;">Tidak ada unit rusak / perlu perbaikan.</div>';
                                 }
                                 rusakChart.innerHTML = rHtml;
                             }
                         }
                     }
                 })
-                .catch(function(err) { console.error('Error fetching forklift data:', err); });
+                .catch(function(err) { console.error('Error fetching forklift data:', err); })
+                .finally(function() { isFetching = false; });
         }
 
         setInterval(updateDashboard, POLL_INTERVAL);
+        
+        // Apply filters on initial load
+        setTimeout(applyFilters, 100);
     });
 </script>
 @endsection

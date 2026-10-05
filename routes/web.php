@@ -15,9 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Halaman Beranda Utama
-Route::get('/', function () {
-    return view('pages.beranda');
-})->name('beranda');
+Route::get('/', [HseController::class, 'beranda'])->name('beranda');
 
 Route::get('/test-sheet', function () {
     try {
