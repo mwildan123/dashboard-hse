@@ -1287,8 +1287,8 @@ class HseController extends Controller
             return null;
         }
 
-        // Cache 3 menit
-        if (time() - filemtime($cacheFile) > 180) {
+        // Cache 15 detik untuk feel real-time
+        if (time() - filemtime($cacheFile) > 15) {
             return null;
         }
 
@@ -1321,7 +1321,7 @@ class HseController extends Controller
 
                     // Normalize headers
                     $headers = array_map(function ($h) {
-                        return strtolower(trim(preg_replace('/[^A-Za-z0-9_]/', '_', $h)));
+                        return strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '_', $h), '_'));
                     }, $headers);
 
                     // Find exactly which columns are "Kondisi..." to check for issues
@@ -1353,10 +1353,17 @@ class HseController extends Controller
                         // Calculate masalah
                         $masalahCount = 0;
                         $adaRusak = false;
+                        $issues = [];
                         foreach ($kondisiColumns as $col) {
                             $val = strtolower(trim($dataRow[$col] ?? ''));
                             if ($val !== '' && $val !== 'baik') {
                                 $masalahCount++;
+                                
+                                // Format nama kolom agar lebih enak dibaca (misal "kondisi_body__forklift_bersih_" jadi "Body - Forklift Bersih")
+                                $cleanCol = str_replace('kondisi_', '', $col);
+                                $cleanCol = ucwords(str_replace('_', ' ', $cleanCol));
+                                $issues[] = $cleanCol;
+
                                 if (str_contains($val, 'rusak')) {
                                     $adaRusak = true;
                                 }
@@ -1401,6 +1408,7 @@ class HseController extends Controller
                             'shift' => $shift,
                             'masalah' => $masalahCount,
                             'rusak' => $adaRusak,
+                            'issues' => $issues,
                             'catatan' => $catatan,
                             'raw_timestamp' => $timestampStr,
                         ];
@@ -1446,24 +1454,77 @@ class HseController extends Controller
         return $googleData;
     }
 
+    private function getForkliftStats(array $allRows): array
+    {
+        $total = count($allRows);
+        $perhatian = collect($allRows)->where('masalah', '>', 0)->count();
+        
+        $unitCounts = collect($allRows)->countBy('unit');
+        $topUnit = $unitCounts->sortDesc()->keys()->first() ?? '-';
+        $topUnitCount = $unitCounts->sortDesc()->first() ?? 0;
+        
+        $opCounts = collect($allRows)->countBy('operator')->sortDesc();
+        $opData = [];
+        foreach($opCounts->take(10) as $op => $count) {
+            $tone = $count > 10 ? 'primary' : ($count > 5 ? 'warning' : 'danger');
+            $label = $op . ' (' . ($count > 10 ? 'Rutin' : ($count > 5 ? 'Sedang' : 'Jarang')) . ')';
+            $opData[] = ['label' => $label, 'count' => $count, 'tone' => $tone];
+        }
+
+        // Hitung item rusak (hanya count dari kolom bermasalah yang disimpan)
+        $issueCounts = [];
+        foreach ($allRows as $r) {
+            if (!empty($r['issues'])) {
+                foreach ($r['issues'] as $issue) {
+                    if (!isset($issueCounts[$issue])) {
+                        $issueCounts[$issue] = 0;
+                    }
+                    $issueCounts[$issue]++;
+                }
+            }
+        }
+        
+        arsort($issueCounts);
+        $rusakData = [];
+        $limit = 0;
+        foreach ($issueCounts as $label => $count) {
+            if ($limit >= 10) break;
+            $tone = $count > 5 ? 'danger' : 'warning';
+            $rusakData[] = ['label' => $label, 'count' => $count, 'tone' => $tone];
+            $limit++;
+        }
+
+        return [
+            'total' => $total,
+            'perhatian' => $perhatian,
+            'topUnit' => $topUnit,
+            'topUnitCount' => $topUnitCount,
+            'opData' => $opData,
+            'rusakData' => $rusakData
+        ];
+    }
+
     public function monitorForklift()
     {
-        $rows = $this->readForkliftData();
+        $allRows = $this->readForkliftData();
+        $stats = $this->getForkliftStats($allRows);
         
-        // Cukup ambil 10 data terbaru untuk render awal
-        $rows = array_slice($rows, 0, 10);
+        // Cukup ambil 100 data terbaru untuk render awal
+        $rows = array_slice($allRows, 0, 100);
 
-        // TODO: opData untuk bar chart jika dibutuhkan
-
-        return view('pages.monitor-forklift', compact('rows'));
+        return view('pages.monitor-forklift', compact('rows', 'stats'));
     }
 
     public function apiForklift()
     {
-        $rows = $this->readForkliftData();
+        $allRows = $this->readForkliftData();
+        $stats = $this->getForkliftStats($allRows);
+        $rows = array_slice($allRows, 0, 100);
+
         return response()->json([
             'status' => 'ok',
             'data' => $rows,
+            'stats' => $stats,
             'lastSync' => now()->translatedFormat('d M Y, H:i')
         ]);
     }

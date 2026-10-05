@@ -25,14 +25,10 @@
         <p>Pantau hasil inspeksi harian seluruh unit forklift & alat angkut PCI.</p>
         <p class="sync-info">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4"/><path d="m16.2 7.8 2.9-2.9"/><path d="M18 12h4"/><path d="m16.2 16.2 2.9 2.9"/><path d="M12 18v4"/><path d="m4.9 19.1 2.9-2.9"/><path d="M2 12h4"/><path d="m4.9 4.9 2.9 2.9"/></svg>
-            Data terakhir disinkronkan: <strong>21 Sep 2026, 07:15</strong>
+            Data terakhir disinkronkan: <strong id="sync-time">{{ now()->translatedFormat('d M Y, H:i') }}</strong>
         </p>
     </div>
     <div class="page-actions">
-        <button type="button" class="btn btn-primary" onclick="HSE.downloadPdf('Laporan-Monitoring-Checklist-Forklift')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            <span>Download PDF</span>
-        </button>
     </div>
 </div>
 
@@ -45,7 +41,25 @@
             <p>Cari data checklist, filter berdasarkan tanggal/unit, dan ringkasan statistik.</p>
         </div>
         <div class="panel-body">
-            <div class="filter-bar" data-filter-scope="forklift" style="display: grid; grid-template-columns: repeat(5, 1fr) auto; gap: 12px; align-items: flex-end;">
+            <style>
+                .filter-forklift-responsive {
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 12px;
+                    align-items: flex-end;
+                }
+                @media (min-width: 768px) {
+                    .filter-forklift-responsive {
+                        grid-template-columns: repeat(3, 1fr);
+                    }
+                }
+                @media (min-width: 1024px) {
+                    .filter-forklift-responsive {
+                        grid-template-columns: repeat(5, 1fr) auto;
+                    }
+                }
+            </style>
+            <div class="filter-bar filter-forklift-responsive" data-filter-scope="forklift">
                 <div class="field">
                     <label class="label" for="f_dari">Dari</label>
                     <input class="input" type="date" id="f_dari" value="2026-09-01">
@@ -125,27 +139,27 @@
             
             <div class="stat-row" style="margin-top: 24px;">
                 <div class="stat-card">
-                    <span class="stat-label">Total Checklist Bulan Ini</span>
-            <span class="stat-value">0</span>
+                    <span class="stat-label">Total Semua Checklist</span>
+            <span class="stat-value" id="stat-total" data-animated="true">{{ number_format($stats['total'] ?? 0) }}</span>
             <span class="stat-delta up">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
-                +12% dari bulan lalu
+                Terus dipantau real-time
             </span>
         </div>
         <div class="stat-card">
             <span class="stat-label">Item Perlu Perhatian</span>
-            <span class="stat-value" style="color:var(--bad)">0</span>
+            <span class="stat-value" id="stat-perhatian" style="color:var(--bad)" data-animated="true">{{ number_format($stats['perhatian'] ?? 0) }}</span>
             <span class="stat-delta down">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                +3 dari bulan lalu
+                Dari total checklist
             </span>
         </div>
         <div class="stat-card">
             <span class="stat-label">Unit Paling Sering Dicek</span>
-            <span class="stat-value">- <small>-</small></span>
+            <span class="stat-value" id="stat-top-unit" style="font-size: 1.1rem; line-height: 1.2;">{{ $stats['topUnit'] ?? '-' }}</span>
             <span class="stat-delta flat">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></svg>
-                42 checklist
+                <span id="stat-top-count">{{ number_format($stats['topUnitCount'] ?? 0) }}</span> checklist
             </span>
         </div>
     </div>
@@ -161,15 +175,10 @@
             </div>
             <div class="panel-body">
                 @php
-                    $rusakData = [
-                        ['label' => 'Rem Blong / Kurang Pakem', 'count' => 5, 'tone' => 'danger'],
-                        ['label' => 'Lampu Utama Mati', 'count' => 3, 'tone' => 'warning'],
-                        ['label' => 'Klakson Tidak Bunyi', 'count' => 2, 'tone' => 'warning'],
-                        ['label' => 'Oli Bocor', 'count' => 1, 'tone' => 'danger'],
-                    ];
+                    $rusakData = $stats['rusakData'] ?? [];
                     $maxRusak = max(1, (int) (collect($rusakData)->max('count') ?? 0));
                 @endphp
-                <div class="bar-chart">
+                <div class="bar-chart" id="chart-rusak">
                     @foreach($rusakData as $s)
                         @php
                             $percentage = $maxRusak > 0 ? round((($s['count'] ?? 0) / $maxRusak) * 100) : 0;
@@ -177,11 +186,17 @@
                         <div class="bar-row">
                             <span class="bar-label">{{ $s['label'] }}</span>
                             <div class="bar-track">
-                                <div class="bar-fill {{ $s['tone'] }}" data-width="{{ $percentage }}"></div>
+                                <div class="bar-fill {{ $s['tone'] }}" style="width: {{ $percentage }}%;"></div>
                             </div>
                             <span class="bar-count">{{ number_format((int) ($s['count'] ?? 0)) }}</span>
                         </div>
                     @endforeach
+                    
+                    @if(empty($rusakData))
+                        <div class="empty-state" style="text-align: center; color: var(--text-muted); padding: 20px;">
+                            <p>Tidak ada item rusak / perlu perbaikan.</p>
+                        </div>
+                    @endif
                 </div>
             </div>
         </section>
@@ -194,15 +209,10 @@
             </div>
             <div class="panel-body">
                 @php
-                    $opData = [
-                        ['label' => 'Budi Santoso (Rutin)', 'count' => 24, 'tone' => 'primary'],
-                        ['label' => 'Andi Pratama (Rutin)', 'count' => 21, 'tone' => 'primary'],
-                        ['label' => 'Dion Permana (Sedang)', 'count' => 12, 'tone' => 'warning'],
-                        ['label' => 'Warto (Jarang)', 'count' => 4, 'tone' => 'danger'],
-                    ];
+                    $opData = $stats['opData'] ?? [];
                     $maxOp = max(1, (int) (collect($opData)->max('count') ?? 0));
                 @endphp
-                <div class="bar-chart">
+                <div class="bar-chart" id="chart-operator">
                     @foreach($opData as $s)
                         @php
                             $percentage = $maxOp > 0 ? round((($s['count'] ?? 0) / $maxOp) * 100) : 0;
@@ -210,7 +220,7 @@
                         <div class="bar-row">
                             <span class="bar-label">{{ $s['label'] }}</span>
                             <div class="bar-track">
-                                <div class="bar-fill {{ $s['tone'] }}" data-width="{{ $percentage }}"></div>
+                                <div class="bar-fill {{ $s['tone'] }}" style="width: {{ $percentage }}%;"></div>
                             </div>
                             <span class="bar-count">{{ number_format((int) ($s['count'] ?? 0)) }}</span>
                         </div>
@@ -224,7 +234,7 @@
     <section class="panel" aria-labelledby="h-tabel">
         <div class="panel-head">
             <h2 id="h-tabel">Riwayat Checklist Terbaru</h2>
-            <p>10 checklist terakhir yang masuk.</p>
+            <p>300 checklist terakhir yang masuk.</p>
         </div>
         <div class="table-scroll">
             @php
@@ -276,7 +286,7 @@
                                 <span class="badge good">Semua Baik</span>
                             @endif
                         </td>
-                        <td style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $r['catatan'] ?? '-' }}">
+                        <td style="white-space: normal; min-width: 250px;">
                             {{ $r['catatan'] ?? '-' }}
                         </td>
                     </tr>
@@ -325,8 +335,8 @@
 
         // Inisialisasi Pagination
         var forkliftTable;
-        if (typeof TablePagination !== 'undefined') {
-            forkliftTable = new TablePagination('table-forklift', 'pag-forklift', 10);
+        if (typeof window.initTablePagination === 'function') {
+            forkliftTable = window.initTablePagination('table-forklift', 'pag-forklift', 15);
         }
 
         // Script untuk filter bar
@@ -335,12 +345,50 @@
         var allRows = document.querySelectorAll('tr[data-filter-row="forklift"]');
         var activeFilter = 'all';
 
+        function parseDateDDMMYYYY(str) {
+            if (!str) return null;
+            var parts = str.split('/');
+            if (parts.length === 3) {
+                return new Date(parts[2], parts[1] - 1, parts[0]).getTime();
+            }
+            return null;
+        }
+
         function applyFilters() {
+            var fDari = document.getElementById('f_dari') ? document.getElementById('f_dari').value : '';
+            var fSampai = document.getElementById('f_sampai') ? document.getElementById('f_sampai').value : '';
+            var fUnit = document.getElementById('f_unit') ? document.getElementById('f_unit').value.toLowerCase().trim() : '';
+            var fDept = document.getElementById('f_dept') ? document.getElementById('f_dept').value.toLowerCase().trim() : '';
+            var fOp = document.getElementById('f_operator') ? document.getElementById('f_operator').value.toLowerCase().trim() : '';
             var keyword = searchInput ? searchInput.value.toLowerCase() : '';
+
+            var dariTime = fDari ? new Date(fDari).getTime() : 0;
+            var sampaiTime = fSampai ? new Date(fSampai).getTime() + 86400000 : Infinity;
+
             allRows.forEach(function(row) {
                 var text = row.textContent.toLowerCase();
-                var matchesSearch = text.indexOf(keyword) !== -1;
+                var matchesSearch = keyword === '' || text.indexOf(keyword) !== -1;
                 
+                var cells = row.querySelectorAll('td');
+                if (cells.length < 5) return;
+                
+                var tgl = cells[0].textContent.trim();
+                var op = cells[2].textContent.toLowerCase();
+                var unit = cells[3].textContent.toLowerCase();
+                var dept = cells[4].textContent.toLowerCase();
+
+                var rowTime = parseDateDDMMYYYY(tgl);
+
+                var matchDate = true;
+                if (rowTime !== null) {
+                    if (dariTime && rowTime < dariTime) matchDate = false;
+                    if (sampaiTime && rowTime > sampaiTime) matchDate = false;
+                }
+
+                var matchUnit = fUnit === '' || unit.indexOf(fUnit.split(' ')[0]) !== -1;
+                var matchDept = fDept === '' || dept.indexOf(fDept) !== -1;
+                var matchOp = fOp === '' || op.indexOf(fOp) !== -1;
+
                 var masalahCount = parseInt(row.getAttribute('data-masalah') || '0');
                 var isRusak = row.getAttribute('data-rusak') === 'true';
                 
@@ -353,13 +401,20 @@
                     matchesFilter = isRusak;
                 }
 
-                if (matchesSearch && matchesFilter) {
+                if (matchesSearch && matchDate && matchUnit && matchDept && matchOp && matchesFilter) {
+                    row.hidden = false;
                     row.style.display = '';
                 } else {
+                    row.hidden = true;
                     row.style.display = 'none';
                 }
             });
-            if(forkliftTable) forkliftTable.update();
+            if(forkliftTable) forkliftTable.refresh();
+        }
+
+        var btnFilter = document.querySelector('[data-filter-trigger="forklift"]');
+        if (btnFilter) {
+            btnFilter.addEventListener('click', applyFilters);
         }
 
         if(searchInput) {
@@ -387,7 +442,7 @@
                     var tbody = document.querySelector('#table-forklift tbody');
                     if (tbody && json.data && json.data.length > 0) {
                         var html = '';
-                        json.data.slice(0, 50).forEach(function (r) { // Render max 50 for memory
+                        json.data.slice(0, 100).forEach(function (r) { // Render max 100
                             var rowClass = r.rusak ? 'row-bad' : '';
                             html += '<tr class="' + rowClass + '" data-filter-row="forklift" data-masalah="' + r.masalah + '" data-rusak="' + (r.rusak ? 'true' : 'false') + '">';
                             html += '<td>' + r.tgl + '</td>';
@@ -417,13 +472,73 @@
                             html += '<td>' + statusHtml + '</td>';
                             
                             var catatan = r.catatan || '-';
-                            html += '<td style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="' + catatan + '">' + catatan + '</td>';
+                            html += '<td style="white-space: normal; min-width: 250px;">' + catatan + '</td>';
                             
                             html += '</tr>';
                         });
                         
                         tbody.innerHTML = html;
                         allRows = document.querySelectorAll('tr[data-filter-row="forklift"]');
+                        
+                        if (json.lastSync) {
+                            var syncEl = document.getElementById('sync-time');
+                            if (syncEl) syncEl.innerHTML = json.lastSync;
+                        }
+                        
+                        if (json.stats) {
+                            var elTotal = document.getElementById('stat-total');
+                            if (elTotal) elTotal.innerHTML = parseInt(json.stats.total).toLocaleString('id-ID');
+                            
+                            var elPerhatian = document.getElementById('stat-perhatian');
+                            if (elPerhatian) elPerhatian.innerHTML = parseInt(json.stats.perhatian).toLocaleString('id-ID');
+                            
+                            var elTopUnit = document.getElementById('stat-top-unit');
+                            if (elTopUnit) elTopUnit.innerHTML = json.stats.topUnit;
+                            
+                            var elTopCount = document.getElementById('stat-top-count');
+                            if (elTopCount) elTopCount.innerHTML = parseInt(json.stats.topUnitCount).toLocaleString('id-ID');
+                            
+                            if (json.stats.opData) {
+                                var opChart = document.getElementById('chart-operator');
+                                if (opChart) {
+                                    var opHtml = '';
+                                    var maxOp = json.stats.opData.reduce(function(max, item) { return Math.max(max, item.count); }, 1);
+                                    json.stats.opData.forEach(function(s) {
+                                        var pct = Math.round((s.count / maxOp) * 100);
+                                        opHtml += '<div class="bar-row">';
+                                        opHtml += '<span class="bar-label">' + s.label + '</span>';
+                                        opHtml += '<div class="bar-track"><div class="bar-fill ' + s.tone + '" style="width: ' + pct + '%;"></div></div>';
+                                        opHtml += '<span class="bar-count">' + parseInt(s.count).toLocaleString('id-ID') + '</span>';
+                                        opHtml += '</div>';
+                                    });
+                                    if(json.stats.opData.length === 0) {
+                                        opHtml = '<div style="text-align:center;color:var(--text-muted);padding:20px;">Tidak ada data.</div>';
+                                    }
+                                    opChart.innerHTML = opHtml;
+                                }
+                            }
+                            
+                            if (json.stats.rusakData) {
+                                var rusakChart = document.getElementById('chart-rusak');
+                                if (rusakChart) {
+                                    var rHtml = '';
+                                    var maxR = json.stats.rusakData.reduce(function(max, item) { return Math.max(max, item.count); }, 1);
+                                    json.stats.rusakData.forEach(function(s) {
+                                        var pct = Math.round((s.count / maxR) * 100);
+                                        rHtml += '<div class="bar-row">';
+                                        rHtml += '<span class="bar-label">' + s.label + '</span>';
+                                        rHtml += '<div class="bar-track"><div class="bar-fill ' + s.tone + '" style="width: ' + pct + '%;"></div></div>';
+                                        rHtml += '<span class="bar-count">' + parseInt(s.count).toLocaleString('id-ID') + '</span>';
+                                        rHtml += '</div>';
+                                    });
+                                    if(json.stats.rusakData.length === 0) {
+                                        rHtml = '<div style="text-align:center;color:var(--text-muted);padding:20px;">Tidak ada item rusak / perlu perbaikan.</div>';
+                                    }
+                                    rusakChart.innerHTML = rHtml;
+                                }
+                            }
+                        }
+
                         applyFilters();
                     }
                 })
