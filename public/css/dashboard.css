@@ -2667,6 +2667,15 @@ table.data thead th::after {
     align-items: center;
     gap: 16px;
     text-decoration: none;
+    flex: 1;
+}
+.brand::before {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.15);
+    margin-right: -4px;
 }
 .brand-mark {
     height: 28px;
@@ -2677,6 +2686,7 @@ table.data thead th::after {
     height: 32px;
     width: auto;
     object-fit: contain;
+    margin-left: auto;
 }
 
 .desktop-nav {
@@ -2815,6 +2825,16 @@ table.data thead th::after {
 @media (min-width: 860px) {
     body {
         padding-bottom: 0;
+    }
+    
+    .brand {
+        flex: 0 0 auto;
+    }
+    .brand::before {
+        display: none;
+    }
+    .brand-mark-2 {
+        margin-left: 0;
     }
     
     .menu-toggle {
