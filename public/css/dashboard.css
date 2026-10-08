@@ -1144,103 +1144,7 @@ p {
 
 /* ---------- Desktop ---------- */
 
-@media (min-width: 860px) {
-    body {
-        padding-bottom: 0;
-        display: flex;
-        flex-direction: row;
-        min-height: 100vh;
-    }
-    
-    .site-header {
-        position: sticky;
-        top: 0;
-        left: 0;
-        height: 100vh;
-        width: 250px;
-        flex-shrink: 0;
-        border-right: 1px solid rgba(255, 255, 255, 0.08);
-        border-bottom: none;
-        background: linear-gradient(180deg, var(--navy), var(--navy-2));
-    }
-    
-    .site-header-inner {
-        flex-direction: column;
-        align-items: flex-start;
-        height: 100%;
-        width: 100%;
-        padding: 2rem 1.5rem;
-        gap: 2.5rem;
-    }
-    
-    .brand {
-        flex-direction: column;
-        align-items: flex-start;
-        width: 100%;
-    }
-    
-    .brand-mark {
-        margin-bottom: 5px;
-    }
-
-    .nav {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        gap: 8px;
-        margin-left: 0;
-    }
-
-    .nav a {
-        display: block;
-        width: 100%;
-        padding: 10px 16px;
-        border-radius: 8px;
-    }
-    
-    .page {
-        flex-grow: 1;
-        width: calc(100% - 250px);
-        min-height: 100vh;
-        padding-top: 2rem;
-    }
-
-    .bottom-nav {
-        display: none;
-    }
-    .toast {
-        bottom: 28px;
-    }
-    .page-title h1 {
-        font-size: 24px;
-    }
-    .split {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 20px;
-    }
-    .stack {
-        gap: 20px;
-    }
-    .split-media {
-        display: grid;
-        grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
-        gap: 20px 28px;
-        align-items: start;
-    }
-    .fields.cols-6 {
-        grid-template-columns: repeat(6, minmax(0, 1fr));
-    }
-    .fields.cols-6 .s-6 {
-        grid-column: span 6;
-    }
-    .fields.cols-6 .s-3 {
-        grid-column: span 3;
-    }
-    .fields.cols-6 .s-2,
-    .fields.cols-6 .s-shift {
-        grid-column: span 2;
-    }
-    /* Matriks: kolom opsi sejajar seperti tabel */
+/* Matriks: kolom opsi sejajar seperti tabel */
     .mx-head,
     .mx-row {
         display: grid;
@@ -2118,19 +2022,6 @@ table.data tr.row-warn {
     }
 }
 
-@media (min-width: 860px) {
-    .stat-row {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-    .stat-card {
-        min-height: 120px;
-    }
-    .stat-value {
-        font-size: 32px;
-    }
-}
-
-
 /* ---------- Page Head Row & Download PDF Button ---------- */
 
 .page-head-row {
@@ -2823,4 +2714,168 @@ table.data thead th::after {
 }
 .sidebar-nav a.is-active svg {
     color: var(--accent-dark);
+}
+
+
+/* ---------- Hamburger Menu Styles ---------- */
+.menu-toggle {
+    background: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+.menu-toggle:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+.sidebar-drawer {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 280px;
+    height: 100vh;
+    background: #ffffff;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.15);
+    z-index: 1000;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+}
+.sidebar-drawer.is-open {
+    left: 0;
+}
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--line);
+}
+.sidebar-title {
+    font-weight: 600;
+    color: var(--navy);
+    font-size: 18px;
+}
+.menu-close {
+    background: transparent;
+    border: none;
+    color: var(--ink-2);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+}
+.menu-close:hover {
+    background: var(--surface-2);
+    color: var(--ink);
+}
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 39, 71, 0.6);
+    backdrop-filter: blur(2px);
+    z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+.sidebar-overlay.is-open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background: linear-gradient(120deg, var(--navy), var(--navy-2));
+    border-bottom: 1px solid rgba(255, 255, 255, .08);
+    box-shadow: 0 2px 12px rgba(15, 39, 71, .25);
+}
+.site-header-inner {
+    max-width: var(--wide);
+    height: var(--header-h);
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+}
+.brand-mark {
+    height: 32px;
+    width: auto;
+    object-fit: contain;
+}
+.brand-mark-2 {
+    height: 36px;
+    width: auto;
+    object-fit: contain;
+}
+.nav {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    gap: 8px;
+}
+.nav a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: var(--ink-2);
+    font-weight: 500;
+    font-size: 15px;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background .2s ease, color .2s ease;
+}
+.nav a:hover {
+    color: var(--blue);
+    background: rgba(30, 93, 219, 0.08);
+}
+.nav a.is-active {
+    color: var(--blue);
+    background: rgba(30, 93, 219, 0.12);
+    font-weight: 600;
+}
+
+@media (min-width: 860px) {
+    body {
+        padding-bottom: 0;
+    }
+    .toast {
+        bottom: 28px;
+    }
+    .page-title h1 {
+        font-size: 24px;
+    }
+    .split {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
+    .stack {
+        gap: 20px;
+    }
+    .split-media {
+        display: grid;
+        grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+        gap: 20px 28px;
+        align-items: start;
+    }
+    .fields.cols-6 {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+    .fields.cols-6 .s-6 { grid-column: span 6; }
+    .fields.cols-6 .s-3 { grid-column: span 3; }
+    .fields.cols-6 .s-2, .fields.cols-6 .s-shift { grid-column: span 2; }
 }

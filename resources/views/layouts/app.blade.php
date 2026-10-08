@@ -16,51 +16,58 @@
 </head>
 <body>
 
-    <header class="site-header">
+        <header class="site-header">
         <div class="site-header-inner">
-            <a href="{{ route('beranda') }}" class="brand" aria-label="Dashboard HSE PCI" style="display: flex; align-items: center; gap: 16px; text-decoration: none;">
-                <!-- Logo Prysmian -->
-                <img src="{{ asset('image/prysmian_transparent_clean.png') }}" alt="Prysmian Logo" class="brand-mark" style="height: 38px; width: auto; object-fit: contain;">
-                <!-- Logo Zero & Beyond -->
-                <img src="{{ asset('image/zero_beyond_clean.png') }}" alt="Zero Beyond Logo" class="brand-mark" style="height: 42px; width: auto; object-fit: contain;">
-            </a>
+            <button id="menu-toggle" class="menu-toggle" aria-label="Toggle Menu" title="Menu">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
 
-            <nav class="nav" aria-label="Menu utama">
-                <a href="{{ route('beranda') }}" class="{{ request()->routeIs('beranda') ? 'is-active' : '' }}" {{ request()->routeIs('beranda') ? 'aria-current=page' : '' }}>Beranda</a>
-                <a href="{{ route('konsumsi-listrik') }}" class="{{ request()->routeIs('konsumsi-listrik') ? 'is-active' : '' }}" {{ request()->routeIs('konsumsi-listrik') ? 'aria-current=page' : '' }}>Konsumsi kWh</a>
-                <a href="{{ route('checklist-forklift') }}" class="{{ request()->routeIs('checklist-forklift') ? 'is-active' : '' }}" {{ request()->routeIs('checklist-forklift') ? 'aria-current=page' : '' }}>Checklist Forklift</a>
-                <a href="{{ route('registrasi-kendaraan') }}" class="{{ request()->routeIs('registrasi-kendaraan') ? 'is-active' : '' }}" {{ request()->routeIs('registrasi-kendaraan') ? 'aria-current=page' : '' }}>Data Kendaraan</a>
-                <a href="{{ route('tes') }}" class="{{ request()->routeIs('tes') ? 'is-active' : '' }}" {{ request()->routeIs('tes') ? 'aria-current=page' : '' }}>Tes</a>
-            </nav>
+            <a href="{{ route('beranda') }}" class="brand" aria-label="Dashboard HSE PCI">
+                <!-- Logo Prysmian -->
+                <img src="{{ asset('image/prysmian_transparent_clean.png') }}" alt="Prysmian Logo" class="brand-mark">
+                <!-- Logo Zero & Beyond -->
+                <img src="{{ asset('image/zero_beyond_clean.png') }}" alt="Zero Beyond Logo" class="brand-mark-2">
+            </a>
         </div>
     </header>
+
+    <div class="sidebar-drawer" id="sidebar-drawer">
+        <div class="sidebar-header">
+            <span class="sidebar-title">Menu Utama</span>
+            <button id="menu-close" class="menu-close" aria-label="Tutup Menu">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        <nav class="nav" aria-label="Menu utama">
+            <a href="{{ route('beranda') }}" class="{{ request()->routeIs('beranda') ? 'is-active' : '' }}">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                Beranda
+            </a>
+            <a href="{{ route('konsumsi-listrik') }}" class="{{ request()->routeIs('konsumsi-listrik') ? 'is-active' : '' }}">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                Konsumsi kWh
+            </a>
+            <a href="{{ route('checklist-forklift') }}" class="{{ request()->routeIs('checklist-forklift') ? 'is-active' : '' }}">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>
+                Checklist Forklift
+            </a>
+            <a href="{{ route('registrasi-kendaraan') }}" class="{{ request()->routeIs('registrasi-kendaraan') ? 'is-active' : '' }}">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
+                Data Kendaraan
+            </a>
+            <a href="{{ route('tes') }}" class="{{ request()->routeIs('tes') ? 'is-active' : '' }}">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+                Tes
+            </a>
+        </nav>
+    </div>
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
     <main class="page @yield('page-class')">
         @yield('content')
     </main>
 
-    <nav class="bottom-nav" aria-label="Menu utama">
-        <a href="{{ route('beranda') }}" class="{{ request()->routeIs('beranda') ? 'is-active' : '' }}" {{ request()->routeIs('beranda') ? 'aria-current=page' : '' }}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-            <span>Beranda</span>
-        </a>
-        <a href="{{ route('konsumsi-listrik') }}" class="{{ request()->routeIs('konsumsi-listrik') ? 'is-active' : '' }}" {{ request()->routeIs('konsumsi-listrik') ? 'aria-current=page' : '' }}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-            <span>kWh</span>
-        </a>
-        <a href="{{ route('checklist-forklift') }}" class="{{ request()->routeIs('checklist-forklift') ? 'is-active' : '' }}" {{ request()->routeIs('checklist-forklift') ? 'aria-current=page' : '' }}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>
-            <span>Forklift</span>
-        </a>
-        <a href="{{ route('registrasi-kendaraan') }}" class="{{ request()->routeIs('registrasi-kendaraan') ? 'is-active' : '' }}" {{ request()->routeIs('registrasi-kendaraan') ? 'aria-current=page' : '' }}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
-            <span>Kendaraan</span>
-        </a>
-        <a href="{{ route('tes') }}" class="{{ request()->routeIs('tes') ? 'is-active' : '' }}" {{ request()->routeIs('tes') ? 'aria-current=page' : '' }}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
-            <span>Tes</span>
-        </a>
-    </nav>
+    
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -114,6 +121,29 @@
         setTimeout(() => {
             document.querySelectorAll('.stat-value').forEach(el => observer.observe(el));
         }, 100);
+    });
+    </script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleBtn = document.getElementById('menu-toggle');
+        const closeBtn = document.getElementById('menu-close');
+        const drawer = document.getElementById('sidebar-drawer');
+        const overlay = document.getElementById('sidebar-overlay');
+        
+        function openMenu() {
+            drawer.classList.add('is-open');
+            overlay.classList.add('is-open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeMenu() {
+            drawer.classList.remove('is-open');
+            overlay.classList.remove('is-open');
+            document.body.style.overflow = '';
+        }
+        
+        if(toggleBtn) toggleBtn.addEventListener('click', openMenu);
+        if(closeBtn) closeMenuBtn = closeBtn.addEventListener('click', closeMenu);
+        if(overlay) overlay.addEventListener('click', closeMenu);
     });
     </script>
 </body>
