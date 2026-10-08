@@ -2785,9 +2785,85 @@ table.data thead th::after {
 /* Hide Bottom Nav globally */
 .bottom-nav { display: none !important; }
 
+.desktop-nav {
+    display: none;
+}
+
 @media (min-width: 860px) {
     body {
         padding-bottom: 0;
+        display: flex;
+        flex-direction: row;
+        min-height: 100vh;
+    }
+    .site-header {
+        position: sticky;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 250px;
+        flex-shrink: 0;
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
+        border-bottom: none;
+        background: linear-gradient(180deg, var(--navy), var(--navy-2));
+    }
+    .site-header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        height: 100%;
+        width: 100%;
+        padding: 2rem 1.5rem;
+        gap: 2.5rem;
+    }
+    .brand {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+    }
+    .brand-mark {
+        margin-bottom: 5px;
+    }
+    .menu-toggle {
+        display: none;
+    }
+    .desktop-nav {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 8px;
+        margin-left: 0;
+    }
+    .desktop-nav a {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding: 10px 16px;
+        border-radius: 8px;
+        color: #C5D4EC;
+        text-decoration: none;
+    }
+    .desktop-nav a:hover {
+        color: #fff;
+        background: rgba(255, 255, 255, .15);
+    }
+    .desktop-nav a.is-active {
+        color: #fff;
+        background: rgba(255, 255, 255, .2);
+    }
+    .desktop-nav a svg {
+        margin-right: 12px;
+    }
+    .sidebar-drawer {
+        display: none !important;
+    }
+    .sidebar-overlay {
+        display: none !important;
+    }
+    .page {
+        flex-grow: 1;
+        width: calc(100% - 250px);
+        min-height: 100vh;
+        padding-top: 2rem;
     }
     .toast {
         bottom: 28px;
