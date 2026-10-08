@@ -256,7 +256,6 @@
                         <th>Unit</th>
                         <th>Departemen</th>
                         <th>Shift</th>
-                        <th>Item Masalah</th>
                         <th>Status</th>
                         <th>Catatan</th>
                     </tr>
@@ -270,13 +269,6 @@
                         <td>{{ $r['unit'] }}</td>
                         <td>{{ $r['dept'] }}</td>
                         <td>{{ $r['shift'] }}</td>
-                        <td>
-                            @if($r['masalah'] > 0)
-                                <span class="badge {{ $r['rusak'] ? 'bad' : 'warn' }}">{{ $r['masalah'] }} item</span>
-                            @else
-                                <span class="badge good">0</span>
-                            @endif
-                        </td>
                         <td>
                             @if($r['rusak'])
                                 <span class="badge bad">
@@ -421,13 +413,6 @@
                             html += '<td>' + (r.unit || '') + '</td>';
                             html += '<td>' + (r.dept || '') + '</td>';
                             html += '<td>' + (r.shift || '') + '</td>';
-
-                            if (r.masalah > 0) {
-                                var badgeClass = r.rusak ? 'bad' : 'warn';
-                                html += '<td><span class="badge ' + badgeClass + '">' + r.masalah + ' item</span></td>';
-                            } else {
-                                html += '<td><span class="badge good">0</span></td>';
-                            }
 
                             if (r.rusak) {
                                 html += '<td><span class="badge bad"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg> Ada Rusak</span></td>';
