@@ -312,20 +312,32 @@
                             <td>
                                 @php
                                     $fotoSim = !empty($k['foto_sim_a']) ? $k['foto_sim_a'] : (!empty($k['foto_sim_c']) ? $k['foto_sim_c'] : '');
+                                    $simLinks = array_filter(array_map('trim', explode(',', $fotoSim)));
                                 @endphp
-                                @if(!empty($fotoSim))
-                                    <a href="{{ $fotoSim }}" target="_blank" title="Lihat Foto SIM">
-                                        <img src="{{ getDriveThumbnailUrl($fotoSim) }}" alt="Foto SIM" class="img-thumbnail" loading="lazy" onerror="this.outerHTML='<div class=\'img-placeholder\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\' style=\'width:20px; height:20px; color:#64748b;\'><rect x=\'3\' y=\'3\' width=\'18\' height=\'18\' rx=\'2\' ry=\'2\'></rect><circle cx=\'8.5\' cy=\'8.5\' r=\'1.5\'></circle><polyline points=\'21 15 16 10 5 21\'></polyline></svg></div>'">
-                                    </a>
+                                @if(count($simLinks) > 0)
+                                    <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                                    @foreach($simLinks as $link)
+                                        <a href="{{ $link }}" target="_blank" title="Lihat Foto SIM">
+                                            <img src="{{ getDriveThumbnailUrl($link) }}" alt="Foto SIM" class="img-thumbnail" loading="lazy" onerror="this.outerHTML='<div class=\'img-placeholder\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\' style=\'width:20px; height:20px; color:#64748b;\'><rect x=\'3\' y=\'3\' width=\'18\' height=\'18\' rx=\'2\' ry=\'2\'></rect><circle cx=\'8.5\' cy=\'8.5\' r=\'1.5\'></circle><polyline points=\'21 15 16 10 5 21\'></polyline></svg></div>'">
+                                        </a>
+                                    @endforeach
+                                    </div>
                                 @else
                                     -
                                 @endif
                             </td>
                             <td>
-                                @if(!empty($k['foto_stnk']))
-                                    <a href="{{ $k['foto_stnk'] }}" target="_blank" title="Lihat Foto STNK">
-                                        <img src="{{ getDriveThumbnailUrl($k['foto_stnk']) }}" alt="Foto STNK" class="img-thumbnail" loading="lazy" onerror="this.outerHTML='<div class=\'img-placeholder\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\' style=\'width:20px; height:20px; color:#64748b;\'><rect x=\'3\' y=\'3\' width=\'18\' height=\'18\' rx=\'2\' ry=\'2\'></rect><circle cx=\'8.5\' cy=\'8.5\' r=\'1.5\'></circle><polyline points=\'21 15 16 10 5 21\'></polyline></svg></div>'">
-                                    </a>
+                                @php
+                                    $stnkLinks = !empty($k['foto_stnk']) ? array_filter(array_map('trim', explode(',', $k['foto_stnk']))) : [];
+                                @endphp
+                                @if(count($stnkLinks) > 0)
+                                    <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                                    @foreach($stnkLinks as $link)
+                                        <a href="{{ $link }}" target="_blank" title="Lihat Foto STNK">
+                                            <img src="{{ getDriveThumbnailUrl($link) }}" alt="Foto STNK" class="img-thumbnail" loading="lazy" onerror="this.outerHTML='<div class=\'img-placeholder\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\' style=\'width:20px; height:20px; color:#64748b;\'><rect x=\'3\' y=\'3\' width=\'18\' height=\'18\' rx=\'2\' ry=\'2\'></rect><circle cx=\'8.5\' cy=\'8.5\' r=\'1.5\'></circle><polyline points=\'21 15 16 10 5 21\'></polyline></svg></div>'">
+                                        </a>
+                                    @endforeach
+                                    </div>
                                 @else
                                     -
                                 @endif
@@ -446,20 +458,26 @@
                                 return url;
                             };
                             
-                            var fotoSimHtml = '-';
-                            var fotoSimLink = k.foto_sim_a ? k.foto_sim_a : (k.foto_sim_c ? k.foto_sim_c : '');
                             var svgPlaceholder = '<div class=\\'img-placeholder\\'><svg viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'2\\' stroke-linecap=\\'round\\' stroke-linejoin=\\'round\\' style=\\'width:20px; height:20px; color:#64748b;\\'><rect x=\\'3\\' y=\\'3\\' width=\\'18\\' height=\\'18\\' rx=\\'2\\' ry=\\'2\\'></rect><circle cx=\\'8.5\\' cy=\\'8.5\\' r=\\'1.5\\'></circle><polyline points=\\'21 15 16 10 5 21\\'></polyline></svg></div>';
                             
-                            if (fotoSimLink) {
-                                fotoSimHtml = '<a href="' + fotoSimLink + '" target="_blank" title="Lihat Foto SIM"><img src="' + getDriveThumb(fotoSimLink) + '" alt="Foto SIM" class="img-thumbnail" loading="lazy" onerror="this.outerHTML=\'' + svgPlaceholder + '\'"></a>';
-                            }
+                            var renderPhotos = function(urlStr, title) {
+                                if (!urlStr) return '-';
+                                var urls = urlStr.split(',').map(function(s) { return s.trim(); }).filter(function(s) { return s; });
+                                if (urls.length === 0) return '-';
+                                var outHtml = '<div style="display:flex; gap:5px; flex-wrap:wrap;">';
+                                urls.forEach(function(u) {
+                                    outHtml += '<a href="' + u + '" target="_blank" title="' + title + '"><img src="' + getDriveThumb(u) + '" alt="' + title + '" class="img-thumbnail" loading="lazy" onerror="this.outerHTML=\'' + svgPlaceholder + '\'"></a>';
+                                });
+                                outHtml += '</div>';
+                                return outHtml;
+                            };
+                            
+                            var fotoSimLink = k.foto_sim_a ? k.foto_sim_a : (k.foto_sim_c ? k.foto_sim_c : '');
+                            var fotoSimHtml = renderPhotos(fotoSimLink, 'Foto SIM');
                             html += '<td>' + fotoSimHtml + '</td>';
                             
-                            if (k.foto_stnk) {
-                                html += '<td><a href="' + k.foto_stnk + '" target="_blank" title="Lihat Foto STNK"><img src="' + getDriveThumb(k.foto_stnk) + '" alt="Foto STNK" class="img-thumbnail" loading="lazy" onerror="this.outerHTML=\'' + svgPlaceholder + '\'"></a></td>';
-                            } else {
-                                html += '<td>-</td>';
-                            }
+                            var fotoStnkHtml = renderPhotos(k.foto_stnk, 'Foto STNK');
+                            html += '<td>' + fotoStnkHtml + '</td>';
                             
                             html += '</tr>';
                         });

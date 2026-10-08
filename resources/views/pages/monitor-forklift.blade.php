@@ -77,6 +77,9 @@
                         <option>3181 Toyota 2,5 Ton MTC</option>
                         <option>2564 TCM 5 Ton Produksi</option>
                         <option>3229 TCM 5 Ton Logistik</option>
+                        <option>Forklift 15 Ton Produksi</option>
+                        <option>SIMAI</option>
+                        <option>ELOF</option>
                     </select>
                 </div>
                 <div class="field">

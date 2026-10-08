@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Route;
 // Halaman Beranda Utama
 Route::get('/', [HseController::class, 'beranda'])->name('beranda');
 
+Route::view('/tes', 'pages.tes')->name('tes');
+
 Route::get('/test-sheet', function () {
     try {
         $data = \Revolution\Google\Sheets\Facades\Sheets::spreadsheet(env('GOOGLE_SPREADSHEET_ID'))->sheet('Form Responses 1')->get();

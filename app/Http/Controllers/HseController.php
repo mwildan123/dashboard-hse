@@ -213,12 +213,12 @@ class HseController extends Controller
         $forkliftReady = 0;
         $forkliftTotal = 0;
         try {
-            $allForklifts = $this->getForkliftData();
-            $todayStr = now()->format('Y-m-d');
+            $allForklifts = $this->readForkliftData();
+            $todayStr = now()->format('d/m/Y');
             foreach ($allForklifts as $f) {
-                if (strpos($f['timestamp'] ?? '', $todayStr) !== false) {
+                if (($f['tgl'] ?? '') === $todayStr) {
                     $forkliftTotal++;
-                    if ((int)($f['masalah'] ?? 0) === 0) {
+                    if ((int)($f['masalah'] ?? 0) === 0 && !($f['rusak'] ?? false)) {
                         $forkliftReady++;
                     }
                 }
@@ -528,35 +528,11 @@ class HseController extends Controller
             $has_sim_a = str_contains($sim_list, 'sim a');
             $has_sim_c = str_contains($sim_list, 'sim c');
             
-            $foto_sim_a = '';
+            $foto_sim_a = implode(',', $all_sim_photos);
             $foto_sim_c = '';
-            
-            if ($has_sim_a && $has_sim_c && count($all_sim_photos) >= 2) {
-                $foto_sim_a = array_shift($all_sim_photos);
-                $foto_sim_c = array_shift($all_sim_photos);
-            } elseif ($has_sim_a && count($all_sim_photos) >= 1) {
-                $foto_sim_a = array_shift($all_sim_photos);
-                if ($has_sim_c && count($all_sim_photos) >= 1) {
-                    $foto_sim_c = array_shift($all_sim_photos);
-                }
-            } elseif ($has_sim_c && count($all_sim_photos) >= 1) {
-                $foto_sim_c = array_shift($all_sim_photos);
-                if ($has_sim_a && count($all_sim_photos) >= 1) {
-                    $foto_sim_a = array_shift($all_sim_photos);
-                }
-            } else {
-                if (count($all_sim_photos) >= 1) {
-                    if (str_contains($sim_list, 'sim c') && !str_contains($sim_list, 'sim a')) {
-                        $foto_sim_c = array_shift($all_sim_photos);
-                    } else {
-                        $foto_sim_a = array_shift($all_sim_photos);
-                    }
-                }
-            }
-            
             $raw_stnk = $normalized['foto_stnk_kendaraan_yang_dipakai_ke_pci'] ?? '';
             $stnk_photos = array_values(array_filter(array_map('trim', explode(',', $raw_stnk))));
-            $foto_stnk = count($stnk_photos) > 0 ? $stnk_photos[0] : '';
+            $foto_stnk = implode(',', $stnk_photos);
 
             if ($nama === '' && $plat === '') {
                 continue;
@@ -1510,6 +1486,44 @@ class HseController extends Controller
                         
                         // Asumsi header berdasarkan screenshot
                         $operator = trim($dataRow['nama_operator_forklift'] ?? $dataRow['operator'] ?? $dataRow['nama'] ?? '-');
+                        
+                        // Normalisasi Typo
+                        $rawLower = strtolower($operator);
+                        $opRawClean = preg_replace('/[^a-z0-9]/i', '', $rawLower);
+                        $aliases = [
+                            'samsul' => 'Syamsul Bahri',
+                            'samsulbahri' => 'Syamsul Bahri',
+                            'asep d' => 'Asep Dedi',
+                            'asep m' => 'Asep Mulyana',
+                        ];
+                        
+                        $matchedAlias = false;
+                        foreach ($aliases as $k => $v) {
+                            if (strpos($rawLower, $k) !== false || $opRawClean === str_replace(' ', '', $k)) {
+                                $operator = $v;
+                                $matchedAlias = true;
+                                break;
+                            }
+                        }
+                        
+                        if (!$matchedAlias) {
+                            $masterOperatorsList = [
+                                "Abdurahman Soleh", "Ade Rohmat", "Ahmad Hasan", "Amar Saidin", "Asep Dedi", "Asep Mulyana",
+                                "Bambang Wiyono", "Catur Febriawan", "Deni Hermawan", "Dudi Rusdi", "Ego Setyadi Prakoso",
+                                "Eko Dwi Prasetyo", "Fadzri Aprimursid", "Iprul Zupri", "Irfan Zidny", "Isminto", "Iwan",
+                                "Jamal Lulail", "M. Ridwansyah", "Sobari", "Suady Iskandar", "Syamsul Bahri", "Tohid",
+                                "Williyanto Adi Sumantri", "Yordiansyah Hari Pangestu", "Yulianto (QC)", "Dwi Syahrudin (Forklift & Scissor Lift)",
+                                "Dwiyanto (Forklift & Scissor Lift)", "Mas'ud (Forklift & Scissor Lift)", "Nanang Budianto (Scissor Lift)",
+                                "Refa Diyatu Lukmana (Scissor Lift)", "Muhamad Maulana (Scissor Lift)", "Dion Permana (Scissor Lift)", "Warto (Scissor Lift)"
+                            ];
+                            foreach ($masterOperatorsList as $masterOp) {
+                                $masterClean = preg_replace('/[^a-z0-9]/i', '', strtolower($masterOp));
+                                if ($masterClean === $opRawClean) {
+                                    $operator = $masterOp;
+                                    break;
+                                }
+                            }
+                        }
                         $shift = trim($dataRow['shift'] ?? '-');
                         $unit = trim($dataRow['jenis_forklift_alat_angkut'] ?? $dataRow['unit'] ?? '-');
                         $dept = trim($dataRow['departemen'] ?? $dataRow['dept'] ?? '-');
@@ -1574,12 +1588,30 @@ class HseController extends Controller
         return $googleData;
     }
 
-    private function getForkliftStats(array $allRows, $filterOp = null): array
+    private function getForkliftStats(array $allRows, $filterOp = null, $filterUnit = null): array
     {
         $total = count($allRows);
         $perhatian = collect($allRows)->where('masalah', '>', 0)->count();
         
-        $unitCounts = collect($allRows)->countBy('unit');
+        $unitCountsArray = [];
+        foreach ($allRows as $r) {
+            $unitStr = str_replace('2,5 Ton', '2_COMMA_5 Ton', $r['unit'] ?? '');
+            $units = explode(',', $unitStr);
+            foreach ($units as $u) {
+                $u = trim(str_replace('2_COMMA_5 Ton', '2,5 Ton', $u));
+                if (!$u) continue;
+                
+                if ($filterUnit) {
+                    $cleanFUnit = preg_replace('/[^a-z0-9]/i', '', strtolower($filterUnit));
+                    $cleanU = preg_replace('/[^a-z0-9]/i', '', strtolower($u));
+                    if (strpos($cleanU, $cleanFUnit) === false) continue;
+                }
+                
+                if (!isset($unitCountsArray[$u])) $unitCountsArray[$u] = 0;
+                $unitCountsArray[$u]++;
+            }
+        }
+        $unitCounts = collect($unitCountsArray);
         $topUnit = $unitCounts->sortDesc()->keys()->first() ?? '-';
         $topUnitCount = $unitCounts->sortDesc()->first() ?? 0;
         
@@ -1611,21 +1643,13 @@ class HseController extends Controller
 
             $matched = false;
             foreach ($masterOperators as $masterOp) {
-                if (strtolower($masterOp) === strtolower($opRaw)) {
+                if ($masterOp === $opRaw) {
                     $opArray[$masterOp]++;
                     $matched = true;
                     break;
                 }
             }
 
-            // Jika ada operator di CSV tapi tidak ada di dropdown (misal typo)
-            if (!$matched) {
-                $cleanOp = ucwords(strtolower($opRaw)); // Normalisasi jadi Title Case
-                if (!isset($opArray[$cleanOp])) {
-                    $opArray[$cleanOp] = 0;
-                }
-                $opArray[$cleanOp]++;
-            }
         }
         
         // Urutkan dari yang terbanyak ke terkecil
@@ -1644,11 +1668,23 @@ class HseController extends Controller
         $unitIssueCounts = [];
         foreach ($allRows as $r) {
             if ($r['masalah'] > 0 || $r['rusak']) {
-                $u = $r['unit'] ?? 'Unknown';
-                if (!isset($unitIssueCounts[$u])) {
-                    $unitIssueCounts[$u] = 0;
+                $unitStr = str_replace('2,5 Ton', '2_COMMA_5 Ton', $r['unit'] ?? 'Unknown');
+                $units = explode(',', $unitStr);
+                foreach ($units as $u) {
+                    $u = trim(str_replace('2_COMMA_5 Ton', '2,5 Ton', $u));
+                    if (!$u) continue;
+                    
+                    if ($filterUnit) {
+                        $cleanFUnit = preg_replace('/[^a-z0-9]/i', '', strtolower($filterUnit));
+                        $cleanU = preg_replace('/[^a-z0-9]/i', '', strtolower($u));
+                        if (strpos($cleanU, $cleanFUnit) === false) continue;
+                    }
+                    
+                    if (!isset($unitIssueCounts[$u])) {
+                        $unitIssueCounts[$u] = 0;
+                    }
+                    $unitIssueCounts[$u]++;
                 }
-                $unitIssueCounts[$u]++;
             }
         }
         
@@ -1677,8 +1713,8 @@ class HseController extends Controller
         $allRows = $this->readForkliftData();
         $stats = $this->getForkliftStats($allRows);
         
-        // Cukup ambil 100 data terbaru untuk render awal
-        $rows = array_slice($allRows, 0, 100);
+        // Ambil 5000 data terbaru untuk render awal agar tidak ada yang tenggelam
+        $rows = array_slice($allRows, 0, 5000);
 
         return view('pages.monitor-forklift', compact('rows', 'stats'));
     }
@@ -1703,10 +1739,11 @@ class HseController extends Controller
                 $rowTime = strtotime(str_replace('/', '-', $r['raw_timestamp']));
                 if ($rowTime < $dariTime || $rowTime > $sampaiTime) return false;
 
-                // 2. Unit Filter (first word match)
+                // 2. Unit Filter (Robust match)
                 if ($fUnit !== '') {
-                    $unitKey = explode(' ', $fUnit)[0];
-                    if (strpos(strtolower($r['unit']), $unitKey) === false) return false;
+                    $cleanFUnit = preg_replace('/[^a-z0-9]/i', '', strtolower($fUnit));
+                    $cleanRUnit = preg_replace('/[^a-z0-9]/i', '', strtolower($r['unit']));
+                    if (strpos($cleanRUnit, $cleanFUnit) === false) return false;
                 }
 
                 // 3. Dept Filter
@@ -1734,8 +1771,10 @@ class HseController extends Controller
         }
 
         $fOpParam = $request->anyFilled(['op']) ? strtolower(trim($request->op)) : null;
-        $stats = $this->getForkliftStats($allRows, $fOpParam);
-        $rows = array_slice($allRows, 0, 100);
+        $fUnitParam = $request->anyFilled(['unit']) ? strtolower(trim($request->unit)) : null;
+        $stats = $this->getForkliftStats($allRows, $fOpParam, $fUnitParam);
+        // Tampilkan hingga 5000 baris hasil filter
+        $rows = array_slice($allRows, 0, 5000);
 
         return response()->json([
             'status' => 'ok',
