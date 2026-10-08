@@ -553,7 +553,7 @@ class HseController extends Controller
             $simStatus = strtolower((string) ($normalized['status_sim'] ?? $normalized['sim_status'] ?? ''));
             if ($simStatus === '') {
                 $simLower = strtolower((string) $sim);
-                if (str_contains($simLower, 'tidak') || str_contains($simLower, 'none') || str_contains($simLower, 'belum') || $sim === '-') {
+                if ((str_contains($simLower, 'tidak') && !str_contains($simLower, 'disebutkan')) || str_contains($simLower, 'none') || str_contains($simLower, 'belum') || $sim === '-') {
                     $simStatus = 'bad';
                 } elseif ($sim === '' && ($simExp === '' || str_starts_with($simExp, 'http'))) {
                     $simStatus = 'empty';

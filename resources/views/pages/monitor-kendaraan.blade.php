@@ -300,7 +300,11 @@
                             </td>
                             <td>
                                 @if($k['sim_status'] === 'bad')
-                                    <span class="badge bad" style="min-width: 70px; display: inline-block; text-align: center;">Expired</span>
+                                    @php
+                                        $s = strtolower($k['sim'] ?? '');
+                                        $isMissing = (str_contains($s, 'tidak') && !str_contains($s, 'disebutkan')) || str_contains($s, 'none') || str_contains($s, 'belum') || $s === '-';
+                                    @endphp
+                                    <span class="badge bad" style="min-width: 70px; display: inline-block; text-align: center;">{{ $isMissing ? 'Tidak Ada' : 'Expired' }}</span>
                                 @elseif($k['sim_status'] === 'warn')
                                     <span class="badge warn" style="min-width: 70px; display: inline-block; text-align: center;">Peringatan</span>
                                 @elseif($k['sim_status'] === 'empty')
@@ -433,13 +437,15 @@
                             html += '<td>' + k.jenis + '</td>';
                             html += '<td>' + k.plat + '</td>';
                             
-                            var simBadgeClass = (k.sim.toLowerCase().indexOf('tidak') !== -1) ? 'bad' : 'slate';
+                            var simLower = (k.sim || '').toLowerCase();
+                            var simBadgeClass = (simLower.indexOf('tidak') !== -1 && simLower.indexOf('disebutkan') === -1) ? 'bad' : 'slate';
                             html += '<td><span class="badge ' + simBadgeClass + '">' + k.sim + '</span></td>';
                             html += '<td>' + simDate + '</td>';
                             
                             var statusBadge = '';
                             if (k.sim_status === 'bad') {
-                                statusBadge = '<span class="badge bad" style="min-width: 70px; display: inline-block; text-align: center;">Expired</span>';
+                                var isMissing = (simLower.indexOf('tidak') !== -1 && simLower.indexOf('disebutkan') === -1) || simLower.indexOf('none') !== -1 || simLower.indexOf('belum') !== -1 || simLower === '-';
+                                statusBadge = '<span class="badge bad" style="min-width: 70px; display: inline-block; text-align: center;">' + (isMissing ? 'Tidak Ada' : 'Expired') + '</span>';
                             } else if (k.sim_status === 'warn') {
                                 statusBadge = '<span class="badge warn" style="min-width: 70px; display: inline-block; text-align: center;">Peringatan</span>';
                             } else if (k.sim_status === 'empty') {
