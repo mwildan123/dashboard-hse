@@ -2735,37 +2735,60 @@ table.data thead th::after {
 .nav {
     display: flex;
     flex-direction: column;
-    padding: 20px 16px;
-    gap: 6px;
+    padding: 16px;
+    gap: 2px;
     overflow-y: auto;
 }
 .nav a {
     display: flex;
     align-items: center;
-    gap: 14px;
-    padding: 12px 16px;
+    gap: 12px;
+    padding: 10px 14px;
     color: var(--ink-2);
     font-weight: 500;
     font-size: 15px;
     text-decoration: none;
     border-radius: 10px;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+    overflow: hidden;
+}
+.nav a::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--blue);
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+    transform-origin: center;
 }
 .nav a svg {
     color: var(--ink-3);
-    transition: color 0.2s ease;
+    transition: all 0.3s ease;
 }
 .nav a:hover {
     color: var(--blue);
-    background: #f1f5f9;
+    background: linear-gradient(90deg, #f1f5f9 0%, transparent 100%);
+    transform: translateX(4px);
 }
 .nav a:hover svg {
     color: var(--blue);
+    transform: scale(1.1) rotate(5deg);
+}
+.nav a:active {
+    transform: translateX(2px) scale(0.98);
 }
 .nav a.is-active {
     color: var(--blue);
-    background: rgba(37, 99, 235, 0.08);
+    background: linear-gradient(90deg, rgba(37, 99, 235, 0.1) 0%, rgba(37, 99, 235, 0.02) 100%);
     font-weight: 600;
+}
+.nav a.is-active::before {
+    transform: scaleY(0.7);
+    border-radius: 0 4px 4px 0;
 }
 .nav a.is-active svg {
     color: var(--blue);
