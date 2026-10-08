@@ -2784,3 +2784,34 @@ table.data thead th::after {
 
 /* Hide Bottom Nav globally */
 .bottom-nav { display: none !important; }
+
+@media (min-width: 860px) {
+    body {
+        padding-bottom: 0;
+    }
+    .toast {
+        bottom: 28px;
+    }
+    .page-title h1 {
+        font-size: 24px;
+    }
+    .split {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
+    .stack {
+        gap: 20px;
+    }
+    .split-media {
+        display: grid;
+        grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+        gap: 20px 28px;
+        align-items: start;
+    }
+    .fields.cols-6 {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+    .fields.cols-6 .s-6 { grid-column: span 6; }
+    .fields.cols-6 .s-3 { grid-column: span 3; }
+    .fields.cols-6 .s-2, .fields.cols-6 .s-shift { grid-column: span 2; }
+}
