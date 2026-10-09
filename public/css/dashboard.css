@@ -2678,12 +2678,12 @@ table.data thead th::after {
     margin-right: -4px;
 }
 .brand-mark {
-    height: 28px;
+    height: 38px;
     width: auto;
     object-fit: contain;
 }
 .brand-mark-2 {
-    height: 32px;
+    height: 44px;
     width: auto;
     object-fit: contain;
     margin-left: auto;
