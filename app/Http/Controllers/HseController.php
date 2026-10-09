@@ -214,15 +214,7 @@ class HseController extends Controller
         $forkliftTotal = 0;
         try {
             $allForklifts = $this->readForkliftData();
-            $todayStr = now()->format('d/m/Y');
-            foreach ($allForklifts as $f) {
-                if (($f['tgl'] ?? '') === $todayStr) {
-                    $forkliftTotal++;
-                    if ((int)($f['masalah'] ?? 0) === 0 && !($f['rusak'] ?? false)) {
-                        $forkliftReady++;
-                    }
-                }
-            }
+            $forkliftTotal = count($allForklifts);
         } catch (\Throwable $e) {
             // Ignore error
         }
@@ -256,6 +248,15 @@ class HseController extends Controller
         } catch (\Throwable $e) {
             // Ignore error
         }
+        
+        // 5. Permit To Entry Stats
+        $permitTotal = 0;
+        try {
+            $allPermits = $this->readPermitDataFromGoogle();
+            $permitTotal = count($allPermits);
+        } catch (\Throwable $e) {
+            // Ignore error
+        }
 
         return view('pages.beranda', [
             'kwhToday' => $kwhToday,
@@ -263,7 +264,8 @@ class HseController extends Controller
             'forkliftTotal' => $forkliftTotal,
             'vehicleTotal' => $vehicleTotal,
             'prycamCount' => $prycamCount,
-            'prycamKw' => $prycamKw
+            'prycamKw' => $prycamKw,
+            'permitTotal' => $permitTotal
         ]);
     }
 
@@ -1782,5 +1784,190 @@ class HseController extends Controller
             'stats' => $stats,
             'lastSync' => now()->translatedFormat('d M Y, H:i')
         ]);
+    }
+
+    private function readPermitDataFromGoogle(): array
+    {
+        $csvUrl = env('PERMIT_ENTRY_CSV_URL');
+        if (empty($csvUrl)) {
+            return [];
+        }
+
+        try {
+            $response = \Illuminate\Support\Facades\Http::timeout(30)->withOptions(['verify' => false])->get($csvUrl);
+            if ($response->successful()) {
+                $csvData = trim($response->body());
+                if ($csvData) {
+                    $stream = fopen('php://memory', 'r+');
+                    fwrite($stream, $csvData);
+                    rewind($stream);
+
+                    $headers = fgetcsv($stream);
+                    if (! $headers) {
+                        return [];
+                    }
+
+                    // Normalize headers (lowercase, replace spaces with _)
+                    $headers = array_map(function ($h) {
+                        return strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '_', $h), '_'));
+                    }, $headers);
+
+                    $records = [];
+                    while (($row = fgetcsv($stream)) !== false) {
+                        if (count($row) < count($headers)) {
+                            $row = array_pad($row, count($headers), '');
+                        }
+                        if (count($row) > count($headers)) {
+                            $row = array_slice($row, 0, count($headers));
+                        }
+
+                        $dataRow = array_combine($headers, $row);
+                        
+                        // Parse relevant columns using fallback names based on user's actual sheet
+                        $tanggal = $dataRow['tanggal_kunjungan'] ?? $dataRow['tanggal'] ?? '';
+                        $nama = $dataRow['nama'] ?? '';
+                        $instansi = $dataRow['asal_instansi'] ?? $dataRow['instansi'] ?? '-';
+                        
+                        // Ekstrak nama PT/CV dari kolom Nama jika Asal Instansi kosong/strip
+                        if (empty(trim($instansi)) || trim($instansi) === '-') {
+                            if (strpos($nama, '/') !== false) {
+                                $parts = explode('/', $nama, 2);
+                                $nama = trim($parts[0]);
+                                $instansi = trim($parts[1]);
+                            }
+                        }
+                        $jam_masuk = $dataRow['waktu_kedatangan'] ?? $dataRow['jam_masuk'] ?? '';
+                        $jam_keluar = $dataRow['waktu_keluar'] ?? $dataRow['jam_keluar'] ?? '';
+                        
+                        // Advanced time parsing to handle extreme typos (e.g. 09:3u -> 09:30)
+                        $formatTime = function($timeStr) {
+                            $t = strtolower(trim($timeStr));
+                            $t = str_replace(['wib', 'wita', 'wit', 'am', 'pm'], '', $t);
+                            $t = str_replace(['.', ',', ';', '-', ' '], ':', $t);
+                            $t = preg_replace('/:+/', ':', $t);
+                            
+                            $parts = explode(':', $t);
+                            if (count($parts) >= 2) {
+                                $h = preg_replace('/[^0-9]/', '', $parts[0]);
+                                $m = preg_replace('/[^0-9]/', '', $parts[1]);
+                                if ($h === '') return '';
+                                if (strlen($m) === 1) $m .= '0';
+                                if ($m === '') $m = '00';
+                                return str_pad($h, 2, '0', STR_PAD_LEFT) . ':' . str_pad($m, 2, '0', STR_PAD_LEFT);
+                            } else {
+                                $clean = preg_replace('/[^0-9]/', '', $t);
+                                if (strlen($clean) === 3) {
+                                    // if '930' -> 09:30, if '093' -> wait, '093' means 09:30?
+                                    // For 3 digits, we usually assume HMM (e.g. 930 -> 09:30)
+                                    // If it's 093, they probably meant 09:30
+                                    $h = substr($clean, 0, 1) == '0' ? '09' : '0' . substr($clean, 0, 1);
+                                    $m = substr($clean, 1, 2);
+                                    if (substr($clean, 0, 1) == '0' && substr($clean, 1, 1) != '0') {
+                                        // 093 -> H=09, M=30
+                                        $h = '0' . substr($clean, 1, 1);
+                                        $m = substr($clean, 2, 1) . '0';
+                                    }
+                                    return $h . ':' . $m;
+                                } elseif (strlen($clean) >= 4) {
+                                    return substr($clean, 0, 2) . ':' . substr($clean, 2, 2);
+                                }
+                                return '';
+                            }
+                        };
+
+                        $jam_masuk = $formatTime($jam_masuk);
+                        $jam_keluar = $formatTime($jam_keluar);
+
+                        // Calculate total hours if both times are present
+                        $total_jam = 0;
+                        if (!empty($jam_masuk) && !empty($jam_keluar) && strpos($jam_masuk, ':') !== false && strpos($jam_keluar, ':') !== false) {
+                            try {
+                                $tMasuk = strtotime($jam_masuk);
+                                $tKeluar = strtotime($jam_keluar);
+                                if ($tMasuk && $tKeluar) {
+                                    $diff = $tKeluar - $tMasuk;
+                                    if ($diff < 0) { // Assume overnight
+                                        $diff += 86400; 
+                                    }
+                                    $total_jam = round($diff / 3600, 1);
+                                }
+                            } catch (\Exception $e) {
+                                $total_jam = 0;
+                            }
+                        }
+
+                        if (!empty($nama) && !empty($tanggal)) {
+                            // Extract date part only if timestamp
+                            if (str_contains($tanggal, ' ')) {
+                                $tanggal = explode(' ', $tanggal)[0];
+                            }
+                            // Convert slashes to dashes for JS sorting if necessary
+                            // Excel usually exports as M/D/YYYY or D/M/YYYY. 
+                            // Try to format to YYYY-MM-DD for standard sorting if possible
+                            $tanggalParts = explode('/', $tanggal);
+                            if (count($tanggalParts) === 3) {
+                                // Assume MM/DD/YYYY from Google Sheets default
+                                $tanggal = sprintf('%04d-%02d-%02d', $tanggalParts[2], $tanggalParts[0], $tanggalParts[1]);
+                            } else {
+                                $tanggal = str_replace('/', '-', $tanggal);
+                            }
+
+                            $records[] = [
+                                'tanggal' => $tanggal,
+                                'nama' => $nama,
+                                'instansi' => $instansi ?: '-',
+                                'jam_masuk' => $jam_masuk ?: '-',
+                                'jam_keluar' => $jam_keluar ?: '-',
+                                'total_jam' => $total_jam,
+                            ];
+                        }
+                    }
+                    fclose($stream);
+
+                    // Sort descending (newest first) to ensure we get the latest data
+                    usort($records, function ($a, $b) {
+                        $dateA = $a['tanggal'] . ' ' . ($a['jam_masuk'] !== '-' ? $a['jam_masuk'] : '00:00');
+                        $dateB = $b['tanggal'] . ' ' . ($b['jam_masuk'] !== '-' ? $b['jam_masuk'] : '00:00');
+                        return $dateB <=> $dateA;
+                    });
+
+                    // Limit to 5000 records to prevent frontend lag
+                    return array_slice($records, 0, 5000);
+                }
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Google CSV Permit Entry fetch failed: ' . $e->getMessage());
+        }
+
+        return [];
+    }
+
+    public function permitEntry(Request $request)
+    {
+        $realData = $this->readPermitDataFromGoogle();
+        
+        $isDummy = false;
+        if (count($realData) > 0) {
+            $data = $realData;
+        } else {
+            // Dummy Data Fallback (if env not set or fetch fails)
+            $isDummy = true;
+            $data = [
+                ['tanggal' => '2026-10-09', 'nama' => 'Budi Santoso', 'instansi' => 'PT Maju Jaya', 'jam_masuk' => '08:00', 'jam_keluar' => '10:00', 'total_jam' => 2],
+                ['tanggal' => '2026-10-09', 'nama' => 'Siti Aminah', 'instansi' => 'CV Sejahtera', 'jam_masuk' => '09:15', 'jam_keluar' => '12:15', 'total_jam' => 3],
+                ['tanggal' => '2026-10-09', 'nama' => 'Agus Setiawan', 'instansi' => 'PT Maju Jaya', 'jam_masuk' => '10:30', 'jam_keluar' => '11:30', 'total_jam' => 1],
+                ['tanggal' => '2026-10-08', 'nama' => 'Wahyu Hidayat', 'instansi' => 'PT Karya Bersama', 'jam_masuk' => '13:00', 'jam_keluar' => '17:00', 'total_jam' => 4],
+                ['tanggal' => '2026-10-08', 'nama' => 'Rina Kartika', 'instansi' => 'CV Sejahtera', 'jam_masuk' => '08:30', 'jam_keluar' => '11:00', 'total_jam' => 2.5],
+                ['tanggal' => '2026-10-08', 'nama' => 'Hendra Pratama', 'instansi' => 'PT Bangun Persada', 'jam_masuk' => '09:00', 'jam_keluar' => '15:00', 'total_jam' => 6],
+                ['tanggal' => '2026-10-07', 'nama' => 'Budi Santoso', 'instansi' => 'PT Maju Jaya', 'jam_masuk' => '09:00', 'jam_keluar' => '12:00', 'total_jam' => 3],
+                ['tanggal' => '2026-10-07', 'nama' => 'Dwi Purnomo', 'instansi' => 'PT Sentosa Abadi', 'jam_masuk' => '08:00', 'jam_keluar' => '16:00', 'total_jam' => 8],
+                ['tanggal' => '2026-10-06', 'nama' => 'Eko Prasetyo', 'instansi' => 'PT Karya Bersama', 'jam_masuk' => '14:00', 'jam_keluar' => '15:30', 'total_jam' => 1.5],
+                ['tanggal' => '2026-10-06', 'nama' => 'Joko Widodo', 'instansi' => 'CV Mitra Sejati', 'jam_masuk' => '10:00', 'jam_keluar' => '12:00', 'total_jam' => 2],
+                ['tanggal' => '2026-10-05', 'nama' => 'Ahmad Jais', 'instansi' => 'PT Bangun Persada', 'jam_masuk' => '08:00', 'jam_keluar' => '17:00', 'total_jam' => 9],
+                ['tanggal' => '2026-10-05', 'nama' => 'Fajar Nugroho', 'instansi' => 'CV Mitra Sejati', 'jam_masuk' => '09:00', 'jam_keluar' => '11:00', 'total_jam' => 2],
+            ];
+        }
+
+        return view('pages.permit-entry', ['dummyData' => $data, 'isDummy' => $isDummy]);
     }
 }

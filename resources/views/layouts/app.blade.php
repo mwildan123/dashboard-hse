@@ -34,7 +34,7 @@
                 <a href="{{ route('konsumsi-listrik') }}" class="{{ request()->routeIs('konsumsi-listrik') ? 'is-active' : '' }}">Konsumsi kWh</a>
                 <a href="{{ route('checklist-forklift') }}" class="{{ request()->routeIs('checklist-forklift') ? 'is-active' : '' }}">Checklist Forklift</a>
                 <a href="{{ route('registrasi-kendaraan') }}" class="{{ request()->routeIs('registrasi-kendaraan') ? 'is-active' : '' }}">Data Kendaraan</a>
-                <a href="{{ route('tes') }}" class="{{ request()->routeIs('tes') ? 'is-active' : '' }}">Permit to Entry</a>
+                <a href="{{ route('permit-entry') }}" class="{{ request()->routeIs('permit-entry') ? 'is-active' : '' }}">Permit to Entry</a>
             </nav>
         </div>
     </header>
@@ -63,7 +63,7 @@
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
                 Data Kendaraan
             </a>
-            <a href="{{ route('tes') }}" class="{{ request()->routeIs('tes') ? 'is-active' : '' }}">
+            <a href="{{ route('permit-entry') }}" class="{{ request()->routeIs('permit-entry') ? 'is-active' : '' }}">
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
                 Permit to Entry
             </a>

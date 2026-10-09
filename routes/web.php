@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 // Halaman Beranda Utama
 Route::get('/', [HseController::class, 'beranda'])->name('beranda');
 
-Route::view('/tes', 'pages.tes')->name('tes');
+Route::get('/permit-entry', [HseController::class, 'permitEntry'])->name('permit-entry');
 
 Route::get('/test-sheet', function () {
     try {

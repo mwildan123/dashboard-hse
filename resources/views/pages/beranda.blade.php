@@ -119,7 +119,7 @@
     }
 
     .shortcut-card:hover .shortcut-icon {
-        transform: scale(1.04);
+        transform: scale(1.1) translateY(-3px);
     }
 
     .shortcut-title {
@@ -151,6 +151,28 @@
     .shortcut-card:hover .card-arrow {
         opacity: 1;
         transform: translateX(0);
+    }
+
+    .shortcut-glow {
+        position: absolute;
+        top: -30px;
+        right: -30px;
+        width: 130px;
+        height: 130px;
+        border-radius: 50%;
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 0;
+    }
+
+    .shortcut-card:hover .shortcut-glow {
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+
+    .shortcut-icon, .shortcut-title, .shortcut-desc, .card-arrow {
+        position: relative;
+        z-index: 1;
     }
 
     .summary-panel .panel-head {
@@ -405,6 +427,7 @@
 
 <div class="shortcut-grid">
     <a href="{{ route('konsumsi-listrik') }}" class="shortcut-card">
+        <div class="shortcut-glow" style="background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0) 70%);"></div>
         <div class="shortcut-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
         </div>
@@ -414,6 +437,7 @@
     </a>
 
     <a href="{{ route('checklist-forklift') }}" class="shortcut-card green">
+        <div class="shortcut-glow" style="background: radial-gradient(circle, rgba(34, 197, 94, 0.15) 0%, rgba(34, 197, 94, 0) 70%);"></div>
         <div class="shortcut-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>
         </div>
@@ -423,12 +447,34 @@
     </a>
 
     <a href="{{ route('registrasi-kendaraan') }}" class="shortcut-card orange">
-        <div class="shortcut-icon">
+        <div class="shortcut-glow" style="background: radial-gradient(circle, rgba(249, 115, 22, 0.15) 0%, rgba(249, 115, 22, 0) 70%);"></div>
+        <div class="shortcut-icon" style="background: rgba(249, 115, 22, 0.12); color: #c2410c;">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
         </div>
         <h3 class="shortcut-title">Monitoring Kendaraan</h3>
         <p class="shortcut-desc">Pantau kelengkapan berkas SIM, STNK, dan status operasional armada kendaraan.</p>
         <span class="card-arrow">→</span>
+    </a>
+
+    <a href="{{ route('permit-entry') }}" class="shortcut-card" style="border-color: rgba(168, 85, 247, 0.2);">
+        <div class="shortcut-glow" style="background: radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, rgba(168, 85, 247, 0) 70%);"></div>
+        <div class="shortcut-icon" style="background: rgba(168, 85, 247, 0.12); color: #9333ea;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+                <path d="M8 14h.01"></path>
+                <path d="M12 14h.01"></path>
+                <path d="M16 14h.01"></path>
+                <path d="M8 18h.01"></path>
+                <path d="M12 18h.01"></path>
+                <path d="M16 18h.01"></path>
+            </svg>
+        </div>
+        <h3 class="shortcut-title">Permit to Entry</h3>
+        <p class="shortcut-desc">Pantau total izin kunjungan dan rekapitulasi data tamu yang masuk ke area plant.</p>
+        <span class="card-arrow" style="color: #9333ea;">→</span>
     </a>
 </div>
 
@@ -457,19 +503,14 @@
 
             <div class="metric-card">
                 <div class="metric-head">
-                    <span class="metric-label">Kesiapan Forklift</span>
-                    <span class="metric-tag">Checklist</span>
+                    <span class="metric-label">Total Checklist</span>
+                    <span class="metric-tag">Forklift</span>
                 </div>
-                <div class="forklift-box">
-                    <div class="forklift-readout">
-                        <strong>{{ $forkliftReady ?? 0 }} / {{ $forkliftTotal ?? 0 }}</strong>
-                        <span>Unit Siap Pakai</span>
-                    </div>
-                    <div class="mini-progress">
-                        @php 
-                            $percentage = ($forkliftTotal ?? 0) > 0 ? (($forkliftReady ?? 0) / ($forkliftTotal ?? 1)) * 100 : 0; 
-                        @endphp
-                        <span style="width: {{ $percentage }}%;"></span>
+                <div class="vehicle-box">
+                    <div class="vehicle-number">{{ number_format($forkliftTotal ?? 0, 0, ',', '.') }} <span style="font-size: 1rem; font-weight: 500; color: var(--ink-3);">Unit</span></div>
+                    <div class="vehicle-badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                        <span>Terus dipantau real-time</span>
                     </div>
                 </div>
             </div>
@@ -499,6 +540,20 @@
                         <span class="metric-unit">kW</span>
                     </div>
                     <span class="metric-status-pill {{ ($prycamCount ?? 0) > 0 ? 'good' : 'slate' }}">{{ ($prycamCount ?? 0) > 0 ? ($prycamCount . ' Panel Dicek') : 'Belum Ada Data' }}</span>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-head">
+                    <span class="metric-label">Total Kunjungan</span>
+                    <span class="metric-tag">Permit to Entry</span>
+                </div>
+                <div class="vehicle-box">
+                    <div class="vehicle-number">{{ number_format($permitTotal ?? 0, 0, ',', '.') }} <span style="font-size: 1rem; font-weight: 500; color: var(--ink-3);">Orang</span></div>
+                    <div class="vehicle-badge">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        <span>Data Terupdate</span>
+                    </div>
                 </div>
             </div>
         </div>
