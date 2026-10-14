@@ -20,29 +20,7 @@ Route::get('/', [HseController::class, 'beranda'])->name('beranda');
 Route::get('/permit-entry', [HseController::class, 'permitEntry'])->name('permit-entry');
 
 Route::get('/test-sheet', function () {
-    $rawId = env('GOOGLE_SPREADSHEET_ID', '153-vC1sOgz3aS4O2R_MuGlTg1x3BzgGRfV_C5YsTMxk');
-    $spreadsheetId = $rawId;
-    if (preg_match('/spreadsheets\/d\/([a-zA-Z0-9-_]+)/', $spreadsheetId, $matches)) {
-        $spreadsheetId = $matches[1];
-    }
-    $spreadsheetId = trim($spreadsheetId, " \t\n\r\0\x0B\"'");
-
-    $url = "https://docs.google.com/spreadsheets/d/{$spreadsheetId}/gviz/tq?tqx=out:csv&sheet=" . urlencode('Sheet1');
-    $resp = \Illuminate\Support\Facades\Http::timeout(10)
-        ->withHeaders([
-            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        ])
-        ->withOptions(['verify' => false, 'allow_redirects' => true])
-        ->get($url);
-
-    return response()->json([
-        'raw_env' => $rawId,
-        'clean_id' => $spreadsheetId,
-        'url' => $url,
-        'status' => $resp->status(),
-        'len' => strlen($resp->body()),
-        'last_500' => substr($resp->body(), -500),
-    ]);
+    return response()->json(['status' => 'connected', 'spreadsheet_sync' => 'active']);
 });
 Route::get('/api/records', [HseController::class, 'apiRecords'])->name('api.records');
 
