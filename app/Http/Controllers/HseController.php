@@ -20,7 +20,13 @@ class HseController extends Controller
      */
     private function readRecords(): array
     {
-        $spreadsheetId = env('GOOGLE_SPREADSHEET_ID', '153-vC1sOgz3aS4O2R_MuGlTg1x3BzgGRfV_C5YsTMxk');
+        $rawId = env('GOOGLE_SPREADSHEET_ID', '153-vC1sOgz3aS4O2R_MuGlTg1x3BzgGRfV_C5YsTMxk');
+        $spreadsheetId = $rawId;
+        if (preg_match('/spreadsheets\/d\/([a-zA-Z0-9-_]+)/', $spreadsheetId, $matches)) {
+            $spreadsheetId = $matches[1];
+        }
+        $spreadsheetId = trim($spreadsheetId, " \t\n\r\0\x0B\"'");
+
         if ($spreadsheetId) {
             $allRecords = [];
             $sheetsToRead = ['Sheet1', 'Form Responses 1'];
