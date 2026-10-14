@@ -29,7 +29,13 @@ class HseController extends Controller
             foreach ($sheetsToRead as $sheetName) {
                 try {
                     $url = "https://docs.google.com/spreadsheets/d/{$spreadsheetId}/gviz/tq?tqx=out:csv&sheet=" . urlencode($sheetName);
-                    $response = Http::timeout(20)->withOptions(['verify' => false])->get($url);
+                    $response = Http::timeout(20)
+                        ->withHeaders([
+                            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                            'Accept' => 'text/csv,text/plain,*/*',
+                        ])
+                        ->withOptions(['verify' => false, 'allow_redirects' => true])
+                        ->get($url);
                     if ($response->successful()) {
                         $csvData = trim($response->body());
                         if ($csvData) {
