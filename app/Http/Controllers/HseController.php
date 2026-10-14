@@ -1046,6 +1046,8 @@ class HseController extends Controller
         })->values();
 
         $formattedRecords = [];
+        $prevKwhUtama = null;
+        $prevKwhOffice = null;
 
         foreach ($sortedRecords as $record) {
             $parsedDate = $record['_carbon']->translatedFormat('d M Y');
@@ -1058,15 +1060,33 @@ class HseController extends Controller
             $currentKwhUtama = floatval(str_replace(',', '.', $rawKwhUtama));
             $currentKwUtama = floatval(str_replace(',', '.', $rawKwUtama));
             $consumedUtama = floatval(str_replace(',', '.', $rawConsumedUtama));
+
+            // Auto-calculate consumed utama jika kosong di sheet
+            if ($consumedUtama <= 0 && $currentKwhUtama > 0 && $prevKwhUtama !== null && $currentKwhUtama >= $prevKwhUtama) {
+                $consumedUtama = round($currentKwhUtama - $prevKwhUtama, 1);
+                $rawConsumedUtama = (string) $consumedUtama;
+            }
+            if ($currentKwhUtama > 0) {
+                $prevKwhUtama = $currentKwhUtama;
+            }
             
             // --- OFFICE ---
             $rawKwhOffice = trim($record['kwh_office'] ?? '');
             $rawKwOffice = trim($record['kw_office'] ?? '0');
-            $rawConsumedOffice = trim($record['consumed_office'] ?? '0');
+            $rawConsumedOffice = trim($record['consumed_office'] ?? '');
             
             $currentKwhOffice = floatval(str_replace(',', '.', $rawKwhOffice));
             $currentKwOffice = floatval(str_replace(',', '.', $rawKwOffice));
             $consumedOffice = floatval(str_replace(',', '.', $rawConsumedOffice));
+
+            // Auto-calculate consumed office jika kosong di sheet
+            if ($consumedOffice <= 0 && $currentKwhOffice > 0 && $prevKwhOffice !== null && $currentKwhOffice >= $prevKwhOffice) {
+                $consumedOffice = round($currentKwhOffice - $prevKwhOffice, 1);
+                $rawConsumedOffice = (string) $consumedOffice;
+            }
+            if ($currentKwhOffice > 0) {
+                $prevKwhOffice = $currentKwhOffice;
+            }
             
             if ($currentKwhUtama > 0 || $currentKwUtama > 0 || $consumedUtama > 0 || $currentKwhOffice > 0 || $currentKwOffice > 0 || $consumedOffice > 0) {
                 $formattedRecords[] = [
