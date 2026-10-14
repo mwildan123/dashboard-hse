@@ -9,7 +9,7 @@ return [
     | Path to the Service Account JSON file.
     |
     */
-    'application_credentials' => env('GOOGLE_APPLICATION_CREDENTIALS', ''),
+    'application_credentials' => env('GOOGLE_APPLICATION_CREDENTIALS', storage_path('app/google-credentials.json')),
     
     /*
     |--------------------------------------------------------------------------

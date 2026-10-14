@@ -1,3 +1,6 @@
 *
 !public/
 !.gitignore
+!hse_records.json
+!forklift_cache.json
+!vehicle_cache.json
