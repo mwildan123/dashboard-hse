@@ -20,7 +20,15 @@ Route::get('/', [HseController::class, 'beranda'])->name('beranda');
 Route::get('/permit-entry', [HseController::class, 'permitEntry'])->name('permit-entry');
 
 Route::get('/test-sheet', function () {
-    return response()->json(['status' => 'connected', 'spreadsheet_sync' => 'active']);
+    $hse = app(HseController::class);
+    $records = $hse->readPrycamRecords();
+    return response()->json([
+        'status' => 'connected',
+        'build' => 'v_prycam_seed_352',
+        'prycam_records_count' => count($records),
+        'storage_exists' => file_exists(storage_path('app/prycam_kwh.json')),
+        'seed_exists' => file_exists(database_path('data/prycam_kwh.json')),
+    ]);
 });
 Route::get('/api/records', [HseController::class, 'apiRecords'])->name('api.records');
 

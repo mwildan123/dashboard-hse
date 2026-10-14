@@ -1,0 +1,3522 @@
+[
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "AR1",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "2893842.45",
+        "kwh": "2894",
+        "kw": "2894",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "AR1",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "2661340.34",
+        "kwh": "2661",
+        "kw": "2661",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "AR1",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "2953884.19",
+        "kwh": "2954",
+        "kw": "2954",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "AR2",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "3048082.27",
+        "kwh": "3048",
+        "kw": "3048",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "AR2",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "3205808.16",
+        "kwh": "3206",
+        "kw": "3206",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "AR2",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "3237540.57",
+        "kwh": "3238",
+        "kw": "3238",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV 1 HV",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "54269227.12",
+        "kwh": "54269",
+        "kw": "54269",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV 1 HV",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "41743832.22",
+        "kwh": "41744",
+        "kw": "41744",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV 1 HV",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "48828555.02",
+        "kwh": "48829",
+        "kw": "48829",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV 1 HVTB",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "56458757.72",
+        "kwh": "56459",
+        "kw": "56459",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV 1 HVTB",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "43951749.31",
+        "kwh": "43952",
+        "kw": "43952",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV 1 HVTB",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "46759272.73",
+        "kwh": "46759",
+        "kw": "46759",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV1 MCC1",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "54772455.22",
+        "kwh": "54772",
+        "kw": "54772",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV1 MCC1",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "47540225.01",
+        "kwh": "47540",
+        "kw": "47540",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV1 MCC1",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "46856765.25",
+        "kwh": "46857",
+        "kw": "46857",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV1 MCC2",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "11882737.57",
+        "kwh": "11883",
+        "kw": "11883",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV1 MCC2",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "11435642.72",
+        "kwh": "11436",
+        "kw": "11436",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV1 MCC2",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "12334411.15",
+        "kwh": "12334",
+        "kw": "12334",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV2",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "74983621.59",
+        "kwh": "74984",
+        "kw": "74984",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV2",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "60527111.80",
+        "kwh": "60527",
+        "kw": "60527",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV2",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "72863516.65",
+        "kwh": "72864",
+        "kw": "72864",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV1 TCU",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "7120744.39",
+        "kwh": "7121",
+        "kw": "7121",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV1 TCU",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "9142266.78",
+        "kwh": "9142",
+        "kw": "9142",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV1 TCU",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "7599852.06",
+        "kwh": "7600",
+        "kw": "7600",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV2 Preheater",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV2 Preheater",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "2777.49",
+        "kwh": "3",
+        "kw": "3",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV2 Preheater",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV2 TCU",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "6442099.75",
+        "kwh": "6442",
+        "kw": "6442",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV2 TCU",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "5826125.91",
+        "kwh": "5826",
+        "kw": "5826",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV2 TCU",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "6296509.70",
+        "kwh": "6297",
+        "kw": "6297",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC2 Main",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "9842816.73",
+        "kwh": "9843",
+        "kw": "9843",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC2 Main",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "6083280.82",
+        "kwh": "6083",
+        "kw": "6083",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC2 Main",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "7085779.36",
+        "kwh": "7086",
+        "kw": "7086",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC2 Tandem",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC2 Tandem",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC2 Tandem",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC3",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "12164136.18",
+        "kwh": "12164",
+        "kw": "12164",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC3",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "13177706.51",
+        "kwh": "13178",
+        "kw": "13178",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC3",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "10039162.43",
+        "kwh": "10039",
+        "kw": "10039",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller LE1",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "2925530.62",
+        "kwh": "2926",
+        "kw": "2926",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller LE1",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "8053095.85",
+        "kwh": "8053",
+        "kw": "8053",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller LE1",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "7713722.66",
+        "kwh": "7714",
+        "kw": "7714",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller WD2",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller WD2",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller WD2",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "6257342.50",
+        "kwh": "6257",
+        "kw": "6257",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #1",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "16064.53",
+        "kwh": "16",
+        "kw": "16",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #1",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "3610.42",
+        "kwh": "4",
+        "kw": "4",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #1",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "356624.41",
+        "kwh": "357",
+        "kw": "357",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #2",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #2",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #2",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #3",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #3",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #3",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #4",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #4",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #4",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #5",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "59999057.85",
+        "kwh": "59999",
+        "kw": "59999",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #5",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #5",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "58632420.62",
+        "kwh": "58632",
+        "kw": "58632",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC2",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "7828333.99",
+        "kwh": "7828",
+        "kw": "7828",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC2",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "8201993.94",
+        "kwh": "8202",
+        "kw": "8202",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC2",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "10608059.97",
+        "kwh": "10608",
+        "kw": "10608",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC3",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "15388531.95",
+        "kwh": "15389",
+        "kw": "15389",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC3",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "14407572.15",
+        "kwh": "14408",
+        "kw": "14408",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC3",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "17446829.04",
+        "kwh": "17447",
+        "kw": "17447",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC6",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "20313711.37",
+        "kwh": "20314",
+        "kw": "20314",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC6",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "23443837.29",
+        "kwh": "23444",
+        "kw": "23444",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC6",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "22065032.30",
+        "kwh": "22065",
+        "kw": "22065",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "LU1",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "2909976.61",
+        "kwh": "2910",
+        "kw": "2910",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "LU1",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "3004205.65",
+        "kwh": "3004",
+        "kw": "3004",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "LU1",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "2659954.11",
+        "kwh": "2660",
+        "kw": "2660",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "SC2",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "3018134.87",
+        "kwh": "3018",
+        "kw": "3018",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "SC2",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "2979092.57",
+        "kwh": "2979",
+        "kw": "2979",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "SC2",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "3510214.16",
+        "kwh": "3510",
+        "kw": "3510",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "SC3",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "4098957.85",
+        "kwh": "4099",
+        "kw": "4099",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "SC3",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "3360879.54",
+        "kwh": "3361",
+        "kw": "3361",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "SC3",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "3495824.42",
+        "kwh": "3496",
+        "kw": "3496",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST2",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "1110613.75",
+        "kwh": "1111",
+        "kw": "1111",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST2",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "1281467.53",
+        "kwh": "1281",
+        "kw": "1281",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST2",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "1240068.09",
+        "kwh": "1240",
+        "kw": "1240",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST4",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "6373299.65",
+        "kwh": "6373",
+        "kw": "6373",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST4",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "3264316.19",
+        "kwh": "3264",
+        "kw": "3264",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST4",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "3768888.18",
+        "kwh": "3769",
+        "kw": "3769",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST5",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "4426472.89",
+        "kwh": "4426",
+        "kw": "4426",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST5",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "3155217.02",
+        "kwh": "3155",
+        "kw": "3155",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST5",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "4726100.80",
+        "kwh": "4726",
+        "kw": "4726",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD2",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "87067866.56",
+        "kwh": "87068",
+        "kw": "87068",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD2",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "72967945.38",
+        "kwh": "72968",
+        "kw": "72968",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD2",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "66828827.03",
+        "kwh": "66829",
+        "kw": "66829",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD4",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "16330178.57",
+        "kwh": "16330",
+        "kw": "16330",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD4",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "16513895.46",
+        "kwh": "16514",
+        "kw": "16514",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD4",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "10802238.93",
+        "kwh": "10802",
+        "kw": "10802",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD5",
+        "bulan": "Oktober",
+        "tahun": "2024",
+        "watt": "7775558.09",
+        "kwh": "7776",
+        "kw": "7776",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD5",
+        "bulan": "November",
+        "tahun": "2024",
+        "watt": "510122.92",
+        "kwh": "510",
+        "kw": "510",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD5",
+        "bulan": "Desember",
+        "tahun": "2024",
+        "watt": "8154876.34",
+        "kwh": "8155",
+        "kw": "8155",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "AR1",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "2821353.45",
+        "kwh": "2821",
+        "kw": "2821",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "AR1",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "2419951.73",
+        "kwh": "2420",
+        "kw": "2420",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "AR2",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "3609823.88",
+        "kwh": "3610",
+        "kw": "3610",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "AR2",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "3052406.51",
+        "kwh": "3052",
+        "kw": "3052",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV 1 HV",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "18302127.41",
+        "kwh": "18302",
+        "kw": "18302",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV 1 HV",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "19833841.61",
+        "kwh": "19834",
+        "kw": "19834",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV 1 HVTB",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "22133191.26",
+        "kwh": "22133",
+        "kw": "22133",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV 1 HVTB",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "21393771.51",
+        "kwh": "21394",
+        "kw": "21394",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV1 MCC1",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "33941891.62",
+        "kwh": "33942",
+        "kw": "33942",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV1 MCC1",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "32927571.10",
+        "kwh": "32928",
+        "kw": "32928",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV1 MCC2",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "8035994.93",
+        "kwh": "8036",
+        "kw": "8036",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV1 MCC2",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "8941126.42",
+        "kwh": "8941",
+        "kw": "8941",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV2",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "79708932.52",
+        "kwh": "79709",
+        "kw": "79709",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV2",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "50866939.75",
+        "kwh": "50867",
+        "kw": "50867",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV1 TCU",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "3681530.83",
+        "kwh": "3682",
+        "kw": "3682",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV1 TCU",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "2247980.96",
+        "kwh": "2248",
+        "kw": "2248",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV2 Preheater",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV2 Preheater",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV2 TCU",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "3818436.91",
+        "kwh": "3818",
+        "kw": "3818",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV2 TCU",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "2655187.68",
+        "kwh": "2655",
+        "kw": "2655",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC2 Main",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "4498094.06",
+        "kwh": "4498",
+        "kw": "4498",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC2 Main",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "4621163.33",
+        "kwh": "4621",
+        "kw": "4621",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC2 Tandem",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC2 Tandem",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC3",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "9009459.91",
+        "kwh": "9009",
+        "kw": "9009",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC3",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "8982372.63",
+        "kwh": "8982",
+        "kw": "8982",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller LE1",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "8237572.41",
+        "kwh": "8238",
+        "kw": "8238",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller LE1",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "6155803.37",
+        "kwh": "6156",
+        "kw": "6156",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller WD2",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "6728071.04",
+        "kwh": "6728",
+        "kw": "6728",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller WD2",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "7779447.78",
+        "kwh": "7779",
+        "kw": "7779",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #1",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "434998.33",
+        "kwh": "435",
+        "kw": "435",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #1",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #2",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "2509867.84",
+        "kwh": "2510",
+        "kw": "2510",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #2",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "3441287.18",
+        "kwh": "3441",
+        "kw": "3441",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #3",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #3",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #4",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #4",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #5",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "71104211.03",
+        "kwh": "71104",
+        "kw": "71104",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #5",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "68219529.81",
+        "kwh": "68220",
+        "kw": "68220",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC2",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "8594052.50",
+        "kwh": "8594",
+        "kw": "8594",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC2",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "6642030.66",
+        "kwh": "6642",
+        "kw": "6642",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC3",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "15937023.97",
+        "kwh": "15937",
+        "kw": "15937",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC3",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "11920419.51",
+        "kwh": "11920",
+        "kw": "11920",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC6",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "13963395.92",
+        "kwh": "13963",
+        "kw": "13963",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC6",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "16838425.92",
+        "kwh": "16838",
+        "kw": "16838",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "LU1",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "LU1",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "SC2",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "2109736.66",
+        "kwh": "2110",
+        "kw": "2110",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "SC2",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "2489242.64",
+        "kwh": "2489",
+        "kw": "2489",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "SC3",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "1955935.60",
+        "kwh": "1956",
+        "kw": "1956",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "SC3",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "1960100.16",
+        "kwh": "1960",
+        "kw": "1960",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST2",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "859573.96",
+        "kwh": "859",
+        "kw": "859",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST2",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "1153359.25",
+        "kwh": "1153",
+        "kw": "1153",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST4",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "2589472.49",
+        "kwh": "2589",
+        "kw": "2589",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST4",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "1959809.88",
+        "kwh": "1960",
+        "kw": "1960",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST5",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST5",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "2796730.45",
+        "kwh": "2797",
+        "kw": "2797",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD2",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD2",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "71639025.51",
+        "kwh": "71639",
+        "kw": "71639",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD4",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "1426737.68",
+        "kwh": "1427",
+        "kw": "1427",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD4",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD5",
+        "bulan": "November",
+        "tahun": "2025",
+        "watt": "3307079.82",
+        "kwh": "3307",
+        "kw": "3307",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD5",
+        "bulan": "Desember",
+        "tahun": "2025",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tdk ada Data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "AR1",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "2726896.84",
+        "kwh": "2726.90",
+        "kw": "2726.90",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "AR1",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "2484766.13",
+        "kwh": "2484.77",
+        "kw": "2484.77",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "AR2",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "3390135.48",
+        "kwh": "3390.14",
+        "kw": "3390.14",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "AR2",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "1296242.71",
+        "kwh": "1296.24",
+        "kw": "1296.24",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV 1 HV",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "38680569.01",
+        "kwh": "38680.57",
+        "kw": "38680.57",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV 1 HV",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "37779050.57",
+        "kwh": "37779.05",
+        "kw": "37779.05",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV 1 HVTB",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "40814927.14",
+        "kwh": "40814.93",
+        "kw": "40814.93",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV 1 HVTB",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "37185020.96",
+        "kwh": "37185.02",
+        "kw": "37185.02",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV1 MCC1",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "30004524.86",
+        "kwh": "30004.52",
+        "kw": "30004.52",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV1 MCC1",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "30380009.28",
+        "kwh": "30380.01",
+        "kw": "30380.01",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV1 MCC2",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "10192967.16",
+        "kwh": "10192.97",
+        "kw": "10192.97",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV1 MCC2",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "9624597.85",
+        "kwh": "9624.60",
+        "kw": "9624.60",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV2",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "56924277.11",
+        "kwh": "56924.28",
+        "kw": "56924.28",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV2",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "55807533.30",
+        "kwh": "55807.53",
+        "kw": "55807.53",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV1 TCU",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "3879461.06",
+        "kwh": "3879.46",
+        "kw": "3879.46",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV1 TCU",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "4737759.45",
+        "kwh": "4737.76",
+        "kw": "4737.76",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV2 Preheater",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "Tidak ada data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV2 Preheater",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "Tidak ada data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV2 TCU",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "1642595.24",
+        "kwh": "1642.60",
+        "kw": "1642.60",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV2 TCU",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "2844646.19",
+        "kwh": "2844.65",
+        "kw": "2844.65",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC2 Main",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "4930183.12",
+        "kwh": "4930.18",
+        "kw": "4930.18",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC2 Main",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "5004440.07",
+        "kwh": "5004.44",
+        "kw": "5004.44",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC2 Tandem",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "Tidak ada data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC2 Tandem",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "Tidak ada data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC3",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "9137521.70",
+        "kwh": "9137.52",
+        "kw": "9137.52",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC3",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "8816001.00",
+        "kwh": "8816.00",
+        "kw": "8816.00",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller LE1",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "1189750.16",
+        "kwh": "1189.75",
+        "kw": "1189.75",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller LE1",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "Tidak ada data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller WD2",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "11051871.40",
+        "kwh": "11051.87",
+        "kw": "11051.87",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller WD2",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "2709329.54",
+        "kwh": "2709.33",
+        "kw": "2709.33",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #1",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "2670620.16",
+        "kwh": "2670.62",
+        "kw": "2670.62",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #1",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "171941.70",
+        "kwh": "171.94",
+        "kw": "171.94",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #2",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "1198956.35",
+        "kwh": "1198.96",
+        "kw": "1198.96",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #2",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "Tidak ada data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #3",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "Tidak ada data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #3",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "Tidak ada data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #4",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "Tidak ada data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #4",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "Tidak ada data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #5",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "74371606.25",
+        "kwh": "74371.61",
+        "kw": "74371.61",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #5",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "65778758.23",
+        "kwh": "65778.76",
+        "kw": "65778.76",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC2",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "10116696.80",
+        "kwh": "10116.70",
+        "kw": "10116.70",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC2",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "9334363.67",
+        "kwh": "9334.36",
+        "kw": "9334.36",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC3",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "14717266.91",
+        "kwh": "14717.27",
+        "kw": "14717.27",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC3",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "15517960.93",
+        "kwh": "15517.96",
+        "kw": "15517.96",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC6",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "17217978.07",
+        "kwh": "17217.98",
+        "kw": "17217.98",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC6",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "16743585.94",
+        "kwh": "16743.59",
+        "kw": "16743.59",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "LU1",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "3168252.28",
+        "kwh": "3168.25",
+        "kw": "3168.25",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "LU1",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "1885754.73",
+        "kwh": "1885.75",
+        "kw": "1885.75",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "SC2",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "2551975.03",
+        "kwh": "2551.98",
+        "kw": "2551.98",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "SC2",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "2628266.86",
+        "kwh": "2628.27",
+        "kw": "2628.27",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "SC3",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "1896079.48",
+        "kwh": "1896.08",
+        "kw": "1896.08",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "SC3",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "2063937.91",
+        "kwh": "2063.94",
+        "kw": "2063.94",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST2",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "1247465.50",
+        "kwh": "1247.47",
+        "kw": "1247.47",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST2",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "1035947.61",
+        "kwh": "1035.95",
+        "kw": "1035.95",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST4",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "5431523.22",
+        "kwh": "5431.52",
+        "kw": "5431.52",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST4",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "107049.44",
+        "kwh": "107.05",
+        "kw": "107.05",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST5",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "4387540.74",
+        "kwh": "4387.54",
+        "kw": "4387.54",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST5",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "3955777.12",
+        "kwh": "3955.78",
+        "kw": "3955.78",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD2",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "1773.69",
+        "kwh": "1.77",
+        "kw": "1.77",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD2",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "20094.38",
+        "kwh": "20.09",
+        "kw": "20.09",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD4",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "Tidak ada data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD4",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "104.11",
+        "kwh": "0.10",
+        "kw": "0.10",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD5",
+        "bulan": "Januari",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "Tidak ada data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD5",
+        "bulan": "Februari",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "Tidak ada data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "AR1",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "1148538",
+        "kwh": "1149",
+        "kw": "1149",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "AR1",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "",
+        "kw": "",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "AR2",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "0",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tidak ada data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "AR2",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "",
+        "kw": "",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV 1 HV",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "5465931",
+        "kwh": "5466",
+        "kw": "5466",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV 1 HV",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV 1 HVTB",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "7438502",
+        "kwh": "7439",
+        "kw": "7439",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV 1 HVTB",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV1 MCC1",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "15750395",
+        "kwh": "15750",
+        "kw": "15750",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV1 MCC1",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV1 MCC2",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "4656642.43",
+        "kwh": "4657",
+        "kw": "4657",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV1 MCC2",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV2",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "27417276.32",
+        "kwh": "27417",
+        "kw": "27417",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV2",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV1 TCU",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tidak ada data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV1 TCU",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV2 Preheater",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tidak ada data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV2 Preheater",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV2 TCU",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "1867055",
+        "kwh": "1867",
+        "kw": "1867",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV2 TCU",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC2 Main",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "2310337",
+        "kwh": "2310",
+        "kw": "2310",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC2 Main",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC2 Tandem",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tidak ada data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC2 Tandem",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC3",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "4281765",
+        "kwh": "4282",
+        "kw": "4282",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC3",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller LE1",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tidak ada data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller LE1",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller WD2",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tidak ada data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller WD2",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #1",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "380487",
+        "kwh": "380",
+        "kw": "380",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #1",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #2",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tidak ada data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #2",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #3",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tidak ada data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #3",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #4",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tidak ada data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #4",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #5",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "34703992",
+        "kwh": "34704",
+        "kw": "34704",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #5",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC2",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "4156559",
+        "kwh": "4157",
+        "kw": "4157",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC2",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC3",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "8886388",
+        "kwh": "8886",
+        "kw": "8886",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC3",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC6",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "9066274",
+        "kwh": "9066",
+        "kw": "9066",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC6",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "LU1",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "286283",
+        "kwh": "286",
+        "kw": "286",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "LU1",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "SC2",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "1140494",
+        "kwh": "1140",
+        "kw": "1140",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "SC2",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "SC3",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "777703",
+        "kwh": "778",
+        "kw": "778",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "SC3",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST2",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "467596",
+        "kwh": "468",
+        "kw": "468",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST2",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST4",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tidak ada data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST4",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST5",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "2188992",
+        "kwh": "2189",
+        "kw": "2189",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST5",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD2",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "805",
+        "kwh": "1",
+        "kw": "1",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD2",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD4",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tidak ada data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD4",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD5",
+        "bulan": "Maret",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "Tidak ada data"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD5",
+        "bulan": "April",
+        "tahun": "2026",
+        "watt": "",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "AR1",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "333259.82",
+        "kwh": "333.26",
+        "kw": "333.26",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "AR1",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "679279.45",
+        "kwh": "679.28",
+        "kw": "679.28",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "AR2",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "994314.15",
+        "kwh": "994.31",
+        "kw": "994.31",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "AR2",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "1564592.85",
+        "kwh": "1564.59",
+        "kw": "1564.59",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV 1 HV",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "6127035.56",
+        "kwh": "6127.04",
+        "kw": "6127.04",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV 1 HV",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "16952195.14",
+        "kwh": "16952.20",
+        "kw": "16952.20",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV 1 HVTB",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "10976787",
+        "kwh": "10976.79",
+        "kw": "10976.79",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV 1 HVTB",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "15060090.84",
+        "kwh": "15060.09",
+        "kw": "15060.09",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV1 MCC1",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "16196733",
+        "kwh": "16196.73",
+        "kw": "16196.73",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV1 MCC1",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "23103796.41",
+        "kwh": "23103.80",
+        "kw": "23103.80",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV1 MCC2",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "2320437.34",
+        "kwh": "2320.44",
+        "kw": "2320.44",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV1 MCC2",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "7226845.83",
+        "kwh": "7226.85",
+        "kw": "7226.85",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV2",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "11539333.94",
+        "kwh": "11539.33",
+        "kw": "11539.33",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "CCV2",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "16243903.15",
+        "kwh": "16243.90",
+        "kw": "16243.90",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV1 TCU",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "1005889.98",
+        "kwh": "1005.89",
+        "kw": "1005.89",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV1 TCU",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "2692645.83",
+        "kwh": "2692.65",
+        "kw": "2692.65",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV2 Preheater",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "TDK ADA DATA"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV2 Preheater",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "TDK ADA DATA"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV2 TCU",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "TDK ADA DATA"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller CCV2 TCU",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "2800560.07",
+        "kwh": "2800.56",
+        "kw": "2800.56",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC2 Main",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "727212.22",
+        "kwh": "727.21",
+        "kw": "727.21",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC2 Main",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "3815990.78",
+        "kwh": "3815.99",
+        "kw": "3815.99",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC2 Tandem",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "TDK ADA DATA"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC2 Tandem",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "TDK ADA DATA"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC3",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "TDK ADA DATA"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller JC3",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "4407844.08",
+        "kwh": "4407.84",
+        "kw": "4407.84",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller LE1",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "TDK ADA DATA"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller LE1",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "TDK ADA DATA"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller WD2",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "1038306.136",
+        "kwh": "1038.31",
+        "kw": "1038.31",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Chiller WD2",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "7826045.66",
+        "kwh": "7826.05",
+        "kw": "7826.05",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #1",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0",
+        "kw": "0",
+        "keterangan": "TDK ADA DATA"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #1",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "1727884.18",
+        "kwh": "1727.88",
+        "kw": "1727.88",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #2",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "785276.82",
+        "kwh": "785.28",
+        "kw": "785.28",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #2",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "847738.23",
+        "kwh": "847.74",
+        "kw": "847.74",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #3",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "TDK ADA DATA"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #3",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "TDK ADA DATA"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #4",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "TDK ADA DATA"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #4",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "TDK ADA DATA"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #5",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "TDK ADA DATA"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "Compressor #5",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "6328966.97",
+        "kwh": "6328.97",
+        "kw": "6328.97",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC2",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "3156491",
+        "kwh": "3156.49",
+        "kw": "3156.49",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC2",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "9130074.73",
+        "kwh": "9130.07",
+        "kw": "9130.07",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC3",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "6400462",
+        "kwh": "6400.46",
+        "kw": "6400.46",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC3",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "6785416.06",
+        "kwh": "6785.42",
+        "kw": "6785.42",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC6",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "8348760",
+        "kwh": "8348.76",
+        "kw": "8348.76",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "JC6",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "13525430.07",
+        "kwh": "13525.43",
+        "kw": "13525.43",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "LU1",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "954497",
+        "kwh": "954.50",
+        "kw": "954.50",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "LU1",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "2147819.79",
+        "kwh": "2147.82",
+        "kw": "2147.82",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "SC2",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "974191",
+        "kwh": "974.19",
+        "kw": "974.19",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "SC2",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "1912719.74",
+        "kwh": "1912.72",
+        "kw": "1912.72",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "SC3",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "1269576",
+        "kwh": "1269.58",
+        "kw": "1269.58",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "SC3",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "790078.63",
+        "kwh": "790.08",
+        "kw": "790.08",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST2",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "195781",
+        "kwh": "195.78",
+        "kw": "195.78",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST2",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "1020490.09",
+        "kwh": "1020.49",
+        "kw": "1020.49",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST4",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "2810239.12",
+        "kwh": "2810.24",
+        "kw": "2810.24",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST4",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "5324547.26",
+        "kwh": "5324.55",
+        "kw": "5324.55",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST5",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "1409454",
+        "kwh": "1409.45",
+        "kw": "1409.45",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "ST5",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "2161805.36",
+        "kwh": "2161.81",
+        "kw": "2161.81",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD2",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "TDK ADA DATA"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD2",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "-1217460.52",
+        "kwh": "-1217.46",
+        "kw": "-1217.46",
+        "keterangan": ""
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD4",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "TDK ADA DATA"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD4",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "TDK ADA DATA"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD5",
+        "bulan": "Juli",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "TDK ADA DATA"
+    },
+    {
+        "timestamp": "2026-09-27 04:07:26",
+        "panel": "WD5",
+        "bulan": "Agustus",
+        "tahun": "2026",
+        "watt": "0.00",
+        "kwh": "0.00",
+        "kw": "0.00",
+        "keterangan": "TDK ADA DATA"
+    }
+]

@@ -1140,10 +1140,7 @@ class HseController extends Controller
         $rataRata = $totalRecord > 0 ? $totalConsumed / $totalRecord : 0;
         
         // Gabungkan data input permanen dan session
-        $permanentInput = [];
-        if (file_exists(storage_path('app/prycam_kwh.json'))) {
-            $permanentInput = json_decode(file_get_contents(storage_path('app/prycam_kwh.json')), true) ?: [];
-        }
+        $permanentInput = $this->readPrycamRecords();
         $sessionInput = session('temp_monitoring_data', []);
         $allInputRecords = array_merge($permanentInput, $sessionInput);
 
@@ -1222,6 +1219,46 @@ class HseController extends Controller
     }
 
     /**
+     * Path ke prycam_kwh.json di storage, auto-seed dari database/data jika belum ada.
+     */
+    public function prycamPath(): string
+    {
+        $storage = storage_path('app/prycam_kwh.json');
+        $seed = database_path('data/prycam_kwh.json');
+
+        if (!file_exists($storage) && file_exists($seed)) {
+            $dir = dirname($storage);
+            if (!is_dir($dir)) {
+                @mkdir($dir, 0775, true);
+            }
+            @copy($seed, $storage);
+        }
+        return $storage;
+    }
+
+    /**
+     * Baca data permanen Prycam, fallback ke seed database jika storage kosong/hilang.
+     */
+    public function readPrycamRecords(): array
+    {
+        $path = $this->prycamPath();
+        if (file_exists($path)) {
+            $data = json_decode(file_get_contents($path), true);
+            if (!empty($data) && is_array($data)) {
+                return $data;
+            }
+        }
+        $seed = database_path('data/prycam_kwh.json');
+        if (file_exists($seed)) {
+            $data = json_decode(file_get_contents($seed), true);
+            if (!empty($data) && is_array($data)) {
+                return $data;
+            }
+        }
+        return [];
+    }
+
+    /**
      * Show the form page.
      */
     public function form()
@@ -1261,11 +1298,8 @@ class HseController extends Controller
             'keterangan' => $validated['keterangan'] ?? '',
         ];
 
-        $jsonPath = storage_path('app/prycam_kwh.json');
-        $permanentInput = [];
-        if (file_exists($jsonPath)) {
-            $permanentInput = json_decode(file_get_contents($jsonPath), true) ?: [];
-        }
+        $jsonPath = $this->prycamPath();
+        $permanentInput = $this->readPrycamRecords();
         $permanentInput[] = $row;
         file_put_contents($jsonPath, json_encode($permanentInput, JSON_PRETTY_PRINT));
 
@@ -1306,12 +1340,8 @@ class HseController extends Controller
     public function deleteSessionData($id)
     {
         $id = (int) $id;
-        $permanentInput = [];
-        $jsonPath = storage_path('app/prycam_kwh.json');
-        
-        if (file_exists($jsonPath)) {
-            $permanentInput = json_decode(file_get_contents($jsonPath), true) ?: [];
-        }
+        $permanentInput = $this->readPrycamRecords();
+        $jsonPath = $this->prycamPath();
         
         $sessionData = session('temp_monitoring_data', []);
         
