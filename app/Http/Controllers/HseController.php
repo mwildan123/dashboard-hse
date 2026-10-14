@@ -20,23 +20,28 @@ class HseController extends Controller
      */
     private function readRecords(): array
     {
-        try {
-            $spreadsheetId = env('GOOGLE_SPREADSHEET_ID');
-            if ($spreadsheetId) {
-                $allRecords = [];
-                $sheetsToRead = ['Sheet1', 'Form Responses 1'];
-                
-                foreach ($sheetsToRead as $sheetName) {
-                    try {
-                        $sheetData = \Revolution\Google\Sheets\Facades\Sheets::spreadsheet($spreadsheetId)->sheet($sheetName)->get();
-                        if ($sheetData && count($sheetData) > 1) {
-                            // Mulai dari 1 untuk melewati baris header pertama
-                            for ($i = 1; $i < count($sheetData); $i++) {
-                                $row = $sheetData[$i];
+        $spreadsheetId = env('GOOGLE_SPREADSHEET_ID', '153-vC1sOgz3aS4O2R_MuGlTg1x3BzgGRfV_C5YsTMxk');
+        if ($spreadsheetId) {
+            $allRecords = [];
+            $sheetsToRead = ['Sheet1', 'Form Responses 1'];
+
+            // 1. Prioritas Utama: Baca langsung via Google CSV export (Cepat & Real-time)
+            foreach ($sheetsToRead as $sheetName) {
+                try {
+                    $url = "https://docs.google.com/spreadsheets/d/{$spreadsheetId}/gviz/tq?tqx=out:csv&sheet=" . urlencode($sheetName);
+                    $response = Http::timeout(20)->withOptions(['verify' => false])->get($url);
+                    if ($response->successful()) {
+                        $csvData = trim($response->body());
+                        if ($csvData) {
+                            $stream = fopen('php://memory', 'r+');
+                            fwrite($stream, $csvData);
+                            rewind($stream);
+
+                            fgetcsv($stream); // skip baris header
+                            while (($row = fgetcsv($stream)) !== false) {
                                 if (empty($row) || (empty($row[0]) && empty($row[1]))) continue;
-                                // Skip baris header kedua jika ada (misal di Sheet1)
                                 if (strtolower(trim($row[1] ?? '')) === 'tanggal') continue;
-                                
+
                                 $allRecords[] = [
                                     'timestamp' => $row[0] ?? '',
                                     'tanggal' => $row[1] ?? '',
@@ -48,35 +53,84 @@ class HseController extends Controller
                                     'kwh' => '',
                                     'consumed' => '',
                                     'keterangan' => $row[8] ?? '',
-                                    
+
                                     // Utama
                                     'kw_utama' => $row[2] ?? '',
                                     'kwh_utama' => $row[3] ?? '',
                                     'consumed_utama' => $row[4] ?? '',
-                                    
+
                                     // Office
                                     'kw_office' => $row[5] ?? '',
                                     'kwh_office' => $row[6] ?? '',
                                     'consumed_office' => $row[7] ?? '',
-                                    
+
+                                    'jam_pencatatan' => $row[9] ?? '',
+                                    'picture' => $this->normalizePictureValue($row[11] ?? ($row[10] ?? '')),
+                                ];
+                            }
+                            fclose($stream);
+                        }
+                    }
+                } catch (\Throwable $e) {
+                    \Illuminate\Support\Facades\Log::warning("Gagal membaca {$sheetName} via CSV: " . $e->getMessage());
+                }
+            }
+
+            if (count($allRecords) > 0) {
+                $this->writeRecords($allRecords);
+                return $allRecords;
+            }
+
+            // 2. Fallback: coba Sheets API jika CSV export tidak tersedia
+            try {
+                foreach ($sheetsToRead as $sheetName) {
+                    try {
+                        $sheetData = \Revolution\Google\Sheets\Facades\Sheets::spreadsheet($spreadsheetId)->sheet($sheetName)->get();
+                        if ($sheetData && count($sheetData) > 1) {
+                            for ($i = 1; $i < count($sheetData); $i++) {
+                                $row = $sheetData[$i];
+                                if (empty($row) || (empty($row[0]) && empty($row[1]))) continue;
+                                if (strtolower(trim($row[1] ?? '')) === 'tanggal') continue;
+
+                                $allRecords[] = [
+                                    'timestamp' => $row[0] ?? '',
+                                    'tanggal' => $row[1] ?? '',
+                                    'panel' => $row[12] ?? '',
+                                    'bulan' => $row[13] ?? '',
+                                    'tahun' => $row[14] ?? '',
+                                    'watt' => $row[15] ?? '',
+                                    'kw' => $row[16] ?? '',
+                                    'kwh' => '',
+                                    'consumed' => '',
+                                    'keterangan' => $row[8] ?? '',
+
+                                    // Utama
+                                    'kw_utama' => $row[2] ?? '',
+                                    'kwh_utama' => $row[3] ?? '',
+                                    'consumed_utama' => $row[4] ?? '',
+
+                                    // Office
+                                    'kw_office' => $row[5] ?? '',
+                                    'kwh_office' => $row[6] ?? '',
+                                    'consumed_office' => $row[7] ?? '',
+
                                     'jam_pencatatan' => $row[9] ?? '',
                                     'picture' => $this->normalizePictureValue($row[11] ?? ($row[10] ?? '')),
                                 ];
                             }
                         }
                     } catch (\Throwable $e) {
-                        \Illuminate\Support\Facades\Log::warning("Gagal membaca {$sheetName}: " . $e->getMessage());
+                        \Illuminate\Support\Facades\Log::warning("Gagal membaca {$sheetName} via Sheets API: " . $e->getMessage());
                     }
                 }
-                
+
                 if (count($allRecords) > 0) {
                     $this->writeRecords($allRecords);
                     return $allRecords;
                 }
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error('Google Sheets API Error: ' . $e->getMessage());
             }
-        } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::error('Google Sheets API Error: ' . $e->getMessage());
-            // Fallback
         }
 
         return $this->readLocalRecords();
