@@ -6,7 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="theme-color" content="#ffffff">
 
-    <title>@yield('title', 'Dashboard HSE') - Dashboard HSE PCI</title>
+    <title>@yield('title', 'Dashboard HSE') - Dashboard HSE</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,11 +22,14 @@
                 <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
             </button>
 
-            <a href="{{ route('beranda') }}" class="brand" aria-label="Dashboard HSE PCI">
-                <!-- Logo Prysmian -->
-                <img src="{{ asset('image/prysmian_transparent_clean.png') }}" alt="Prysmian Logo" class="brand-mark">
-                <!-- Logo Zero & Beyond -->
-                <img src="{{ asset('image/zero_beyond_clean.png') }}" alt="Zero Beyond Logo" class="brand-mark-2">
+            <a href="{{ route('beranda') }}" class="brand" aria-label="Dashboard HSE">
+                <!-- Brand HSE Typography -->
+                <div class="brand-hse">
+                    <div class="brand-hse-text">
+                        <span class="brand-hse-title">HSE</span>
+                        <span class="brand-hse-desc">Health, Safety &amp; Environment</span>
+                    </div>
+                </div>
             </a>
 
             <nav class="desktop-nav" aria-label="Menu utama">
@@ -80,7 +83,7 @@
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
     @yield('scripts')
-    <script src="{{ asset('js/dashboard.js') }}"></script>
+    <script src="{{ asset('js/dashboard.js') }}?v={{ filemtime(public_path('js/dashboard.js')) }}"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         const animateValue = (obj, duration) => {

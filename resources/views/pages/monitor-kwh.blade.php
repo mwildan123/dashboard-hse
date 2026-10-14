@@ -17,9 +17,9 @@
     <div class="page-title">
         <h1>Monitoring Konsumsi kWh</h1>
         <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-            <p class="sync-info" style="margin: 0;">
+            <p class="sync-info" style="margin: 0; cursor: default;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4"/><path d="m16.2 7.8 2.9-2.9"/><path d="M18 12h4"/><path d="m16.2 16.2 2.9 2.9"/><path d="M12 18v4"/><path d="m4.9 19.1 2.9-2.9"/><path d="M2 12h4"/><path d="m4.9 4.9 2.9 2.9"/></svg>
-                Data terakhir disinkronkan: <strong>{{ $lastSync ?? now()->format('d M Y, H:i') }}</strong>
+                Data ini sejak: <strong>7 Juli 2025</strong>
             </p>
         </div>
     </div>

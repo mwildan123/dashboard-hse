@@ -873,25 +873,8 @@
         if (form.id === 'form-forklift') initMatrix(form);
     });
 
-    /* ---------- Interaksi Sinkronisasi (Sync Info) ---------- */
-    $$('.sync-info').forEach(function(el) {
-        el.setAttribute('title', 'Klik untuk menyinkronkan ulang data');
-        el.addEventListener('click', function() {
-            if (el.classList.contains('is-syncing')) return;
-            el.classList.add('is-syncing');
-            toast('Menyinkronkan data monitoring...', 'info');
-
-            setTimeout(function() {
-                var strong = $('strong', el);
-                var now = new Date();
-                var months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-                var timeStr = pad(now.getDate()) + ' ' + months[now.getMonth()] + ' ' + now.getFullYear() + ', ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
-                if (strong) strong.textContent = timeStr;
-                el.classList.remove('is-syncing');
-                toast('Data berhasil diperbarui!', 'good');
-            }, 900);
-        });
-    });
+    /* ---------- Informasi Data Pertama Masuk (Static Notice) ---------- */
+    // .sync-info berfungsi sebagai pemberitahuan tanggal awal data masuk (tidak berubah saat diklik)
 
     /* ---------- Tooltip Interaktif Grafik kWh (Hover & Klik) ---------- */
     function initChartTooltip() {

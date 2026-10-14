@@ -1878,8 +1878,9 @@ class HseController extends Controller
                         $jam_masuk = $formatTime($jam_masuk);
                         $jam_keluar = $formatTime($jam_keluar);
 
-                        // Calculate total hours if both times are present
+                        // Calculate total hours and duration if both times are present
                         $total_jam = 0;
+                        $durasi = '-';
                         if (!empty($jam_masuk) && !empty($jam_keluar) && strpos($jam_masuk, ':') !== false && strpos($jam_keluar, ':') !== false) {
                             try {
                                 $tMasuk = strtotime($jam_masuk);
@@ -1889,10 +1890,20 @@ class HseController extends Controller
                                     if ($diff < 0) { // Assume overnight
                                         $diff += 86400; 
                                     }
+                                    $total_menit = (int) round($diff / 60);
                                     $total_jam = round($diff / 3600, 1);
+
+                                    if ($total_menit < 60) {
+                                        $durasi = $total_menit . ' Menit';
+                                    } else {
+                                        $h = floor($total_menit / 60);
+                                        $m = $total_menit % 60;
+                                        $durasi = $m > 0 ? "{$h} Jam {$m} Menit" : "{$h} Jam";
+                                    }
                                 }
                             } catch (\Exception $e) {
                                 $total_jam = 0;
+                                $durasi = '-';
                             }
                         }
 
@@ -1919,6 +1930,7 @@ class HseController extends Controller
                                 'jam_masuk' => $jam_masuk ?: '-',
                                 'jam_keluar' => $jam_keluar ?: '-',
                                 'total_jam' => $total_jam,
+                                'durasi' => $durasi,
                             ];
                         }
                     }
@@ -1953,18 +1965,18 @@ class HseController extends Controller
             // Dummy Data Fallback (if env not set or fetch fails)
             $isDummy = true;
             $data = [
-                ['tanggal' => '2026-10-09', 'nama' => 'Budi Santoso', 'instansi' => 'PT Maju Jaya', 'jam_masuk' => '08:00', 'jam_keluar' => '10:00', 'total_jam' => 2],
-                ['tanggal' => '2026-10-09', 'nama' => 'Siti Aminah', 'instansi' => 'CV Sejahtera', 'jam_masuk' => '09:15', 'jam_keluar' => '12:15', 'total_jam' => 3],
-                ['tanggal' => '2026-10-09', 'nama' => 'Agus Setiawan', 'instansi' => 'PT Maju Jaya', 'jam_masuk' => '10:30', 'jam_keluar' => '11:30', 'total_jam' => 1],
-                ['tanggal' => '2026-10-08', 'nama' => 'Wahyu Hidayat', 'instansi' => 'PT Karya Bersama', 'jam_masuk' => '13:00', 'jam_keluar' => '17:00', 'total_jam' => 4],
-                ['tanggal' => '2026-10-08', 'nama' => 'Rina Kartika', 'instansi' => 'CV Sejahtera', 'jam_masuk' => '08:30', 'jam_keluar' => '11:00', 'total_jam' => 2.5],
-                ['tanggal' => '2026-10-08', 'nama' => 'Hendra Pratama', 'instansi' => 'PT Bangun Persada', 'jam_masuk' => '09:00', 'jam_keluar' => '15:00', 'total_jam' => 6],
-                ['tanggal' => '2026-10-07', 'nama' => 'Budi Santoso', 'instansi' => 'PT Maju Jaya', 'jam_masuk' => '09:00', 'jam_keluar' => '12:00', 'total_jam' => 3],
-                ['tanggal' => '2026-10-07', 'nama' => 'Dwi Purnomo', 'instansi' => 'PT Sentosa Abadi', 'jam_masuk' => '08:00', 'jam_keluar' => '16:00', 'total_jam' => 8],
-                ['tanggal' => '2026-10-06', 'nama' => 'Eko Prasetyo', 'instansi' => 'PT Karya Bersama', 'jam_masuk' => '14:00', 'jam_keluar' => '15:30', 'total_jam' => 1.5],
-                ['tanggal' => '2026-10-06', 'nama' => 'Joko Widodo', 'instansi' => 'CV Mitra Sejati', 'jam_masuk' => '10:00', 'jam_keluar' => '12:00', 'total_jam' => 2],
-                ['tanggal' => '2026-10-05', 'nama' => 'Ahmad Jais', 'instansi' => 'PT Bangun Persada', 'jam_masuk' => '08:00', 'jam_keluar' => '17:00', 'total_jam' => 9],
-                ['tanggal' => '2026-10-05', 'nama' => 'Fajar Nugroho', 'instansi' => 'CV Mitra Sejati', 'jam_masuk' => '09:00', 'jam_keluar' => '11:00', 'total_jam' => 2],
+                ['tanggal' => '2026-10-09', 'nama' => 'Budi Santoso', 'instansi' => 'PT Maju Jaya', 'jam_masuk' => '08:00', 'jam_keluar' => '10:00', 'total_jam' => 2, 'durasi' => '2 Jam'],
+                ['tanggal' => '2026-10-09', 'nama' => 'Siti Aminah', 'instansi' => 'CV Sejahtera', 'jam_masuk' => '09:15', 'jam_keluar' => '12:15', 'total_jam' => 3, 'durasi' => '3 Jam'],
+                ['tanggal' => '2026-10-09', 'nama' => 'Agus Setiawan', 'instansi' => 'PT Maju Jaya', 'jam_masuk' => '10:30', 'jam_keluar' => '11:30', 'total_jam' => 1, 'durasi' => '1 Jam'],
+                ['tanggal' => '2026-10-08', 'nama' => 'Wahyu Hidayat', 'instansi' => 'PT Karya Bersama', 'jam_masuk' => '13:00', 'jam_keluar' => '17:00', 'total_jam' => 4, 'durasi' => '4 Jam'],
+                ['tanggal' => '2026-10-08', 'nama' => 'Rina Kartika', 'instansi' => 'CV Sejahtera', 'jam_masuk' => '08:30', 'jam_keluar' => '11:00', 'total_jam' => 2.5, 'durasi' => '2 Jam 30 Menit'],
+                ['tanggal' => '2026-10-08', 'nama' => 'Hendra Pratama', 'instansi' => 'PT Bangun Persada', 'jam_masuk' => '09:00', 'jam_keluar' => '15:00', 'total_jam' => 6, 'durasi' => '6 Jam'],
+                ['tanggal' => '2026-10-07', 'nama' => 'Budi Santoso', 'instansi' => 'PT Maju Jaya', 'jam_masuk' => '09:00', 'jam_keluar' => '12:00', 'total_jam' => 3, 'durasi' => '3 Jam'],
+                ['tanggal' => '2026-10-07', 'nama' => 'Dwi Purnomo', 'instansi' => 'PT Sentosa Abadi', 'jam_masuk' => '08:00', 'jam_keluar' => '16:00', 'total_jam' => 8, 'durasi' => '8 Jam'],
+                ['tanggal' => '2026-10-06', 'nama' => 'Eko Prasetyo', 'instansi' => 'PT Karya Bersama', 'jam_masuk' => '14:00', 'jam_keluar' => '15:30', 'total_jam' => 1.5, 'durasi' => '1 Jam 30 Menit'],
+                ['tanggal' => '2026-10-06', 'nama' => 'Joko Widodo', 'instansi' => 'CV Mitra Sejati', 'jam_masuk' => '10:00', 'jam_keluar' => '12:00', 'total_jam' => 2, 'durasi' => '2 Jam'],
+                ['tanggal' => '2026-10-05', 'nama' => 'Ahmad Jais', 'instansi' => 'PT Bangun Persada', 'jam_masuk' => '08:00', 'jam_keluar' => '17:00', 'total_jam' => 9, 'durasi' => '9 Jam'],
+                ['tanggal' => '2026-10-05', 'nama' => 'Fajar Nugroho', 'instansi' => 'CV Mitra Sejati', 'jam_masuk' => '09:00', 'jam_keluar' => '11:00', 'total_jam' => 2, 'durasi' => '2 Jam'],
             ];
         }
 

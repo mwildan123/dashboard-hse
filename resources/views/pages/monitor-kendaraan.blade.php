@@ -107,10 +107,10 @@
 <div class="page-head-row">
     <div class="page-title">
         <h1>Monitoring Data Kendaraan</h1>
-        <p>Pantau kelengkapan dokumen kendaraan pegawai PCI — SIM, STNK, dan masa berlakunya.</p>
-        <p class="sync-info">
+        <p>Pantau kelengkapan dokumen kendaraan pegawai — SIM, STNK, dan masa berlakunya.</p>
+        <p class="sync-info" style="cursor: default;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4"/><path d="m16.2 7.8 2.9-2.9"/><path d="M18 12h4"/><path d="m16.2 16.2 2.9 2.9"/><path d="M12 18v4"/><path d="m4.9 19.1 2.9-2.9"/><path d="M2 12h4"/><path d="m4.9 4.9 2.9 2.9"/></svg>
-            Data terakhir disinkronkan: <strong>{{ $lastSync ?? now()->translatedFormat('d M Y, H:i') }}</strong>
+            Data ini sejak: <strong>2 Februari 2024</strong>
         </p>
     </div>
     <div class="page-actions">
@@ -394,7 +394,6 @@
 
         // ── Real-time AJAX Polling (every 60 seconds) ──────────
         var POLL_INTERVAL = 15000; // 15 detik
-        var syncInfoEl = document.querySelector('.sync-info strong');
         var statCards = document.querySelectorAll('.stat-value');
 
         function updateDashboard() {
@@ -403,10 +402,7 @@
                 .then(function (json) {
                     if (json.status !== 'ok') return;
 
-                    // Update sync time
-                    if (syncInfoEl) {
-                        syncInfoEl.textContent = json.lastSync;
-                    }
+                    // Data timestamp remains static as requested
 
                     // Update stat cards (dihandle oleh filter JS setelah ini)
 

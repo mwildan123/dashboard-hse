@@ -21,12 +21,12 @@
     <div class="page-title">
         <h1>Monitoring Permit to Entry</h1>
         <p>Pantau akses masuk harian ke area pabrik untuk vendor, kontraktor, dan tamu operasional.</p>
-        <p class="sync-info">
+        <p class="sync-info" style="cursor: default;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4"/><path d="m16.2 7.8 2.9-2.9"/><path d="M18 12h4"/><path d="m16.2 16.2 2.9 2.9"/><path d="M12 18v4"/><path d="m4.9 19.1 2.9-2.9"/><path d="M2 12h4"/><path d="m4.9 4.9 2.9 2.9"/></svg>
             @if($isDummy)
                 Mode Pratinjau: <strong>Data Dummy Aktif</strong>
             @else
-                Data terakhir disinkronkan: <strong>{{ now()->translatedFormat('d M Y, H:i') }}</strong>
+                Data ini sejak: <strong>29 Juni 2025</strong>
             @endif
         </p>
     </div>
@@ -69,8 +69,8 @@
                 <span class="stat-value" id="stat_total_orang">0</span>
             </div>
             <div class="stat-card">
-                <span class="stat-label">Total Jam Keseluruhan</span>
-                <span class="stat-value" id="stat_total_jam">0 Jam</span>
+                <span class="stat-label">Total Durasi Keseluruhan</span>
+                <span class="stat-value" id="stat_total_jam" style="font-size: clamp(20px, 2vw, 28px);">0 Menit</span>
             </div>
             <div class="stat-card">
                 <span class="stat-label">Instansi Terlibat</span>
@@ -118,7 +118,7 @@
                     <th>INSTANSI</th>
                     <th>JAM MASUK</th>
                     <th>JAM KELUAR</th>
-                    <th>TOTAL JAM</th>
+                    <th>TOTAL DURASI</th>
                 </tr>
             </thead>
             <tbody id="table-body">
@@ -135,6 +135,49 @@
     var chartTrenInst = null;
     var chartInstansiInst = null;
     var pagPermit = null;
+
+    function formatDurasi(row) {
+        if (row.durasi && row.durasi !== '-') {
+            return row.durasi;
+        }
+
+        // Calculate from jam_masuk & jam_keluar if available
+        if (row.jam_masuk && row.jam_keluar && row.jam_masuk !== '-' && row.jam_keluar !== '-') {
+            var pIn = row.jam_masuk.split(':');
+            var pOut = row.jam_keluar.split(':');
+            if (pIn.length >= 2 && pOut.length >= 2) {
+                var mIn = parseInt(pIn[0], 10) * 60 + parseInt(pIn[1], 10);
+                var mOut = parseInt(pOut[0], 10) * 60 + parseInt(pOut[1], 10);
+                if (!isNaN(mIn) && !isNaN(mOut)) {
+                    var diff = mOut - mIn;
+                    if (diff < 0) diff += 1440; // Overnight
+                    if (diff < 60) {
+                        return diff + ' Menit';
+                    }
+                    var h = Math.floor(diff / 60);
+                    var m = diff % 60;
+                    return m > 0 ? (h + ' Jam ' + m + ' Menit') : (h + ' Jam');
+                }
+            }
+        }
+
+        // Fallback from decimal row.total_jam
+        if (row.total_jam !== undefined && row.total_jam !== null && row.total_jam !== '') {
+            var totalHours = parseFloat(row.total_jam);
+            if (isNaN(totalHours) || totalHours <= 0) {
+                return '0 Menit';
+            }
+            var totalMins = Math.round(totalHours * 60);
+            if (totalMins < 60) {
+                return totalMins + ' Menit';
+            }
+            var h = Math.floor(totalMins / 60);
+            var m = totalMins % 60;
+            return m > 0 ? (h + ' Jam ' + m + ' Menit') : (h + ' Jam');
+        }
+
+        return '-';
+    }
 
     function renderTable(data) {
         var tbody = document.getElementById('table-body');
@@ -154,7 +197,7 @@
                 <td><span class="badge slate">${row.instansi}</span></td>
                 <td>${row.jam_masuk}</td>
                 <td>${row.jam_keluar}</td>
-                <td><span class="badge warn">${row.total_jam} Jam</span></td>
+                <td><span class="badge warn">${formatDurasi(row)}</span></td>
             `;
             tbody.appendChild(tr);
         });
@@ -170,14 +213,55 @@
 
     function renderStats(data) {
         var totalOrang = data.length;
-        var totalJam = data.reduce((sum, row) => sum + parseFloat(row.total_jam), 0);
+        
+        var totalMins = 0;
+        data.forEach(function(row) {
+            if (row.jam_masuk && row.jam_keluar && row.jam_masuk !== '-' && row.jam_keluar !== '-') {
+                var pIn = row.jam_masuk.split(':');
+                var pOut = row.jam_keluar.split(':');
+                if (pIn.length >= 2 && pOut.length >= 2) {
+                    var mIn = parseInt(pIn[0], 10) * 60 + parseInt(pIn[1], 10);
+                    var mOut = parseInt(pOut[0], 10) * 60 + parseInt(pOut[1], 10);
+                    if (!isNaN(mIn) && !isNaN(mOut)) {
+                        var diff = mOut - mIn;
+                        if (diff < 0) diff += 1440;
+                        totalMins += diff;
+                        return;
+                    }
+                }
+            }
+            totalMins += Math.round(parseFloat(row.total_jam || 0) * 60);
+        });
         
         var instansiSet = new Set();
-        data.forEach(row => instansiSet.add(row.instansi));
+        data.forEach(function(row) {
+            var instName = (row.instansi || '').trim();
+            if (instName !== '' && instName !== '-') {
+                instansiSet.add(instName);
+            }
+        });
         
-        document.getElementById('stat_total_orang').textContent = totalOrang;
-        document.getElementById('stat_total_jam').textContent = totalJam + ' Jam';
-        document.getElementById('stat_total_instansi').textContent = instansiSet.size;
+        document.getElementById('stat_total_orang').textContent = totalOrang.toLocaleString('id-ID');
+        
+        var formattedTotal = '0 Jam';
+        if (totalMins > 0) {
+            if (totalMins < 60) {
+                formattedTotal = totalMins + ' Menit';
+            } else {
+                var h = Math.floor(totalMins / 60);
+                var m = totalMins % 60;
+                if (h >= 24) {
+                    // Kalau durasi sudah 24 jam ke atas (atau ribuan jam), bulatkan ke jam terdekat agar rapi & proporsional
+                    var roundedH = Math.round(totalMins / 60);
+                    formattedTotal = roundedH.toLocaleString('id-ID') + ' Jam';
+                } else {
+                    // Kalau di bawah 24 jam (misal filter harian/personal), tampilkan detail jam dan menit presisi
+                    formattedTotal = m > 0 ? (h.toLocaleString('id-ID') + ' Jam ' + m + ' Menit') : (h.toLocaleString('id-ID') + ' Jam');
+                }
+            }
+        }
+        document.getElementById('stat_total_jam').textContent = formattedTotal;
+        document.getElementById('stat_total_instansi').textContent = instansiSet.size.toLocaleString('id-ID');
     }
 
     function renderCharts(data) {
@@ -277,6 +361,22 @@
                 indexAxis: 'y',
                 responsive: true,
                 maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                var val = context.parsed.x || 0;
+                                var totalM = Math.round(val * 60);
+                                if (totalM < 60) {
+                                    return ' Total: ' + totalM + ' Menit';
+                                }
+                                var h = Math.floor(totalM / 60);
+                                var m = totalM % 60;
+                                return ' Total: ' + (m > 0 ? (h + ' Jam ' + m + ' Menit') : (h + ' Jam'));
+                            }
+                        }
+                    }
+                },
                 scales: {
                     x: { beginAtZero: true },
                     y: { grid: { display: false } }

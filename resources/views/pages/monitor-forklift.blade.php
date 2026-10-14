@@ -22,10 +22,10 @@
 <div class="page-head-row">
     <div class="page-title">
         <h1>Monitoring Checklist Forklift</h1>
-        <p>Pantau hasil inspeksi harian seluruh unit forklift & alat angkut PCI.</p>
-        <p class="sync-info">
+        <p>Pantau hasil inspeksi harian seluruh unit forklift & alat angkut.</p>
+        <p class="sync-info" style="cursor: default;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4"/><path d="m16.2 7.8 2.9-2.9"/><path d="M18 12h4"/><path d="m16.2 16.2 2.9 2.9"/><path d="M12 18v4"/><path d="m4.9 19.1 2.9-2.9"/><path d="M2 12h4"/><path d="m4.9 4.9 2.9 2.9"/></svg>
-            Data terakhir disinkronkan: <strong id="sync-time">{{ now()->translatedFormat('d M Y, H:i') }}</strong>
+            Data ini sejak: <strong>16 Mei 2024</strong>
         </p>
     </div>
     <div class="page-actions">
@@ -438,11 +438,7 @@
                         }
                     }
 
-                    // Update stats
-                    if (json.lastSync) {
-                        var syncEl = document.getElementById('sync-time');
-                        if (syncEl) syncEl.innerHTML = json.lastSync;
-                    }
+                    // Data timestamp remains static as requested
 
                     if (json.stats) {
                         var elTotal = document.getElementById('stat-total');

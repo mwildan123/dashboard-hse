@@ -420,7 +420,7 @@
 <div class="hero-section">
     <div class="hero-content">
         <p class="hero-kicker">Monitoring Operasional</p>
-        <h1 class="hero-title">Dashboard HSE PCI</h1>
+        <h1 class="hero-title">Dashboard HSE</h1>
         <p class="hero-subtitle">Sistem pemantauan harian dan kelengkapan operasional. Pastikan seluruh prosedur keselamatan terpenuhi sebelum beraktivitas.</p>
     </div>
 </div>

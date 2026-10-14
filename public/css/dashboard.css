@@ -2079,7 +2079,7 @@ table.data tr.row-warn {
     font-size: 13px;
     color: var(--ink-2);
     margin-top: 6px;
-    cursor: pointer;
+    cursor: default !important;
     user-select: none;
     width: fit-content;
     border-radius: var(--radius);
@@ -2088,9 +2088,16 @@ table.data tr.row-warn {
     transition: background .15s ease, color .15s ease;
 }
 
+.sync-info,
+.sync-info *,
+.sync-info:hover,
+.sync-info:hover * {
+    cursor: default !important;
+}
+
 .sync-info:hover {
-    background: rgba(37, 99, 235, 0.07);
-    color: var(--ink);
+    background: transparent;
+    color: var(--ink-2);
 }
 
 .sync-info svg,
@@ -2687,6 +2694,53 @@ table.data thead th::after {
     width: auto;
     object-fit: contain;
     margin-left: auto;
+}
+
+/* HSE Brand Typography */
+.brand-hse {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    user-select: none;
+}
+.brand-hse-text {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    justify-content: center;
+}
+.brand-hse-title {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: #ffffff;
+    line-height: 1;
+}
+.brand-hse-desc {
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: #38bdf8;
+    text-transform: uppercase;
+    line-height: 1.1;
+    white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+    .brand-hse-title {
+        font-size: 19px;
+    }
+    .brand-hse-desc {
+        font-size: 8px;
+        letter-spacing: 0.04em;
+    }
+}
+
+@media (max-width: 400px) {
+    .brand-hse-desc {
+        font-size: 7.5px;
+        letter-spacing: 0.02em;
+    }
 }
 
 .desktop-nav {
