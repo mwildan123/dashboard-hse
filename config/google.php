@@ -3,26 +3,21 @@
 return [
     /*
     |--------------------------------------------------------------------------
-    | Google Application Credentials
+    | Google application name
     |--------------------------------------------------------------------------
-    |
-    | Path to the Service Account JSON file.
-    |
     */
-    'application_credentials' => env('GOOGLE_APPLICATION_CREDENTIALS', storage_path('app/google-credentials.json')),
-    
+    'application_name' => env('GOOGLE_APPLICATION_NAME', 'Dashboard HSE'),
+
     /*
     |--------------------------------------------------------------------------
-    | Google Client Config
+    | Google service account
     |--------------------------------------------------------------------------
     */
-    'config' => [
-        'client_id' => env('GOOGLE_CLIENT_ID', ''),
-        'client_secret' => env('GOOGLE_CLIENT_SECRET', ''),
-        'api_key' => env('GOOGLE_API_KEY', ''),
-        'client_credentials_pass_in_body' => true,
+    'service' => [
+        'enable' => env('GOOGLE_SERVICE_ENABLED', true),
+        'file' => env('GOOGLE_SERVICE_ACCOUNT_JSON_LOCATION', storage_path('app/google-credentials.json')),
     ],
-    
+
     /*
     |--------------------------------------------------------------------------
     | Scopes
@@ -32,12 +27,7 @@ return [
         \Google\Service\Sheets::DRIVE,
         \Google\Service\Sheets::SPREADSHEETS,
     ],
-    
-    /*
-    |--------------------------------------------------------------------------
-    | Additional Access Config
-    |--------------------------------------------------------------------------
-    */
+
     'access_type' => 'offline',
     'approval_prompt' => 'force',
     'prompt' => 'consent',

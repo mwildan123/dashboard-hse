@@ -26,14 +26,12 @@ class AppServiceProvider extends ServiceProvider
 
         if ($b64 = env('GOOGLE_CREDENTIALS_BASE64')) {
             $dest = storage_path('app/google-credentials.json');
-            if (! file_exists($dest)) {
-                @file_put_contents($dest, base64_decode($b64));
-            }
+            @file_put_contents($dest, base64_decode($b64));
+            putenv('GOOGLE_APPLICATION_CREDENTIALS=' . $dest);
         } elseif ($json = env('GOOGLE_CREDENTIALS_JSON')) {
             $dest = storage_path('app/google-credentials.json');
-            if (! file_exists($dest)) {
-                @file_put_contents($dest, $json);
-            }
+            @file_put_contents($dest, $json);
+            putenv('GOOGLE_APPLICATION_CREDENTIALS=' . $dest);
         }
     }
 }
