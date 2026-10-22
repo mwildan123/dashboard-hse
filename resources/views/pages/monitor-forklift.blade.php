@@ -134,7 +134,7 @@
                     </select>
                 </div>
                 <div class="field" style="display:flex; align-items:flex-end;">
-                    <button type="button" class="btn btn-primary" data-filter-trigger="forklift" title="Cari" style="padding: 0; min-width: 0; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <button type="button" class="btn btn-primary" data-filter-trigger="forklift" title="Cari" style="padding: 0; min-width: 0; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer;">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 20px; height: 20px;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                     </button>
                 </div>
@@ -339,25 +339,53 @@
         var filterBtns = document.querySelectorAll('.filter-btn[data-filter-scope="forklift"]');
         var searchInput = document.getElementById('search-forklift');
         var activeFilter = 'all';
+        var appliedParams = {
+            dari: '', sampai: '', unit: '', dept: '', op: '', q: '', status: 'all'
+        };
+
+        function captureFilterParams() {
+            var fDari = document.getElementById('f_dari') ? document.getElementById('f_dari').value : '';
+            var fSampai = document.getElementById('f_sampai') ? document.getElementById('f_sampai').value : '';
+            var fUnit = document.getElementById('f_unit') ? document.getElementById('f_unit').value : '';
+            var fDept = document.getElementById('f_dept') ? document.getElementById('f_dept').value : '';
+            var fOp = document.getElementById('f_operator') ? document.getElementById('f_operator').value : '';
+            var fQ = searchInput ? searchInput.value.trim() : '';
+
+            appliedParams = {
+                dari: fDari,
+                sampai: fSampai,
+                unit: fUnit,
+                dept: fDept,
+                op: fOp,
+                q: fQ,
+                status: activeFilter
+            };
+        }
 
         function applyFilters() {
+            captureFilterParams();
             updateDashboard();
         }
 
         // Filter button
         var btnFilter = document.querySelector('[data-filter-trigger="forklift"]');
         if (btnFilter) {
+            btnFilter.style.cursor = 'pointer';
             btnFilter.addEventListener('click', function() {
                 applyFilters();
             });
         }
 
-        // Search input
-        if (searchInput) {
-            searchInput.addEventListener('keyup', function() {
-                applyFilters();
+        // Hanya jalankan filter saat tombol Enter ditekan
+        [searchInput, document.getElementById('f_dari'), document.getElementById('f_sampai'), document.getElementById('f_unit'), document.getElementById('f_dept'), document.getElementById('f_operator')].forEach(function(input) {
+            if (!input) return;
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    applyFilters();
+                }
             });
-        }
+        });
 
         // Status filter buttons
         filterBtns.forEach(function(btn) {
@@ -379,21 +407,13 @@
 
             var url = new URL('{{ route("api.forklift") }}', window.location.origin);
             
-            var fDari = document.getElementById('f_dari') ? document.getElementById('f_dari').value : '';
-            var fSampai = document.getElementById('f_sampai') ? document.getElementById('f_sampai').value : '';
-            var fUnit = document.getElementById('f_unit') ? document.getElementById('f_unit').value : '';
-            var fDept = document.getElementById('f_dept') ? document.getElementById('f_dept').value : '';
-            var fOp = document.getElementById('f_operator') ? document.getElementById('f_operator').value : '';
-            var searchInput = document.getElementById('search-forklift');
-            var fQ = searchInput ? searchInput.value : '';
-
-            if (fDari) url.searchParams.append('dari', fDari);
-            if (fSampai) url.searchParams.append('sampai', fSampai);
-            if (fUnit) url.searchParams.append('unit', fUnit);
-            if (fDept) url.searchParams.append('dept', fDept);
-            if (fOp) url.searchParams.append('op', fOp);
-            if (activeFilter && activeFilter !== 'all') url.searchParams.append('status', activeFilter);
-            if (fQ) url.searchParams.append('q', fQ);
+            if (appliedParams.dari) url.searchParams.append('dari', appliedParams.dari);
+            if (appliedParams.sampai) url.searchParams.append('sampai', appliedParams.sampai);
+            if (appliedParams.unit) url.searchParams.append('unit', appliedParams.unit);
+            if (appliedParams.dept) url.searchParams.append('dept', appliedParams.dept);
+            if (appliedParams.op) url.searchParams.append('op', appliedParams.op);
+            if (appliedParams.status && appliedParams.status !== 'all') url.searchParams.append('status', appliedParams.status);
+            if (appliedParams.q) url.searchParams.append('q', appliedParams.q);
 
             fetch(url.toString())
                 .then(function(res) { return res.json(); })

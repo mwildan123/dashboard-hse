@@ -144,13 +144,13 @@
                     <select class="select" id="f_status">
                         <option value="">Semua</option>
                         <option value="SIM Aktif">SIM Aktif</option>
-
+                        <option value="Peringatan">Dokumen Segera Habis (&le; 30 Hari)</option>
                         <option value="SIM Tidak Aktif">SIM Tidak Aktif (Expired)</option>
                         <option value="Belum Mengisi">Belum Mengisi</option>
                     </select>
                 </div>
                 <div class="field" style="display:flex; align-items:flex-end;">
-                    <button type="button" class="btn btn-primary" data-filter-trigger="kendaraan" title="Cari" style="padding: 0; min-width: 0; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <button type="button" class="btn btn-primary" data-filter-trigger="kendaraan" title="Cari" style="padding: 0; min-width: 0; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer;">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                     </button>
                 </div>
@@ -175,12 +175,12 @@
                         {{ $totalVehicle ? round(($motorCount / $totalVehicle) * 100) : 0 }}% motor, {{ $totalVehicle ? round(($mobilCount / $totalVehicle) * 100) : 0 }}% mobil, {{ $totalVehicle ? round(($bothCount / $totalVehicle) * 100) : 0 }}% keduanya
                     </span>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card" id="card-warn-docs" style="cursor: pointer;" title="Klik untuk memfilter dokumen segera habis">
                     <span class="stat-label">Dokumen Segera Habis (&le; 30 hari)</span>
                     <span class="stat-value" style="color:var(--warn)">{{ $warnCount ?? 0 }}</span>
                     <span class="stat-delta down">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                        Data terbarui
+                        Klik untuk filter
                     </span>
                 </div>
             </div>
@@ -281,7 +281,18 @@
                                 }
                             }
                         @endphp
-                        <tr class="{{ $rowClass }}" data-filter-row="kendaraan" data-nama="{{ $k['nama'] }}" data-jenis="{{ $k['jenis'] }}" data-plat="{{ $k['plat'] }}" data-status="{{ $statusLabel[$k['sim_status']] ?? 'SIM Aktif' }}">
+                        @php
+                            if ($k['sim_status'] === 'bad') {
+                                $rowStatusVal = 'SIM Tidak Aktif';
+                            } elseif ($k['sim_status'] === 'empty') {
+                                $rowStatusVal = 'Belum Mengisi';
+                            } elseif ($k['sim_status'] === 'warn' || $k['stnk_status'] === 'warn') {
+                                $rowStatusVal = 'Peringatan';
+                            } else {
+                                $rowStatusVal = 'SIM Aktif';
+                            }
+                        @endphp
+                        <tr class="{{ $rowClass }}" data-filter-row="kendaraan" data-nama="{{ $k['nama'] }}" data-jenis="{{ $k['jenis'] }}" data-plat="{{ $k['plat'] }}" data-status="{{ $rowStatusVal }}" data-sim-status="{{ $k['sim_status'] }}">
                             <td>
                                 {{ \Carbon\Carbon::parse($k['updated_at'])->format('d/m/Y H:i') }}
                             </td>
@@ -427,7 +438,17 @@
                             var timestampDate = new Date(k.updated_at.replace(' ', 'T'));
                             var formattedTime = ('0' + timestampDate.getDate()).slice(-2) + '/' + ('0' + (timestampDate.getMonth()+1)).slice(-2) + '/' + timestampDate.getFullYear() + ' ' + ('0' + timestampDate.getHours()).slice(-2) + ':' + ('0' + timestampDate.getMinutes()).slice(-2);
                             
-                            html += '<tr class="' + rowClass + '" data-filter-row="kendaraan" data-nama="' + k.nama + '" data-jenis="' + k.jenis + '" data-plat="' + k.plat + '" data-status="' + simLabel + '">';
+                            var rowStatusData = '';
+                            if (k.sim_status === 'bad') {
+                                rowStatusData = 'SIM Tidak Aktif';
+                            } else if (k.sim_status === 'empty') {
+                                rowStatusData = 'Belum Mengisi';
+                            } else if (k.sim_status === 'warn' || k.stnk_status === 'warn') {
+                                rowStatusData = 'Peringatan';
+                            } else {
+                                rowStatusData = 'SIM Aktif';
+                            }
+                            html += '<tr class="' + rowClass + '" data-filter-row="kendaraan" data-nama="' + k.nama + '" data-jenis="' + k.jenis + '" data-plat="' + k.plat + '" data-status="' + rowStatusData + '" data-sim-status="' + k.sim_status + '">';
                             html += '<td>' + formattedTime + '</td>';
                             html += '<td>' + k.nama + '</td>';
                             html += '<td>' + k.jenis + '</td>';
@@ -485,9 +506,21 @@
                         });
                         tbody.innerHTML = html;
                         
-                        var kendFilterTrigger = document.querySelector('[data-filter-trigger="kendaraan"]');
-                        if (kendFilterTrigger) {
-                            kendFilterTrigger.click();
+                        // Pertahankan filter aktif jika pengguna sedang melakukan pencarian / filter
+                        var filterBar = document.querySelector('[data-filter-scope="kendaraan"]');
+                        var hasActiveFilter = false;
+                        if (filterBar) {
+                            var fCari = (filterBar.querySelector('#f_cari') ? filterBar.querySelector('#f_cari').value : '').trim();
+                            var fJenis = (filterBar.querySelector('#f_jenis') ? filterBar.querySelector('#f_jenis').value : '').trim();
+                            var fStatus = (filterBar.querySelector('#f_status') ? filterBar.querySelector('#f_status').value : '').trim();
+                            if (fCari || fJenis || fStatus) {
+                                hasActiveFilter = true;
+                            }
+                        }
+
+                        if (hasActiveFilter) {
+                            var btn = document.querySelector('[data-filter-trigger="kendaraan"]');
+                            if (btn) btn.click();
                         } else if (typeof window.refreshKendaraanPag === 'function') {
                             window.refreshKendaraanPag();
                         }
@@ -498,6 +531,19 @@
                 .catch(function (err) {
                     console.warn('[Kendaraan] Auto-refresh gagal:', err);
                 });
+        }
+
+        // Klik kartu dokumen segera habis untuk langsung memfilter tabel
+        var warnCard = document.getElementById('card-warn-docs');
+        if (warnCard) {
+            warnCard.addEventListener('click', function() {
+                var statusSelect = document.getElementById('f_status');
+                if (statusSelect) {
+                    statusSelect.value = 'Peringatan';
+                }
+                var btn = document.querySelector('[data-filter-trigger="kendaraan"]');
+                if (btn) btn.click();
+            });
         }
 
         // Mulai polling

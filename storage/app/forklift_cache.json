@@ -1,5 +1,714 @@
 [
     {
+        "tgl": "22\/10\/2026",
+        "waktu": "08:31",
+        "operator": "Iwan",
+        "unit": "3229 (TCM 5 Ton Logistik)",
+        "dept": "Supply Chain",
+        "shift": "2",
+        "masalah": 1,
+        "rusak": false,
+        "issues": [
+            "Body Load Backrest"
+        ],
+        "catatan": "Tgl 21, ganti oli mesin filter solar dan,, filter udara,  beckres sambungannya patah setbel dan detetor kursi blm ada perbaikan,",
+        "raw_timestamp": "22\/10\/2026 8:31:52"
+    },
+    {
+        "tgl": "22\/10\/2026",
+        "waktu": "07:32",
+        "operator": "Syamsul Bahri",
+        "unit": "3331 (Toyota 2,5 Ton - Material)",
+        "dept": "Supply Chain",
+        "shift": "2",
+        "masalah": 0,
+        "rusak": false,
+        "issues": [],
+        "catatan": ".",
+        "raw_timestamp": "22\/10\/2026 7:32:44"
+    },
+    {
+        "tgl": "22\/10\/2026",
+        "waktu": "07:13",
+        "operator": "Eko Dwi Prasetyo",
+        "unit": "3181 (Toyota 2,5 Ton - MTC)",
+        "dept": "Produksi",
+        "shift": "2",
+        "masalah": 0,
+        "rusak": false,
+        "issues": [],
+        "catatan": "Timbangan forklift tidak berfungsi",
+        "raw_timestamp": "22\/10\/2026 7:13:35"
+    },
+    {
+        "tgl": "22\/10\/2026",
+        "waktu": "06:42",
+        "operator": "Fadzri Aprimursid",
+        "unit": "3179 (Toyota 2,5 Ton - Produksi)",
+        "dept": "Produksi",
+        "shift": "1",
+        "masalah": 0,
+        "rusak": false,
+        "issues": [],
+        "catatan": "forklift dalam keadaan baik",
+        "raw_timestamp": "22\/10\/2026 6:42:41"
+    },
+    {
+        "tgl": "21\/10\/2026",
+        "waktu": "23:14",
+        "operator": "Ade Rohmat",
+        "unit": "Forklift 15 Ton Produksi",
+        "dept": "Produksi",
+        "shift": "1",
+        "masalah": 2,
+        "rusak": false,
+        "issues": [
+            "Body Forklift Bersih",
+            "Body Ban Kiri Kanan Depan Belakang"
+        ],
+        "catatan": "- anti slip driver tidak ada \n- seen detector reflektor tidak terpasang \n- ban belakang sebelah kiri dan kanan gundul \n- lampu rem sebelah kiri mati.",
+        "raw_timestamp": "21\/10\/2026 23:14:24"
+    },
+    {
+        "tgl": "21\/10\/2026",
+        "waktu": "15:39",
+        "operator": "Deni Hermawan",
+        "unit": "Forklift 15 Ton Produksi",
+        "dept": "Produksi",
+        "shift": "3",
+        "masalah": 1,
+        "rusak": true,
+        "issues": [
+            "Body Ban Kiri Kanan Depan Belakang"
+        ],
+        "catatan": "Ban belakang rusak parah",
+        "raw_timestamp": "21\/10\/2026 15:39:02"
+    },
+    {
+        "tgl": "21\/10\/2026",
+        "waktu": "15:18",
+        "operator": "Asep Dedi",
+        "unit": "Forklift 15 Ton Produksi",
+        "dept": "Produksi",
+        "shift": "2",
+        "masalah": 1,
+        "rusak": false,
+        "issues": [
+            "Body Ban Kiri Kanan Depan Belakang"
+        ],
+        "catatan": "Ok",
+        "raw_timestamp": "21\/10\/2026 15:18:06"
+    },
+    {
+        "tgl": "21\/10\/2026",
+        "waktu": "07:34",
+        "operator": "Syamsul Bahri",
+        "unit": "3331 (Toyota 2,5 Ton - Material)",
+        "dept": "Supply Chain",
+        "shift": "2",
+        "masalah": 0,
+        "rusak": false,
+        "issues": [],
+        "catatan": ".",
+        "raw_timestamp": "21\/10\/2026 7:34:31"
+    },
+    {
+        "tgl": "21\/10\/2026",
+        "waktu": "06:58",
+        "operator": "Eko Dwi Prasetyo",
+        "unit": "3181 (Toyota 2,5 Ton - MTC)",
+        "dept": "Produksi",
+        "shift": "2",
+        "masalah": 0,
+        "rusak": false,
+        "issues": [],
+        "catatan": "Timbangan forklift tidak berfungsi",
+        "raw_timestamp": "21\/10\/2026 6:58:10"
+    },
+    {
+        "tgl": "21\/10\/2026",
+        "waktu": "01:49",
+        "operator": "Fadzri Aprimursid",
+        "unit": "3179 (Toyota 2,5 Ton - Produksi)",
+        "dept": "Produksi",
+        "shift": "1",
+        "masalah": 0,
+        "rusak": false,
+        "issues": [],
+        "catatan": "forklift dalam keadaan baik",
+        "raw_timestamp": "21\/10\/2026 1:49:50"
+    },
+    {
+        "tgl": "20\/10\/2026",
+        "waktu": "23:13",
+        "operator": "Ade Rohmat",
+        "unit": "Forklift 15 Ton Produksi",
+        "dept": "Produksi",
+        "shift": "1",
+        "masalah": 3,
+        "rusak": false,
+        "issues": [
+            "Body Forklift Bersih",
+            "Body Ban Kiri Kanan Depan Belakang",
+            "Mesin Tidak Ada Kebocoran Oli"
+        ],
+        "catatan": "- oli rembes di pelk ban depan sebelah kanan.\n- anti slip driver tidak ada.\n- seen detector reflektor tidak terpasang.\n- ban belakang sebelah kiri dan kanan gundul.\n- lampu rem sebelah kiri mati.",
+        "raw_timestamp": "20\/10\/2026 23:13:55"
+    },
+    {
+        "tgl": "20\/10\/2026",
+        "waktu": "21:52",
+        "operator": "Deni Hermawan",
+        "unit": "Forklift 15 Ton Produksi",
+        "dept": "Produksi",
+        "shift": "3",
+        "masalah": 1,
+        "rusak": false,
+        "issues": [
+            "Body Ban Kiri Kanan Depan Belakang"
+        ],
+        "catatan": "Ban belakang gundul",
+        "raw_timestamp": "20\/10\/2026 21:52:26"
+    },
+    {
+        "tgl": "20\/10\/2026",
+        "waktu": "16:11",
+        "operator": "Yordiansyah Hari Pangestu",
+        "unit": "3229 (TCM 5 Ton Logistik)",
+        "dept": "Quality",
+        "shift": "3",
+        "masalah": 0,
+        "rusak": false,
+        "issues": [],
+        "catatan": "Baik",
+        "raw_timestamp": "20\/10\/2026 16:11:47"
+    },
+    {
+        "tgl": "20\/10\/2026",
+        "waktu": "14:42",
+        "operator": "Eko Dwi Prasetyo",
+        "unit": "3181 (Toyota 2,5 Ton - MTC)",
+        "dept": "Produksi",
+        "shift": "2",
+        "masalah": 0,
+        "rusak": false,
+        "issues": [],
+        "catatan": "Timbangan forklift tidak berfungsi",
+        "raw_timestamp": "20\/10\/2026 14:42:12"
+    },
+    {
+        "tgl": "20\/10\/2026",
+        "waktu": "07:42",
+        "operator": "Iwan",
+        "unit": "3229 (TCM 5 Ton Logistik)",
+        "dept": "Supply Chain",
+        "shift": "2",
+        "masalah": 1,
+        "rusak": false,
+        "issues": [
+            "Body Load Backrest"
+        ],
+        "catatan": "Beckres sambungannya patah, setbel dan detetor kursi blm ada perbaikan mohon untuk segera perbaikan",
+        "raw_timestamp": "20\/10\/2026 7:42:24"
+    },
+    {
+        "tgl": "20\/10\/2026",
+        "waktu": "07:35",
+        "operator": "Syamsul Bahri",
+        "unit": "3331 (Toyota 2,5 Ton - Material)",
+        "dept": "Supply Chain",
+        "shift": "2, 3",
+        "masalah": 0,
+        "rusak": false,
+        "issues": [],
+        "catatan": ".",
+        "raw_timestamp": "20\/10\/2026 7:35:37"
+    },
+    {
+        "tgl": "20\/10\/2026",
+        "waktu": "07:23",
+        "operator": "Sobari",
+        "unit": "3179 (Toyota 2,5 Ton - Produksi)",
+        "dept": "Produksi",
+        "shift": "2",
+        "masalah": 0,
+        "rusak": false,
+        "issues": [],
+        "catatan": "Baik",
+        "raw_timestamp": "20\/10\/2026 7:23:28"
+    },
+    {
+        "tgl": "19\/10\/2026",
+        "waktu": "23:10",
+        "operator": "Ade Rohmat",
+        "unit": "Forklift 15 Ton Produksi",
+        "dept": "Produksi",
+        "shift": "1",
+        "masalah": 2,
+        "rusak": false,
+        "issues": [
+            "Body Forklift Bersih",
+            "Body Ban Kiri Kanan Depan Belakang"
+        ],
+        "catatan": "- oli rembes pelk ban depan sebelah kanan \n- anti slip driver tidak ada \n- seen detector reflektor tidak terpasang \n- ban belakang sebelah kiri Dan kanan gundul \n- lampu rem sebelah kiri mati",
+        "raw_timestamp": "19\/10\/2026 23:10:19"
+    },
+    {
+        "tgl": "19\/10\/2026",
+        "waktu": "15:55",
+        "operator": "Deni Hermawan",
+        "unit": "Forklift 15 Ton Produksi",
+        "dept": "Produksi",
+        "shift": "3",
+        "masalah": 1,
+        "rusak": false,
+        "issues": [
+            "Body Ban Kiri Kanan Depan Belakang"
+        ],
+        "catatan": "Ban belakang masih gundul",
+        "raw_timestamp": "19\/10\/2026 15:55:29"
+    },
+    {
+        "tgl": "19\/10\/2026",
+        "waktu": "14:56",
+        "operator": "Sobari",
+        "unit": "3179 (Toyota 2,5 Ton - Produksi)",
+        "dept": "Produksi",
+        "shift": "2",
+        "masalah": 0,
+        "rusak": false,
+        "issues": [],
+        "catatan": "Baik",
+        "raw_timestamp": "19\/10\/2026 14:56:32"
+    },
+    {
+        "tgl": "19\/10\/2026",
+        "waktu": "10:58",
+        "operator": "Eko Dwi Prasetyo",
+        "unit": "3181 (Toyota 2,5 Ton - MTC)",
+        "dept": "Produksi",
+        "shift": "2",
+        "masalah": 0,
+        "rusak": false,
+        "issues": [],
+        "catatan": "Timbangan forklift tidak berfungsi",
+        "raw_timestamp": "19\/10\/2026 10:58:09"
+    },
+    {
+        "tgl": "19\/10\/2026",
+        "waktu": "08:46",
+        "operator": "Iwan",
+        "unit": "3229 (TCM 5 Ton Logistik)",
+        "dept": "Supply Chain",
+        "shift": "2",
+        "masalah": 1,
+        "rusak": false,
+        "issues": [
+            "Body Load Backrest"
+        ],
+        "catatan": "Beckres sambungannya patah , setbel dan detetor kursi blm ada perbaikan,",
+        "raw_timestamp": "19\/10\/2026 8:46:53"
+    },
+    {
+        "tgl": "19\/10\/2026",
+        "waktu": "07:28",
+        "operator": "Syamsul Bahri",
+        "unit": "3331 (Toyota 2,5 Ton - Material)",
+        "dept": "Supply Chain",
+        "shift": "2",
+        "masalah": 0,
+        "rusak": false,
+        "issues": [],
+        "catatan": ".",
+        "raw_timestamp": "19\/10\/2026 7:28:22"
+    },
+    {
+        "tgl": "19\/10\/2026",
+        "waktu": "07:27",
+        "operator": "Asep Mulyana",
+        "unit": "Forklift 15 Ton Produksi",
+        "dept": "Produksi",
+        "shift": "2",
+        "masalah": 1,
+        "rusak": true,
+        "issues": [
+            "Body Ban Kiri Kanan Depan Belakang"
+        ],
+        "catatan": "Ok",
+        "raw_timestamp": "19\/10\/2026 7:27:28"
+    },
+    {
+        "tgl": "19\/10\/2026",
+        "waktu": "06:17",
+        "operator": "Fadzri Aprimursid",
+        "unit": "3179 (Toyota 2,5 Ton - Produksi)",
+        "dept": "Produksi",
+        "shift": "1",
+        "masalah": 0,
+        "rusak": false,
+        "issues": [],
+        "catatan": "forklift dalam keadaan baik",
+        "raw_timestamp": "19\/10\/2026 6:17:40"
+    },
+    {
+        "tgl": "18\/10\/2026",
+        "waktu": "23:05",
+        "operator": "Ade Rohmat",
+        "unit": "Forklift 15 Ton Produksi",
+        "dept": "Produksi",
+        "shift": "1",
+        "masalah": 1,
+        "rusak": false,
+        "issues": [
+            "Body Ban Kiri Kanan Depan Belakang"
+        ],
+        "catatan": "- oli rembes di pelk ban depan sebelah kanan.\n- anti slip driver tidak ada \n- seen detector reflektor tidak terpasang.\n- lampu rem sebelah kiri mati.\n- ban belakang sebelah kanan dan kiri gundul.",
+        "raw_timestamp": "18\/10\/2026 23:05:52"
+    },
+    {
+        "tgl": "18\/10\/2026",
+        "waktu": "22:47",
+        "operator": "Asep Dedi",
+        "unit": "Forklift 15 Ton Produksi",
+        "dept": "Produksi",
+        "shift": "3",
+        "masalah": 1,
+        "rusak": false,
+        "issues": [
+            "Body Ban Kiri Kanan Depan Belakang"
+        ],
+        "catatan": "Ok",
+        "raw_timestamp": "18\/10\/2026 22:47:36"
+    },
+    {
+        "tgl": "18\/10\/2026",
+        "waktu": "15:21",
+        "operator": "Sobari",
+        "unit": "3179 (Toyota 2,5 Ton - Produksi)",
+        "dept": "Produksi",
+        "shift": "2",
+        "masalah": 0,
+        "rusak": false,
+        "issues": [],
+        "catatan": "Baik",
+        "raw_timestamp": "18\/10\/2026 15:21:36"
+    },
+    {
+        "tgl": "18\/10\/2026",
+        "waktu": "07:20",
+        "operator": "Asep Mulyana",
+        "unit": "Forklift 15 Ton Produksi",
+        "dept": "Produksi",
+        "shift": "2",
+        "masalah": 1,
+        "rusak": true,
+        "issues": [
+            "Body Ban Kiri Kanan Depan Belakang"
+        ],
+        "catatan": "Ok",
+        "raw_timestamp": "18\/10\/2026 7:20:53"
+    },
+    {
+        "tgl": "17\/10\/2026",
+        "waktu": "23:19",
+        "operator": "Fadzri Aprimursid",
+        "unit": "3179 (Toyota 2,5 Ton - Produksi)",
+        "dept": "Produksi",
+        "shift": "1",
+        "masalah": 0,
+        "rusak": false,
+        "issues": [],
+        "catatan": "forklift dalam keadaan baik",
+        "raw_timestamp": "17\/10\/2026 23:19:28"
+    },
+    {
+        "tgl": "17\/10\/2026",
+        "waktu": "23:04",
+        "operator": "Ade Rohmat",
+        "unit": "Forklift 15 Ton Produksi",
+        "dept": "Produksi",
+        "shift": "1",
+        "masalah": 1,
+        "rusak": false,
+        "issues": [
+            "Body Ban Kiri Kanan Depan Belakang"
+        ],
+        "catatan": "- ban depan sebelah kanan kurang angin \n- anti slip driver tidak ada \n- seen detector reflektor tidak terpasang \n- ban belakang sebelah kiri dan kanan gundul.\n- lampu rem sebelah kiri mati.",
+        "raw_timestamp": "17\/10\/2026 23:04:15"
+    },
+    {
+        "tgl": "17\/10\/2026",
+        "waktu": "22:58",
+        "operator": "Asep Dedi",
+        "unit": "Forklift 15 Ton Produksi",
+        "dept": "Produksi",
+        "shift": "3",
+        "masalah": 1,
+        "rusak": false,
+        "issues": [
+            "Body Ban Kiri Kanan Depan Belakang"
+        ],
+        "catatan": "Ok",
+        "raw_timestamp": "17\/10\/2026 22:58:28"
+    },
+    {
+        "tgl": "17\/10\/2026",
+        "waktu": "09:24",
+        "operator": "Sobari",
+        "unit": "3179 (Toyota 2,5 Ton - Produksi)",
+        "dept": "Produksi",
+        "shift": "2",
+        "masalah": 0,
+        "rusak": false,
+        "issues": [],
+        "catatan": "Baik",
+        "raw_timestamp": "17\/10\/2026 9:24:18"
+    },
+    {
+        "tgl": "17\/10\/2026",
+        "waktu": "07:12",
+        "operator": "Ade Rohmat",
+        "unit": "Forklift 15 Ton Produksi",
+        "dept": "Produksi",
+        "shift": "2",
+        "masalah": 1,
+        "rusak": false,
+        "issues": [
+            "Body Ban Kiri Kanan Depan Belakang"
+        ],
+        "catatan": "- ban depan sebelah kanan kurang angin.\n- anti slip driver tidak ada \n- seen detector reflektor tidak terpasang \n- ban belakang sebelah kanan dan kiri gundul \n- lampu rem sebelah kiri mati",
+        "raw_timestamp": "17\/10\/2026 7:12:44"
+    },
+    {
+        "tgl": "16\/10\/2026",
+        "waktu": "23:12",
+        "operator": "Deni Hermawan",
+        "unit": "Forklift 15 Ton Produksi",
+        "dept": "Produksi",
+        "shift": "1",
+        "masalah": 1,
+        "rusak": false,
+        "issues": [
+            "Body Ban Kiri Kanan Depan Belakang"
+        ],
+        "catatan": "Ban belakang gundul parah",
+        "raw_timestamp": "16\/10\/2026 23:12:47"
+    },
+    {
+        "tgl": "16\/10\/2026",
+        "waktu": "23:04",
+        "operator": "Asep Dedi",
+        "unit": "Forklift 15 Ton Produksi",
+        "dept": "Produksi",
+        "shift": "3",
+        "masalah": 1,
+        "rusak": false,
+        "issues": [
+            "Body Ban Kiri Kanan Depan Belakang"
+        ],
+        "catatan": "Ok",
+        "raw_timestamp": "16\/10\/2026 23:04:02"
+    },
+    {
+        "tgl": "16\/10\/2026",
+        "waktu": "17:12",
+        "operator": "Eko Dwi Prasetyo",
+        "unit": "3181 (Toyota 2,5 Ton - MTC)",
+        "dept": "Produksi",
+        "shift": "2",
+        "masalah": 0,
+        "rusak": false,
+        "issues": [],
+        "catatan": "Timbangan forklift tidak berfungsi",
+        "raw_timestamp": "16\/10\/2026 17:12:58"
+    },
+    {
+        "tgl": "16\/10\/2026",
+        "waktu": "16:11",
+        "operator": "Sobari",
+        "unit": "3179 (Toyota 2,5 Ton - Produksi)",
+        "dept": "Produksi",
+        "shift": "2",
+        "masalah": 0,
+        "rusak": false,
+        "issues": [],
+        "catatan": "Baik",
+        "raw_timestamp": "16\/10\/2026 16:11:37"
+    },
+    {
+        "tgl": "16\/10\/2026",
+        "waktu": "08:04",
+        "operator": "Iwan",
+        "unit": "3229 (TCM 5 Ton Logistik)",
+        "dept": "Supply Chain",
+        "shift": "2",
+        "masalah": 1,
+        "rusak": false,
+        "issues": [
+            "Body Load Backrest"
+        ],
+        "catatan": "Becker sambungan patah, setbel dan detetor kursi blm ada perbaikan,",
+        "raw_timestamp": "16\/10\/2026 8:04:27"
+    },
+    {
+        "tgl": "16\/10\/2026",
+        "waktu": "07:35",
+        "operator": "Syamsul Bahri",
+        "unit": "3331 (Toyota 2,5 Ton - Material)",
+        "dept": "Supply Chain",
+        "shift": "2",
+        "masalah": 0,
+        "rusak": false,
+        "issues": [],
+        "catatan": ".",
+        "raw_timestamp": "16\/10\/2026 7:35:21"
+    },
+    {
+        "tgl": "16\/10\/2026",
+        "waktu": "07:21",
+        "operator": "Asep Mulyana",
+        "unit": "Forklift 15 Ton Produksi",
+        "dept": "Produksi",
+        "shift": "2",
+        "masalah": 1,
+        "rusak": true,
+        "issues": [
+            "Body Ban Kiri Kanan Depan Belakang"
+        ],
+        "catatan": "Ok",
+        "raw_timestamp": "16\/10\/2026 7:21:28"
+    },
+    {
+        "tgl": "15\/10\/2026",
+        "waktu": "23:12",
+        "operator": "Deni Hermawan",
+        "unit": "Forklift 15 Ton Produksi",
+        "dept": "Produksi",
+        "shift": "1",
+        "masalah": 1,
+        "rusak": false,
+        "issues": [
+            "Body Ban Kiri Kanan Depan Belakang"
+        ],
+        "catatan": "Ban depan belakang gundul",
+        "raw_timestamp": "15\/10\/2026 23:12:54"
+    },
+    {
+        "tgl": "15\/10\/2026",
+        "waktu": "22:56",
+        "operator": "Asep Dedi",
+        "unit": "Forklift 15 Ton Produksi",
+        "dept": "Produksi",
+        "shift": "3",
+        "masalah": 1,
+        "rusak": false,
+        "issues": [
+            "Body Ban Kiri Kanan Depan Belakang"
+        ],
+        "catatan": "Ban belakang gundul",
+        "raw_timestamp": "15\/10\/2026 22:56:57"
+    },
+    {
+        "tgl": "15\/10\/2026",
+        "waktu": "18:29",
+        "operator": "Eko Dwi Prasetyo",
+        "unit": "3181 (Toyota 2,5 Ton - MTC)",
+        "dept": "Produksi",
+        "shift": "2",
+        "masalah": 0,
+        "rusak": false,
+        "issues": [],
+        "catatan": "Timbangan forklift tidak berfungsi",
+        "raw_timestamp": "15\/10\/2026 18:29:16"
+    },
+    {
+        "tgl": "15\/10\/2026",
+        "waktu": "18:27",
+        "operator": "Eko Dwi Prasetyo",
+        "unit": "3181 (Toyota 2,5 Ton - MTC)",
+        "dept": "Produksi",
+        "shift": "2",
+        "masalah": 0,
+        "rusak": false,
+        "issues": [],
+        "catatan": "Timbangan forklift tidak berfungsi",
+        "raw_timestamp": "15\/10\/2026 18:27:51"
+    },
+    {
+        "tgl": "15\/10\/2026",
+        "waktu": "07:53",
+        "operator": "Iwan",
+        "unit": "3229 (TCM 5 Ton Logistik)",
+        "dept": "Supply Chain",
+        "shift": "2",
+        "masalah": 1,
+        "rusak": false,
+        "issues": [
+            "Body Load Backrest"
+        ],
+        "catatan": "Becker sambungan patah, setbel dan detetor kursi blm ada perbaikan",
+        "raw_timestamp": "15\/10\/2026 7:53:49"
+    },
+    {
+        "tgl": "15\/10\/2026",
+        "waktu": "07:30",
+        "operator": "Syamsul Bahri",
+        "unit": "3331 (Toyota 2,5 Ton - Material)",
+        "dept": "Supply Chain",
+        "shift": "2",
+        "masalah": 0,
+        "rusak": false,
+        "issues": [],
+        "catatan": ".",
+        "raw_timestamp": "15\/10\/2026 7:30:05"
+    },
+    {
+        "tgl": "15\/10\/2026",
+        "waktu": "07:08",
+        "operator": "Ade Rohmat",
+        "unit": "Forklift 15 Ton Produksi",
+        "dept": "Produksi",
+        "shift": "2",
+        "masalah": 2,
+        "rusak": false,
+        "issues": [
+            "Body Forklift Bersih",
+            "Body Ban Kiri Kanan Depan Belakang"
+        ],
+        "catatan": "- rem masih kadang jeblos.\n- anti slip driver tidak ada \n- seen detector reflektor tidak terpasang \n- ban belakang sebelah kanan dan kiri gundul \n- lampu rem sebelah kiri mati",
+        "raw_timestamp": "15\/10\/2026 7:08:04"
+    },
+    {
+        "tgl": "14\/10\/2026",
+        "waktu": "22:52",
+        "operator": "Asep Dedi",
+        "unit": "Forklift 15 Ton Produksi",
+        "dept": "Produksi",
+        "shift": "3",
+        "masalah": 1,
+        "rusak": false,
+        "issues": [
+            "Body Ban Kiri Kanan Depan Belakang"
+        ],
+        "catatan": "Ban belakang gundul",
+        "raw_timestamp": "14\/10\/2026 22:52:33"
+    },
+    {
+        "tgl": "14\/10\/2026",
+        "waktu": "08:09",
+        "operator": "Iwan",
+        "unit": "3229 (TCM 5 Ton Logistik)",
+        "dept": "Supply Chain",
+        "shift": "2",
+        "masalah": 1,
+        "rusak": false,
+        "issues": [
+            "Body Load Backrest"
+        ],
+        "catatan": "Beckres sambungannya patah , setbel dan detetor kursi blm ada perbaikan,",
+        "raw_timestamp": "14\/10\/2026 8:09:32"
+    },
+    {
         "tgl": "14\/10\/2026",
         "waktu": "07:07",
         "operator": "Ade Rohmat",

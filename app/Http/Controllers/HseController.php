@@ -256,20 +256,113 @@ class HseController extends Controller
      */
     public function beranda()
     {
-        // 1. KWh sum for today
+        // 1. KWh sum for today or latest record
         $kwhToday = 0;
+        $kwhCardTitle = 'Konsumsi Hari Ini';
+        $kwhStatusText = 'Menunggu Data';
+        $kwhStatusClass = 'slate';
+
         try {
-            $records = $this->readRecords(); // Array of records
-            $todayStr1 = now()->format('Y-m-d');
-            $todayStr2 = now()->format('d/m/Y');
-            
-            foreach ($records as $r) {
-                $tgl = $r['tanggal'] ?? ($r['timestamp'] ?? '');
-                if (strpos($tgl, $todayStr1) !== false || strpos($tgl, $todayStr2) !== false) {
-                    $kwUtama = floatval(str_replace(',', '.', $r['kw_utama'] ?? ($r['kw'] ?? '0')));
-                    $kwOffice = floatval(str_replace(',', '.', $r['kw_office'] ?? '0'));
-                    $kwhToday += ($kwUtama + $kwOffice);
+            $records = $this->readRecords();
+            $mappedRecords = collect($records)->map(function ($record) {
+                $rawTimestamp = trim($record['timestamp'] ?? '');
+                $rawTanggal = trim($record['tanggal'] ?? '');
+                $rawJam = trim($record['jam_pencatatan'] ?? '');
+
+                $isGoogleForm = strlen($rawTimestamp) > 10;
+                $carbon = null;
+
+                if ($isGoogleForm) {
+                    $dateStr = !empty($rawTanggal) ? $rawTanggal : explode(' ', $rawTimestamp)[0];
+                    if (preg_match('/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/', $dateStr, $m)) {
+                        $day = (int)$m[1];
+                        $month = (int)$m[2];
+                        $year = (int)$m[3];
+
+                        $hour = 0; $min = 0; $sec = 0;
+                        $timeSource = !empty($rawJam) ? $rawJam : $rawTimestamp;
+                        if (preg_match('/(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?/', $timeSource, $tm)) {
+                            $hour = (int)$tm[1];
+                            $min = (int)$tm[2];
+                            $sec = isset($tm[3]) ? (int)$tm[3] : 0;
+                        }
+                        $carbon = \Carbon\Carbon::create($year, $month, $day, $hour, $min, $sec);
+                    }
+                } else {
+                    if (preg_match('/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/', $rawTanggal, $m)) {
+                        $month = (int)$m[1];
+                        $day = (int)$m[2];
+                        $year = (int)$m[3];
+                        $carbon = \Carbon\Carbon::create($year, $month, $day, 0, 0, 0);
+                    }
                 }
+
+                if (!$carbon) {
+                    try {
+                        $carbon = \Carbon\Carbon::parse($rawTanggal ?: $rawTimestamp);
+                    } catch (\Throwable $e) {
+                        $carbon = now();
+                    }
+                }
+
+                $record['_carbon'] = $carbon;
+                return $record;
+            });
+
+            $sortedRecords = $mappedRecords->sortBy(function($record) {
+                return $record['_carbon']->timestamp;
+            })->values();
+
+            $prevKwhUtama = null;
+            $prevKwhOffice = null;
+            $daysConsumption = [];
+
+            foreach ($sortedRecords as $record) {
+                $dateKey = $record['_carbon']->format('Y-m-d');
+                $dateFormatted = $record['_carbon']->locale('id')->translatedFormat('d M Y');
+
+                $rawKwhUtama = trim($record['kwh_utama'] ?? ($record['kwh'] ?? ''));
+                $rawConsumedUtama = trim($record['consumed_utama'] ?? ($record['consumed'] ?? ''));
+                $currentKwhUtama = floatval(str_replace(',', '.', $rawKwhUtama));
+                $consumedUtama = floatval(str_replace(',', '.', $rawConsumedUtama));
+
+                if ($consumedUtama <= 0 && $currentKwhUtama > 0 && $prevKwhUtama !== null && $currentKwhUtama >= $prevKwhUtama) {
+                    $consumedUtama = round($currentKwhUtama - $prevKwhUtama, 1);
+                }
+                if ($currentKwhUtama > 0) $prevKwhUtama = $currentKwhUtama;
+
+                $rawKwhOffice = trim($record['kwh_office'] ?? '');
+                $rawConsumedOffice = trim($record['consumed_office'] ?? '');
+                $currentKwhOffice = floatval(str_replace(',', '.', $rawKwhOffice));
+                $consumedOffice = floatval(str_replace(',', '.', $rawConsumedOffice));
+
+                if ($consumedOffice <= 0 && $currentKwhOffice > 0 && $prevKwhOffice !== null && $currentKwhOffice >= $prevKwhOffice) {
+                    $consumedOffice = round($currentKwhOffice - $prevKwhOffice, 1);
+                }
+                if ($currentKwhOffice > 0) $prevKwhOffice = $currentKwhOffice;
+
+                $totalDay = $consumedUtama + $consumedOffice;
+                if ($totalDay > 0) {
+                    $daysConsumption[$dateKey] = [
+                        'date_key' => $dateKey,
+                        'label' => $dateFormatted,
+                        'consumed' => $totalDay,
+                    ];
+                }
+            }
+
+            $todayKey = now()->format('Y-m-d');
+            if (isset($daysConsumption[$todayKey])) {
+                $kwhToday = $daysConsumption[$todayKey]['consumed'];
+                $kwhCardTitle = 'Konsumsi Hari Ini';
+                $kwhStatusText = 'Hari Ini (Normal)';
+                $kwhStatusClass = 'good';
+            } elseif (!empty($daysConsumption)) {
+                $lastDay = end($daysConsumption);
+                $kwhToday = $lastDay['consumed'];
+                $kwhCardTitle = 'Konsumsi Terakhir';
+                $kwhStatusText = 'Terakhir: ' . $lastDay['label'];
+                $kwhStatusClass = 'good';
             }
         } catch (\Throwable $e) {
             // Ignore error for homepage summary
@@ -293,22 +386,67 @@ class HseController extends Controller
             // Ignore error
         }
 
-        // 4. Prycam (Session Data)
+        // 4. Prycam
         $prycamCount = 0;
         $prycamKw = 0;
+        $prycamStatusText = 'Belum Ada Data';
+        $prycamStatusClass = 'slate';
         try {
             $sessionRecords = session('temp_monitoring_data', []);
+            $permanentRecords = $this->readPrycamRecords();
+            $allPrycam = array_merge($permanentRecords, $sessionRecords);
+
             $todayStr1 = now()->format('Y-m-d');
             $todayStr2 = now()->format('d/m/Y');
-            foreach ($sessionRecords as $r) {
+            
+            // Cek apakah ada input sesi hari ini
+            $sessionToday = collect($sessionRecords)->filter(function($r) use ($todayStr1, $todayStr2) {
                 $tgl = $r['timestamp'] ?? '';
-                if (strpos($tgl, $todayStr1) !== false || strpos($tgl, $todayStr2) !== false) {
-                    $prycamCount++;
-                    $kwValue = floatval(str_replace(',', '.', $r['kw'] ?? '0'));
-                    if ($kwValue == 0 && !empty($r['kwh'])) {
-                         $kwValue = floatval(str_replace(',', '.', $r['kwh'])) / 1000;
+                return strpos($tgl, $todayStr1) !== false || strpos($tgl, $todayStr2) !== false;
+            });
+
+            if ($sessionToday->isNotEmpty()) {
+                $prycamCount = $sessionToday->count();
+                $prycamKw = $sessionToday->sum(function($r) {
+                    $kw = floatval(str_replace(',', '.', $r['kw'] ?? '0'));
+                    if ($kw == 0 && !empty($r['watt'])) {
+                        $kw = floatval(str_replace(',', '.', $r['watt'])) / 1000;
                     }
-                    $prycamKw += $kwValue;
+                    return $kw;
+                });
+                $prycamStatusText = $prycamCount . ' Panel Dicek Hari Ini';
+                $prycamStatusClass = 'good';
+            } else {
+                // Gunakan data periode monitoring terakhir dari data permanent
+                $lastPeriod = collect($permanentRecords)->filter(fn($r) => !empty($r['bulan']) && !empty($r['tahun']))
+                    ->groupBy(fn($r) => $r['bulan'] . ' ' . $r['tahun'])
+                    ->last();
+
+                if ($lastPeriod && $lastPeriod->isNotEmpty()) {
+                    $periodName = ($lastPeriod[0]['bulan'] ?? '') . ' ' . ($lastPeriod[0]['tahun'] ?? '');
+                    $activePanels = $lastPeriod->filter(function($r) {
+                        $kw = floatval(str_replace(',', '.', $r['kw'] ?? '0'));
+                        if ($kw == 0 && !empty($r['watt'])) {
+                            $kw = floatval(str_replace(',', '.', $r['watt'])) / 1000;
+                        }
+                        return $kw > 0;
+                    });
+                    
+                    $prycamKw = $activePanels->sum(function($r) {
+                        $kw = floatval(str_replace(',', '.', $r['kw'] ?? '0'));
+                        if ($kw == 0 && !empty($r['watt'])) {
+                            $kw = floatval(str_replace(',', '.', $r['watt'])) / 1000;
+                        }
+                        return $kw;
+                    });
+                    $prycamCount = $lastPeriod->count();
+                    $prycamStatusText = $prycamCount . ' Panel (' . $periodName . ')';
+                    $prycamStatusClass = 'good';
+                } else {
+                    $prycamCount = count($allPrycam);
+                    $prycamKw = 0;
+                    $prycamStatusText = $prycamCount > 0 ? ($prycamCount . ' Panel Terdata') : 'Belum Ada Data';
+                    $prycamStatusClass = $prycamCount > 0 ? 'good' : 'slate';
                 }
             }
         } catch (\Throwable $e) {
@@ -324,14 +462,32 @@ class HseController extends Controller
             // Ignore error
         }
 
+        // 6. Permit To Work Stats
+        $ptwTotal = 0;
+        $ptwActive = 0;
+        try {
+            $allPtw = $this->readPermitWorkData();
+            $ptwTotal = count($allPtw);
+            $ptwActive = collect($allPtw)->where('status', 'Aktif')->count();
+        } catch (\Throwable $e) {
+            // Ignore error
+        }
+
         return view('pages.beranda', [
             'kwhToday' => $kwhToday,
+            'kwhCardTitle' => $kwhCardTitle,
+            'kwhStatusText' => $kwhStatusText,
+            'kwhStatusClass' => $kwhStatusClass,
             'forkliftReady' => $forkliftReady,
             'forkliftTotal' => $forkliftTotal,
             'vehicleTotal' => $vehicleTotal,
             'prycamCount' => $prycamCount,
             'prycamKw' => $prycamKw,
-            'permitTotal' => $permitTotal
+            'prycamStatusText' => $prycamStatusText,
+            'prycamStatusClass' => $prycamStatusClass,
+            'permitTotal' => $permitTotal,
+            'ptwTotal' => $ptwTotal,
+            'ptwActive' => $ptwActive,
         ]);
     }
 
@@ -656,9 +812,7 @@ class HseController extends Controller
             }
 
             if ($stnkStatus === 'good') {
-                if ($stnkExp === '' || $stnkExp === '-') {
-                    $stnkStatus = 'bad';
-                } else {
+                if ($stnkExp !== '' && $stnkExp !== '-') {
                     try {
                         $expDate = \Carbon\Carbon::parse($stnkExp);
                         $daysLeft = now()->diffInDays($expDate, false);
@@ -670,6 +824,9 @@ class HseController extends Controller
                     } catch (\Throwable $e) {
                         // ignore parse errors
                     }
+                } else {
+                    // Karena form sheet tidak meminta tanggal STNK, anggap sah jika foto STNK ada
+                    $stnkStatus = !empty($foto_stnk) ? 'good' : 'empty';
                 }
             }
 
@@ -826,7 +983,7 @@ class HseController extends Controller
                 }
 
                 $stnkStatus = strtolower((string) ($vehicle['stnk_status'] ?? ''));
-                if (! in_array($stnkStatus, ['good', 'warn', 'bad'], true)) {
+                if (! in_array($stnkStatus, ['good', 'warn', 'bad', 'empty'], true)) {
                     $stnkStatus = 'good';
                 }
 
@@ -1017,31 +1174,46 @@ class HseController extends Controller
         $mappedRecords = collect($records)->map(function ($record) {
             $rawTimestamp = trim($record['timestamp'] ?? '');
             $rawTanggal = trim($record['tanggal'] ?? '');
-            
-            // Jika timestamp hanya angka (ID) atau kosong, gunakan tanggal
-            if (empty($rawTimestamp) || is_numeric($rawTimestamp) || strlen($rawTimestamp) < 5) {
-                $rawTimestamp = $rawTanggal;
-            }
-            
+            $rawJam = trim($record['jam_pencatatan'] ?? '');
+
+            $isGoogleForm = strlen($rawTimestamp) > 10;
             $carbon = null;
-            
-            try {
-                // Try parsing as-is (works for MM/DD/YYYY or YYYY-MM-DD)
-                $carbon = \Carbon\Carbon::parse($rawTimestamp);
-            } catch (\Throwable $e) {
-                try {
-                    // Fallback for DD/MM/YYYY by converting to DD-MM-YYYY
-                    $carbon = \Carbon\Carbon::parse(str_replace('/', '-', $rawTimestamp));
-                } catch (\Throwable $e2) {
-                    // Coba parse tanggal sebagai fallback terakhir
-                    try {
-                        $carbon = \Carbon\Carbon::parse(str_replace('/', '-', $rawTanggal));
-                    } catch (\Throwable $e3) {
-                        $carbon = now();
+
+            if ($isGoogleForm) {
+                // Dari Google Form: format tanggal adalah d/m/Y (Indonesian DD/MM/YYYY)
+                $dateStr = !empty($rawTanggal) ? $rawTanggal : explode(' ', $rawTimestamp)[0];
+                if (preg_match('/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/', $dateStr, $m)) {
+                    $day = (int)$m[1];
+                    $month = (int)$m[2];
+                    $year = (int)$m[3];
+
+                    $hour = 0; $min = 0; $sec = 0;
+                    $timeSource = !empty($rawJam) ? $rawJam : $rawTimestamp;
+                    if (preg_match('/(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?/', $timeSource, $tm)) {
+                        $hour = (int)$tm[1];
+                        $min = (int)$tm[2];
+                        $sec = isset($tm[3]) ? (int)$tm[3] : 0;
                     }
+                    $carbon = \Carbon\Carbon::create($year, $month, $day, $hour, $min, $sec);
+                }
+            } else {
+                // Dari Sheet1: format tanggal adalah m/d/Y (US Month/Day/Year)
+                if (preg_match('/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/', $rawTanggal, $m)) {
+                    $month = (int)$m[1];
+                    $day = (int)$m[2];
+                    $year = (int)$m[3];
+                    $carbon = \Carbon\Carbon::create($year, $month, $day, 0, 0, 0);
                 }
             }
-            
+
+            if (!$carbon) {
+                try {
+                    $carbon = \Carbon\Carbon::parse($rawTanggal ?: $rawTimestamp);
+                } catch (\Throwable $e) {
+                    $carbon = now();
+                }
+            }
+
             $record['_carbon'] = $carbon;
             return $record;
         });
@@ -1094,22 +1266,26 @@ class HseController extends Controller
                 $prevKwhOffice = $currentKwhOffice;
             }
             
-            if ($currentKwhUtama > 0 || $currentKwUtama > 0 || $consumedUtama > 0 || $currentKwhOffice > 0 || $currentKwOffice > 0 || $consumedOffice > 0) {
+            $pictureUrl = !empty($record['picture']) ? $this->normalizePictureValue($record['picture']) : '';
+            $hasPicture = !empty($pictureUrl);
+            $hasCatatan = !empty(trim($record['keterangan'] ?? ''));
+
+            if ($currentKwhUtama > 0 || $currentKwUtama > 0 || $consumedUtama > 0 || $currentKwhOffice > 0 || $currentKwOffice > 0 || $consumedOffice > 0 || $hasPicture || $hasCatatan) {
                 $formattedRecords[] = [
                     'tgl' => $parsedDate,
                     'date_key' => $record['_carbon']->format('Y-m-d'),
                     'jam' => $record['jam_pencatatan'] ?? '',
-                    'kw_utama' => $rawKwUtama !== '' ? $rawKwUtama : '-',
-                    'kwh_utama' => $rawKwhUtama !== '' ? $rawKwhUtama : '-',
-                    'consumed_utama' => $rawConsumedUtama !== '' ? $rawConsumedUtama : '-',
-                    'kw_office' => $rawKwOffice !== '' ? $rawKwOffice : '-',
-                    'kwh_office' => $rawKwhOffice !== '' ? $rawKwhOffice : '-',
-                    'consumed_office' => $rawConsumedOffice !== '' ? $rawConsumedOffice : '-',
+                    'kw_utama' => ($rawKwUtama !== '' && $rawKwUtama !== '-') ? $rawKwUtama : '-',
+                    'kwh_utama' => ($rawKwhUtama !== '' && $rawKwhUtama !== '-') ? $rawKwhUtama : '-',
+                    'consumed_utama' => ($rawConsumedUtama !== '' && $rawConsumedUtama !== '-') ? $rawConsumedUtama : '-',
+                    'kw_office' => ($rawKwOffice !== '' && $rawKwOffice !== '-') ? $rawKwOffice : '-',
+                    'kwh_office' => ($rawKwhOffice !== '' && $rawKwhOffice !== '-') ? $rawKwhOffice : '-',
+                    'consumed_office' => ($rawConsumedOffice !== '' && $rawConsumedOffice !== '-') ? $rawConsumedOffice : '-',
                     // Keep float values for chart aggregations
                     '_float_consumed_utama' => $consumedUtama,
                     '_float_consumed_office' => $consumedOffice,
                     'catatan' => $record['keterangan'] ?? '',
-                    'picture' => $this->normalizePictureValue($record['picture'] ?? ''),
+                    'picture' => $pictureUrl,
                 ];
             }
         }
@@ -1131,13 +1307,15 @@ class HseController extends Controller
                     'office' => (float) $office,
                 ];
             })
+            ->filter(fn ($item) => $item['utama'] > 0 || $item['office'] > 0)
             ->sortBy('date_key', SORT_STRING)
             ->values()
             ->all();
 
         $totalRecord = count($formattedRecords);
         $totalConsumed = collect($formattedRecords)->sum('_float_consumed_utama') + collect($formattedRecords)->sum('_float_consumed_office');
-        $rataRata = $totalRecord > 0 ? $totalConsumed / $totalRecord : 0;
+        $recordsWithConsumption = collect($formattedRecords)->filter(fn($r) => ($r['_float_consumed_utama'] > 0 || $r['_float_consumed_office'] > 0))->count();
+        $rataRata = $recordsWithConsumption > 0 ? $totalConsumed / $recordsWithConsumption : 0;
         
         // Gabungkan data input permanen dan session
         $permanentInput = $this->readPrycamRecords();
@@ -1206,6 +1384,7 @@ class HseController extends Controller
 
         return view('pages.monitor-kwh', [
             'records' => $formattedRecords,
+            'trendData' => $trendData,
             'days' => array_map(fn ($row) => $row['label'], $trendData),
             'fullDates' => array_map(fn ($row) => $row['date_key'], $trendData),
             'utama' => array_map(fn ($row) => (float) ($row['utama'] ?? 0), $trendData),
@@ -1439,8 +1618,12 @@ class HseController extends Controller
             $vehicles = array_values(array_filter($vehicles, function ($v) use ($fJenis, $fStatus, $fQ, $statusLabelMap) {
                 if ($fJenis && strtolower($v['jenis']) !== $fJenis) return false;
                 if ($fStatus) {
-                    $vStatusLabel = $statusLabelMap[$v['sim_status']] ?? 'sim aktif';
-                    if ($vStatusLabel !== $fStatus) return false;
+                    if ($fStatus === 'peringatan') {
+                        if ($v['sim_status'] !== 'warn' && $v['stnk_status'] !== 'warn') return false;
+                    } else {
+                        $vStatusLabel = $statusLabelMap[$v['sim_status']] ?? 'sim aktif';
+                        if ($vStatusLabel !== $fStatus) return false;
+                    }
                 }
                 if ($fQ) {
                     $searchText = strtolower($v['nama'] . ' ' . $v['plat']);
@@ -2097,5 +2280,179 @@ class HseController extends Controller
         }
 
         return view('pages.permit-entry', ['dummyData' => $data, 'isDummy' => $isDummy]);
+    }
+
+    /**
+     * Baca data Permit to Work dari Google Spreadsheet CSV atau fallback ke demo data HSE lengkap.
+     */
+    public function readPermitWorkData(): array
+    {
+        $csvUrl = env('PERMIT_WORK_CSV_URL');
+        if (!empty($csvUrl)) {
+            try {
+                $response = \Illuminate\Support\Facades\Http::timeout(25)->withOptions(['verify' => false])->get($csvUrl);
+                if ($response->successful()) {
+                    $csvData = trim($response->body());
+                    if ($csvData) {
+                        $stream = fopen('php://memory', 'r+');
+                        fwrite($stream, $csvData);
+                        rewind($stream);
+                        $headers = fgetcsv($stream);
+                        if ($headers) {
+                            $headers = array_map(function ($h) {
+                                return strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '_', $h), '_'));
+                            }, $headers);
+
+                            $records = [];
+                            while (($row = fgetcsv($stream)) !== false) {
+                                if (count($row) < count($headers)) {
+                                    $row = array_pad($row, count($headers), '');
+                                }
+                                $dataRow = array_combine($headers, array_slice($row, 0, count($headers)));
+                                
+                                $nama = $dataRow['nama'] ?? ($dataRow['nama_pemohon'] ?? ($dataRow['pemohon'] ?? ''));
+                                if (!empty($nama)) {
+                                    $tgl = $dataRow['tanggal'] ?? ($dataRow['tanggal_pekerjaan'] ?? ($dataRow['timestamp'] ?? date('Y-m-d')));
+                                    if (str_contains($tgl, ' ')) {
+                                        $tgl = explode(' ', $tgl)[0];
+                                    }
+                                    $tglParts = explode('/', $tgl);
+                                    if (count($tglParts) === 3) {
+                                        $tgl = sprintf('%04d-%02d-%02d', $tglParts[2], $tglParts[0], $tglParts[1]);
+                                    } else {
+                                        $tgl = str_replace('/', '-', $tgl);
+                                    }
+
+                                    $instansi = $dataRow['nama_instansi'] ?? ($dataRow['instansi'] ?? ($dataRow['perusahaan'] ?? ($dataRow['asal_instansi'] ?? '-')));
+                                    
+                                    $sebagai = $dataRow['membuat_ptw_sebagai'] ?? ($dataRow['sebagai'] ?? ($dataRow['status'] ?? ''));
+                                    if (stripos($sebagai, 'karyawan') !== false || stripos($sebagai, 'pci') !== false) {
+                                        $sebagai = 'Karyawan PCI';
+                                    } else {
+                                        $sebagai = 'Kontraktor';
+                                    }
+
+                                    $pekerjaan = $dataRow['jenis_pekerjaan'] ?? ($dataRow['kategori'] ?? ($dataRow['tipe_pekerjaan'] ?? 'General Safety'));
+
+                                    $records[] = [
+                                        'tanggal' => $tgl,
+                                        'nama' => $nama,
+                                        'instansi' => $instansi ?: '-',
+                                        'sebagai' => $sebagai,
+                                        'jenis_pekerjaan' => $pekerjaan ?: 'General Safety',
+                                    ];
+                                }
+                            }
+                            fclose($stream);
+                            if (count($records) > 0) {
+                                return $records;
+                            }
+                        }
+                    }
+                }
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::warning('Google CSV Permit Work fetch failed: ' . $e->getMessage());
+            }
+        }
+
+        // Demo data HSE Permit to Work sesuai 5 kolom yang diminta
+        return [
+            [
+                'tanggal' => '2026-10-14',
+                'nama' => 'Rudi Hermawan',
+                'instansi' => 'PT Maju Bersama Teknik',
+                'sebagai' => 'Kontraktor',
+                'jenis_pekerjaan' => 'Hot Work',
+            ],
+            [
+                'tanggal' => '2026-10-14',
+                'nama' => 'Bambang Supratman',
+                'instansi' => 'PT PCI Elektronik Internasional',
+                'sebagai' => 'Karyawan PCI',
+                'jenis_pekerjaan' => 'Working Alone',
+            ],
+            [
+                'tanggal' => '2026-10-14',
+                'nama' => 'Hendra Gunawan',
+                'instansi' => 'CV Multi Sarana Cipta',
+                'sebagai' => 'Kontraktor',
+                'jenis_pekerjaan' => 'Working at Height',
+            ],
+            [
+                'tanggal' => '2026-10-13',
+                'nama' => 'Irfan Hakim',
+                'instansi' => 'PT Duta Sarana Mandiri',
+                'sebagai' => 'Kontraktor',
+                'jenis_pekerjaan' => 'Confined Space',
+            ],
+            [
+                'tanggal' => '2026-10-13',
+                'nama' => 'Dwi Cahyono',
+                'instansi' => 'PT PCI Elektronik Internasional',
+                'sebagai' => 'Karyawan PCI',
+                'jenis_pekerjaan' => 'Flammable Chamber Test',
+            ],
+            [
+                'tanggal' => '2026-10-13',
+                'nama' => 'Slamet Riyadi',
+                'instansi' => 'PT Tri Karya Sentosa',
+                'sebagai' => 'Kontraktor',
+                'jenis_pekerjaan' => 'General Safety',
+            ],
+            [
+                'tanggal' => '2026-10-12',
+                'nama' => 'Agus Priyono',
+                'instansi' => 'PT Maju Bersama Teknik',
+                'sebagai' => 'Kontraktor',
+                'jenis_pekerjaan' => 'Hot Work',
+            ],
+            [
+                'tanggal' => '2026-10-12',
+                'nama' => 'Fajar Santoso',
+                'instansi' => 'PT Samudera Teknik Mandiri',
+                'sebagai' => 'Kontraktor',
+                'jenis_pekerjaan' => 'Working at Height',
+            ],
+            [
+                'tanggal' => '2026-10-11',
+                'nama' => 'Yusuf Maulana',
+                'instansi' => 'PT PCI Elektronik Internasional',
+                'sebagai' => 'Karyawan PCI',
+                'jenis_pekerjaan' => 'General Safety',
+            ],
+            [
+                'tanggal' => '2026-10-11',
+                'nama' => 'Wahyu Ramadhan',
+                'instansi' => 'PT Cahaya Inti Perkasa',
+                'sebagai' => 'Kontraktor',
+                'jenis_pekerjaan' => 'Hot Work',
+            ],
+            [
+                'tanggal' => '2026-10-10',
+                'nama' => 'Ahmad Jais',
+                'instansi' => 'PT PCI Elektronik Internasional',
+                'sebagai' => 'Karyawan PCI',
+                'jenis_pekerjaan' => 'Flammable Chamber Test',
+            ],
+            [
+                'tanggal' => '2026-10-10',
+                'nama' => 'Eko Prasetyo',
+                'instansi' => 'CV Prima Isolasi Mandiri',
+                'sebagai' => 'Kontraktor',
+                'jenis_pekerjaan' => 'Working at Height',
+            ],
+        ];
+    }
+
+    public function permitWork(Request $request)
+    {
+        $csvUrl = env('PERMIT_WORK_CSV_URL');
+        $isDummy = empty($csvUrl);
+        $data = $this->readPermitWorkData();
+
+        return view('pages.permit-work', [
+            'dummyData' => $data,
+            'isDummy' => $isDummy,
+        ]);
     }
 }

@@ -39,6 +39,7 @@
                 <a href="{{ route('checklist-forklift') }}" class="{{ request()->routeIs('checklist-forklift') ? 'is-active' : '' }}">Checklist Forklift</a>
                 <a href="{{ route('registrasi-kendaraan') }}" class="{{ request()->routeIs('registrasi-kendaraan') ? 'is-active' : '' }}">Data Kendaraan</a>
                 <a href="{{ route('permit-entry') }}" class="{{ request()->routeIs('permit-entry') ? 'is-active' : '' }}">Permit to Entry</a>
+                <a href="{{ route('permit-work') }}" class="{{ request()->routeIs('permit-work') ? 'is-active' : '' }}">Permit to Work</a>
             </nav>
         </div>
     </header>
@@ -70,6 +71,10 @@
             <a href="{{ route('permit-entry') }}" class="{{ request()->routeIs('permit-entry') ? 'is-active' : '' }}">
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
                 Permit to Entry
+            </a>
+            <a href="{{ route('permit-work') }}" class="{{ request()->routeIs('permit-work') ? 'is-active' : '' }}">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                Permit to Work
             </a>
         </nav>
     </div>

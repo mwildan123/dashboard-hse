@@ -55,7 +55,7 @@
                 <input class="input" type="text" id="f_cari" placeholder="Ketik untuk mencari...">
             </div>
             <div class="field" style="display:flex; align-items:flex-end;">
-                <button type="button" class="btn btn-primary" onclick="applyFilter()" title="Terapkan Filter" style="padding: 0; min-width: 0; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <button type="button" class="btn btn-primary" onclick="applyFilter()" title="Terapkan Filter" style="padding: 0; min-width: 0; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                 </button>
             </div>
@@ -386,11 +386,14 @@
     }
 
     function initFilters() {
-        // Setup initial text input listener for enter key
-        document.getElementById('f_cari').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                applyFilter();
-            }
+        [document.getElementById('f_cari'), document.getElementById('f_tanggal_mulai'), document.getElementById('f_tanggal_sampai')].forEach(function(input) {
+            if (!input) return;
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    applyFilter();
+                }
+            });
         });
     }
 

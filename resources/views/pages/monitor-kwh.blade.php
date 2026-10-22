@@ -51,7 +51,7 @@
                     <input class="input" type="date" id="f_sampai" value="">
                 </div>
                 <div class="field" style="display:flex; align-items:flex-end;">
-                    <button type="button" class="btn btn-primary" data-filter-trigger="kwh" title="Cari" style="padding: 0; min-width: 0; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <button type="button" class="btn btn-primary" data-filter-trigger="kwh" title="Cari" style="padding: 0; min-width: 0; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer;">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                     </button>
                 </div>
@@ -87,192 +87,30 @@
         </div>
         </div>
 
-        {{-- ============ GRAFIK TREN 14 HARI ============ --}}
+        {{-- ============ GRAFIK TREN KONSUMSI ============ --}}
         <div style="background: #ffffff; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); border: 1px solid var(--line-soft);">
-            <div style="margin-bottom: 1.5rem;">
-                <h3 style="font-size: 1.05rem; font-weight: 700; color: #1e293b; margin-bottom: 0.2rem; display: flex; align-items: center; gap: 0.5rem;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-                    Tren Konsumsi 14 Hari Terakhir
-                </h3>
-                <p style="font-size: 0.85rem; color: #64748b; margin: 0;">Panel kWh Utama vs Panel Office (consumed per hari).</p>
-            </div>
-            <div>
-                @php
-                $rawDays = $days ?? [];
-                $rawFullDates = $fullDates ?? [];
-                $rawUtama = $utama ?? [];
-                $rawOffice = $office ?? [];
-
-                // Take last 14 data points only
-                $totalPoints = count($rawDays);
-                $take = min(14, $totalPoints);
-                $offset = max(0, $totalPoints - $take);
-
-                $days = array_slice($rawDays, $offset, $take);
-                $fullDates = array_slice($rawFullDates, $offset, $take);
-                $utama = array_slice($rawUtama, $offset, $take);
-                $office = array_slice($rawOffice, $offset, $take);
-
-                // Build short x-axis labels like "8/9", "10/9"
-                $shortLabels = [];
-                foreach ($fullDates as $fd) {
-                    try {
-                        $c = \Carbon\Carbon::parse($fd);
-                        $shortLabels[] = $c->format('j/n');
-                    } catch (\Throwable $e) {
-                        $shortLabels[] = $fd;
-                    }
-                }
-
-                // SVG parameters
-                $w = 720; $h = 300;
-                $pl = 52; $pr = 20; $pt = 36; $pb = 36;
-                $cw = $w - $pl - $pr;
-                $ch = $h - $pt - $pb;
-
-                // Dynamic Max Value - use 5 ticks: 0, 400, 800, 1200, 1600 style
-                $allVals = array_merge([0], $utama, $office);
-                $maxData = max($allVals);
-                $step = max(100, ceil(($maxData ?: 100) / 4 / 100) * 100);
-                $maxVal = $step * 4;
-                $minVal = 0;
-                $range = $maxVal - $minVal ?: 1;
-
-                // Y-axis ticks
-                $yTicks = [0, $step, $step * 2, $step * 3, $maxVal];
-
-                // Points
-                $n = count($days);
-                $gap = $n > 1 ? $cw / ($n - 1) : $cw;
-
-                $pts1 = []; $pts2 = [];
-                for ($i = 0; $i < $n; $i++) {
-                    $x = round($pl + $i * $gap, 1);
-                    $y1 = round($pt + $ch - (($utama[$i] ?? 0) - $minVal) / $range * $ch, 1);
-                    $y2 = round($pt + $ch - (($office[$i] ?? 0) - $minVal) / $range * $ch, 1);
-                    $pts1[] = "$x,$y1";
-                    $pts2[] = "$x,$y2";
-                }
-
-                $polyline1 = empty($pts1) ? '' : implode(' ', $pts1);
-                $polyline2 = empty($pts2) ? '' : implode(' ', $pts2);
-
-                // Areas
-                $baseline = $pt + $ch;
-                $firstX = $pl;
-                $lastX = $n > 1 ? round($pl + ($n - 1) * $gap, 1) : $pl;
-                $area1 = empty($pts1) ? '' : "M{$firstX},{$baseline} L" . implode(' L', $pts1) . " L{$lastX},{$baseline} Z";
-                $area2 = empty($pts2) ? '' : "M{$firstX},{$baseline} L" . implode(' L', $pts2) . " L{$lastX},{$baseline} Z";
-            @endphp
-
-            <div class="chart-wrap">
-                <svg viewBox="0 0 {{ $w }} {{ $h }}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Grafik tren konsumsi kWh 14 hari">
-                    {{-- Grid lines --}}
-                    @foreach($yTicks as $tick)
-                        @php $yy = round($pt + $ch - ($tick - $minVal) / $range * $ch, 1); @endphp
-                        <line x1="{{ $pl }}" y1="{{ $yy }}" x2="{{ $w - $pr }}" y2="{{ $yy }}" class="chart-grid-line"/>
-                        <text x="{{ $pl - 8 }}" y="{{ $yy + 4 }}" text-anchor="end" class="chart-axis-label">{{ number_format($tick, 0, ',', '.') }}</text>
-                    @endforeach
-
-                    {{-- X-axis labels (short d/m format) --}}
-                    @for($i = 0; $i < $n; $i++)
-                        @php 
-                            $x = round($pl + $i * $gap, 1); 
-                            $d = $fullDates[$i] ?? $days[$i];
-                        @endphp
-                        @if($n <= 14 || $i % 2 === 0 || $i === $n - 1)
-                            <text x="{{ $x }}" y="{{ $h - 6 }}" text-anchor="middle" class="chart-axis-label" data-date="{{ $d }}">{{ $shortLabels[$i] ?? $days[$i] }}</text>
-                        @endif
-                    @endfor
-
-                    {{-- Areas --}}
-                    <path d="{{ $area1 }}" class="chart-area-1"/>
-                    <path d="{{ $area2 }}" class="chart-area-2"/>
-
-                    {{-- Lines --}}
-                    <polyline points="{{ $polyline1 }}" class="chart-line chart-line-1"/>
-                    <polyline points="{{ $polyline2 }}" class="chart-line chart-line-2"/>
-
-                    {{-- Cursor hairline guide --}}
-                    <line id="chart-cursor" x1="0" y1="{{ $pt }}" x2="0" y2="{{ $pt + $ch }}" class="chart-cursor-line" style="display:none;"/>
-
-                    {{-- Dots --}}
-                    @for($i = 0; $i < $n; $i++)
-                        @php
-                            $x = round($pl + $i * $gap, 1);
-                            $y1 = round($pt + $ch - (($utama[$i] ?? 0) - $minVal) / $range * $ch, 1);
-                            $y2 = round($pt + $ch - (($office[$i] ?? 0) - $minVal) / $range * $ch, 1);
-                            $d = $fullDates[$i] ?? $days[$i];
-                            $u = number_format($utama[$i] ?? 0);
-                            $o = number_format($office[$i] ?? 0);
-                            $tot = number_format(($utama[$i] ?? 0) + ($office[$i] ?? 0));
-                        @endphp
-                        {{-- Hit targets for touch and mouse --}}
-                        <circle cx="{{ $x }}" cy="{{ $y1 }}" r="16" class="chart-hit"
-                            data-chart-point
-                            data-x="{{ $x }}"
-                            data-y="{{ $y1 }}"
-                            data-date="{{ $d }}"
-                            data-utama="{{ $u }}"
-                            data-office="{{ $o }}"
-                            data-total="{{ $tot }}"
-                            role="button"
-                            tabindex="0"
-                            aria-label="{{ $d }} Panel kWh Utama: {{ $u }} kWh">
-                            <title>{{ $d }} - Panel Utama: {{ $u }} kWh</title>
-                        </circle>
-                        <circle cx="{{ $x }}" cy="{{ $y2 }}" r="16" class="chart-hit"
-                            data-chart-point
-                            data-x="{{ $x }}"
-                            data-y-office="{{ $y2 }}"
-                            data-date="{{ $d }}"
-                            data-utama="{{ $u }}"
-                            data-office="{{ $o }}"
-                            data-total="{{ $tot }}"
-                            role="button"
-                            tabindex="0"
-                            aria-label="{{ $d }} Panel Office: {{ $o }} kWh">
-                            <title>{{ $d }} - Panel Office: {{ $o }} kWh</title>
-                        </circle>
-
-                        <circle cx="{{ $x }}" cy="{{ $y1 }}" class="chart-dot chart-dot-1" id="dot-u-{{ $i }}" data-date="{{ $d }}"/>
-                        <circle cx="{{ $x }}" cy="{{ $y2 }}" class="chart-dot chart-dot-2" id="dot-o-{{ $i }}" data-date="{{ $d }}"/>
-                    @endfor
-                </svg>
-
-                {{-- Interactive Tooltip Popup --}}
-                <div class="chart-tooltip" id="chart-tooltip" role="tooltip" aria-hidden="true">
-                    <div class="chart-tooltip-head" id="tt-date">10 Sep 2026</div>
-                    <div class="chart-tooltip-row">
-                        <span class="chart-tooltip-label">
-                            <span class="chart-tooltip-dot" style="background:var(--accent);"></span>
-                            Panel kWh Utama:
-                        </span>
-                        <span class="chart-tooltip-val" id="tt-utama">1.200 kWh</span>
-                    </div>
-                    <div class="chart-tooltip-row">
-                        <span class="chart-tooltip-label">
-                            <span class="chart-tooltip-dot" style="background:var(--warn);"></span>
-                            Panel Office:
-                        </span>
-                        <span class="chart-tooltip-val" id="tt-office">340 kWh</span>
-                    </div>
-                    <div class="chart-tooltip-total">
-                        <span>Total Konsumsi:</span>
-                        <strong id="tt-total">1.540 kWh</strong>
-                    </div>
+            <div style="margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.75rem;">
+                <div>
+                    <h3 style="font-size: 1.05rem; font-weight: 700; color: #1e293b; margin-bottom: 0.2rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                        Tren Konsumsi Harian
+                    </h3>
+                    <p id="kwh-chart-subtitle" style="font-size: 0.85rem; color: #64748b; margin: 0;">Panel kWh Utama vs Panel Office (consumed per hari).</p>
+                </div>
+                <div class="chart-legend" style="margin: 0; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                    <span class="chart-legend-item" style="display: flex; align-items: center; gap: 6px; font-size: 0.82rem; font-weight: 600; color: #334155;">
+                        <span style="width: 10px; height: 10px; border-radius: 50%; background: #2563eb; display: inline-block;"></span>
+                        Panel kWh Utama
+                    </span>
+                    <span class="chart-legend-item" style="display: flex; align-items: center; gap: 6px; font-size: 0.82rem; font-weight: 600; color: #334155;">
+                        <span style="width: 10px; height: 10px; border-radius: 50%; background: #f59e0b; display: inline-block;"></span>
+                        Panel Office
+                    </span>
                 </div>
             </div>
-
-            <div class="chart-legend">
-                <span class="chart-legend-item">
-                    <span class="chart-legend-dot" style="background:var(--accent)"></span>
-                    Panel kWh Utama
-                </span>
-                <span class="chart-legend-item">
-                    <span class="chart-legend-dot" style="background:var(--warn)"></span>
-                    Panel Office
-                </span>
+            
+            <div style="position: relative; width: 100%; min-height: 280px; height: 320px;">
+                <canvas id="chartKwhTren"></canvas>
             </div>
         </div>
 
@@ -348,7 +186,6 @@
             <table class="data" id="table-pencatatan">
                 <thead>
                     <tr>
-                        <th style="width: 50px;">N</th>
                         <th>Tanggal</th>
                         <th>Panel</th>
                         <th>KW (Berubah)</th>
@@ -364,7 +201,6 @@
                 <tbody id="kwh-table-body">
                     @foreach($records as $index => $r)
                     <tr data-filter-row="kwh" data-date="{{ $r['date_key'] ?? $r['tgl'] }}" data-panel="Utama, Office" data-c-utama="{{ $r['_float_consumed_utama'] ?? 0 }}" data-c-office="{{ $r['_float_consumed_office'] ?? 0 }}">
-                        <td style="text-align: center;">{{ $index + 1 }}</td>
                         <td>{{ $r['tgl'] }}</td>
                         <td>
                             <span class="badge" style="background:#e0f2fe; color:#0369a1; border: 1px solid #bae6fd; font-weight: 600;">Utama & Office</span>
@@ -442,7 +278,7 @@
                     </select>
                 </div>
                 <div class="field" style="display:flex; align-items:flex-end;">
-                    <button type="button" class="btn btn-primary" data-filter-trigger="input_monitoring" title="Terapkan Filter" style="padding: 0; min-width: 0; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <button type="button" class="btn btn-primary" data-filter-trigger="input_monitoring" title="Terapkan Filter" style="padding: 0; min-width: 0; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer;">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="20" height="20"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                     </button>
                 </div>
@@ -559,8 +395,150 @@
     </section>
 
 </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    var allKwhTrend = @json($trendData ?? []);
+    var kwhChartInst = null;
+
+    window.updateKwhTrendChart = function(fromDate, toDate) {
+        var chartData = allKwhTrend;
+        var isFiltered = false;
+
+        if (fromDate) {
+            chartData = chartData.filter(function(item) {
+                return item.date_key >= fromDate;
+            });
+            isFiltered = true;
+        }
+        if (toDate) {
+            chartData = chartData.filter(function(item) {
+                return item.date_key <= toDate;
+            });
+            isFiltered = true;
+        }
+
+        var subtitleEl = document.getElementById('kwh-chart-subtitle');
+        if (subtitleEl) {
+            if (isFiltered) {
+                var rangeText = fromDate && toDate ? (fromDate + ' s/d ' + toDate) : (fromDate ? ('Dari ' + fromDate) : ('Sampai ' + toDate));
+                subtitleEl.innerHTML = 'Periode: <strong>' + rangeText + '</strong> (' + chartData.length + ' hari terdata).';
+            } else {
+                var take = Math.min(14, chartData.length);
+                var offset = Math.max(0, chartData.length - take);
+                chartData = chartData.slice(offset);
+                subtitleEl.innerHTML = 'Menampilkan 14 hari terakhir. Gunakan filter tanggal di atas untuk melihat rentang tanggal lainnya.';
+            }
+        }
+
+        var labels = chartData.map(function(item) {
+            return item.label || item.date_key;
+        });
+        var dataUtama = chartData.map(function(item) { return item.utama; });
+        var dataOffice = chartData.map(function(item) { return item.office; });
+
+        var canvas = document.getElementById('chartKwhTren');
+        if (!canvas) return;
+        var ctx = canvas.getContext('2d');
+
+        if (kwhChartInst) {
+            kwhChartInst.destroy();
+        }
+
+        kwhChartInst = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Panel kWh Utama',
+                        data: dataUtama,
+                        borderColor: '#2563eb',
+                        backgroundColor: 'rgba(37, 99, 235, 0.08)',
+                        borderWidth: 2.5,
+                        fill: true,
+                        tension: 0.35,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: '#2563eb'
+                    },
+                    {
+                        label: 'Panel Office',
+                        data: dataOffice,
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.08)',
+                        borderWidth: 2.5,
+                        fill: true,
+                        tension: 0.35,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: '#f59e0b'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                        titleFont: { size: 13, weight: '600' },
+                        bodyFont: { size: 12 },
+                        padding: 10,
+                        cornerRadius: 8,
+                        callbacks: {
+                            label: function(context) {
+                                var label = context.dataset.label || '';
+                                var val = context.parsed.y || 0;
+                                return label + ': ' + val.toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + ' kWh';
+                            },
+                            footer: function(tooltipItems) {
+                                var total = 0;
+                                tooltipItems.forEach(function(item) {
+                                    total += (item.parsed.y || 0);
+                                });
+                                return 'Total Konsumsi: ' + total.toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + ' kWh';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#f1f5f9'
+                        },
+                        ticks: {
+                            callback: function(val) {
+                                return val.toLocaleString('id-ID');
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            maxTicksLimit: 14,
+                            maxRotation: 45
+                        }
+                    }
+                }
+            }
+        });
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var fromVal = document.getElementById('f_dari') ? document.getElementById('f_dari').value : '';
+        var toVal = document.getElementById('f_sampai') ? document.getElementById('f_sampai').value : '';
+        window.updateKwhTrendChart(fromVal, toVal);
+    });
+
     function confirmDelete(btn) {
         Swal.fire({
             title: 'Hapus data ini?',

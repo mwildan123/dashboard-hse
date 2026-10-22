@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HseController::class, 'beranda'])->name('beranda');
 
 Route::get('/permit-entry', [HseController::class, 'permitEntry'])->name('permit-entry');
+Route::get('/permit-work', [HseController::class, 'permitWork'])->name('permit-work');
 
 Route::get('/test-sheet', function () {
     $hse = app(HseController::class);
@@ -54,6 +55,10 @@ Route::get('/monitor/forklift', function () {
 Route::get('/monitor/kendaraan', function () {
     return redirect()->route('registrasi-kendaraan');
 })->name('monitor-kendaraan');
+
+Route::get('/monitor/permit-work', function () {
+    return redirect()->route('permit-work');
+})->name('monitor-permit-work');
 
 Route::get('/dashboard', [HseController::class, 'index'])->name('dashboard');
 Route::post('/dashboard/reset', [HseController::class, 'reset'])->name('hse.reset');

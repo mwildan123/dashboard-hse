@@ -377,12 +377,23 @@
     }
 
     .vehicle-number {
-        font-size: 2.1rem;
-        line-height: 1;
+        font-size: 1.85rem;
+        line-height: 1.1;
         font-weight: 800;
-        letter-spacing: -0.06em;
+        letter-spacing: -0.05em;
         color: var(--ink);
-        margin-bottom: 0.4rem;
+        margin-bottom: 0.45rem;
+        display: flex;
+        align-items: baseline;
+        gap: 0.35rem;
+        white-space: nowrap;
+    }
+
+    .vehicle-number span {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--ink-3);
+        letter-spacing: normal;
     }
 
     .vehicle-badge {
@@ -390,12 +401,31 @@
         align-items: center;
         gap: 0.35rem;
         width: fit-content;
-        padding: 0.38rem 0.7rem;
+        max-width: 100%;
+        padding: 0.32rem 0.65rem;
         border-radius: 999px;
         background: rgba(59, 130, 246, 0.08);
         color: var(--accent);
         font-size: 0.72rem;
         font-weight: 700;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .vehicle-badge.good {
+        background: rgba(16, 185, 129, 0.1);
+        color: #10b981;
+    }
+
+    .vehicle-badge.warn {
+        background: rgba(245, 158, 11, 0.12);
+        color: #b45309;
+    }
+
+    .vehicle-badge.slate {
+        background: rgba(100, 116, 139, 0.1);
+        color: #64748b;
     }
 
     @media (max-width: 720px) {
@@ -476,6 +506,18 @@
         <p class="shortcut-desc">Pantau total izin kunjungan dan rekapitulasi data tamu yang masuk ke area plant.</p>
         <span class="card-arrow" style="color: #9333ea;">→</span>
     </a>
+
+    <a href="{{ route('permit-work') }}" class="shortcut-card" style="border-color: rgba(225, 29, 72, 0.2);">
+        <div class="shortcut-glow" style="background: radial-gradient(circle, rgba(225, 29, 72, 0.15) 0%, rgba(225, 29, 72, 0) 70%);"></div>
+        <div class="shortcut-icon" style="background: rgba(225, 29, 72, 0.12); color: #e11d48;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+            </svg>
+        </div>
+        <h3 class="shortcut-title">Permit to Work</h3>
+        <p class="shortcut-desc">Pantau izin kerja keselamatan (Hot Work, Height, Confined Space) dan verifikasi APD.</p>
+        <span class="card-arrow" style="color: #e11d48;">→</span>
+    </a>
 </div>
 
 <div class="panel summary-panel">
@@ -489,15 +531,15 @@
         <div class="metric-grid">
             <div class="metric-card">
                 <div class="metric-head">
-                    <span class="metric-label">Konsumsi Hari Ini</span>
+                    <span class="metric-label">{{ $kwhCardTitle ?? 'Konsumsi Hari Ini' }}</span>
                     <span class="metric-tag">Panel kWh</span>
                 </div>
-                <div class="metric-body">
-                    <div class="metric-data">
-                        <span class="metric-value">{{ number_format($kwhToday ?? 0, 1, ',', '.') }}</span>
-                        <span class="metric-unit">kWh</span>
+                <div class="vehicle-box">
+                    <div class="vehicle-number">{{ number_format($kwhToday ?? 0, 1, ',', '.') }} <span>kWh</span></div>
+                    <div class="vehicle-badge {{ $kwhStatusClass ?? 'good' }}">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        <span>{{ $kwhStatusText ?? 'Data Terupdate' }}</span>
                     </div>
-                    <span class="metric-status-pill {{ ($kwhToday ?? 0) > 0 ? 'good' : 'slate' }}">{{ ($kwhToday ?? 0) > 0 ? 'Normal' : 'Menunggu Data' }}</span>
                 </div>
             </div>
 
@@ -534,12 +576,12 @@
                     <span class="metric-label">Input Data Prycam</span>
                     <span class="metric-tag">Monitoring</span>
                 </div>
-                <div class="metric-body">
-                    <div class="metric-data">
-                        <span class="metric-value">{{ number_format($prycamKw ?? 0, 1, ',', '.') }}</span>
-                        <span class="metric-unit">kW</span>
+                <div class="vehicle-box">
+                    <div class="vehicle-number">{{ number_format($prycamKw ?? 0, 1, ',', '.') }} <span>kW</span></div>
+                    <div class="vehicle-badge {{ $prycamStatusClass ?? 'good' }}">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        <span>{{ $prycamStatusText ?? 'Data Terupdate' }}</span>
                     </div>
-                    <span class="metric-status-pill {{ ($prycamCount ?? 0) > 0 ? 'good' : 'slate' }}">{{ ($prycamCount ?? 0) > 0 ? ($prycamCount . ' Panel Dicek') : 'Belum Ada Data' }}</span>
                 </div>
             </div>
 
@@ -553,6 +595,20 @@
                     <div class="vehicle-badge">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                         <span>Data Terupdate</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-head">
+                    <span class="metric-label">Izin Kerja (PTW)</span>
+                    <span class="metric-tag" style="background: rgba(225, 29, 72, 0.1); color: #e11d48;">Permit to Work</span>
+                </div>
+                <div class="vehicle-box">
+                    <div class="vehicle-number">{{ number_format($ptwTotal ?? 0, 0, ',', '.') }} <span style="font-size: 1rem; font-weight: 500; color: var(--ink-3);">Permit</span></div>
+                    <div class="vehicle-badge" style="background: rgba(225, 29, 72, 0.1); color: #e11d48;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        <span>{{ $ptwActive ?? 0 }} Pekerjaan Aktif</span>
                     </div>
                 </div>
             </div>

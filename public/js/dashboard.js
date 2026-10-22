@@ -568,6 +568,7 @@
                 var rowDate = row.getAttribute('data-date') || '';
                 var rowPanel = (row.getAttribute('data-panel') || '').trim();
                 var rowStatus = (row.getAttribute('data-status') || '').trim();
+                var rowSimStatus = (row.getAttribute('data-sim-status') || '').trim();
                 var rowJenis = (row.getAttribute('data-jenis') || '').trim();
                 var rowUnit = (row.getAttribute('data-unit') || '').trim();
                 var rowDept = (row.getAttribute('data-dept') || '').trim();
@@ -624,7 +625,16 @@
                         matches = false;
                     }
                 }
-                if (matches && statusValue && rowStatus.toLowerCase() !== statusValue.toLowerCase()) matches = false;
+                if (matches && statusValue) {
+                    var sValLower = statusValue.toLowerCase();
+                    if (sValLower === 'peringatan' || sValLower.indexOf('peringatan') !== -1 || sValLower.indexOf('segera habis') !== -1) {
+                        if (!row.classList.contains('row-warn') && rowStatus.toLowerCase() !== 'peringatan') {
+                            matches = false;
+                        }
+                    } else if (rowStatus.toLowerCase() !== sValLower) {
+                        matches = false;
+                    }
+                }
                 if (matches && jenisValue && rowJenis.toLowerCase() !== jenisValue.toLowerCase()) matches = false;
                 if (matches && searchValue && rowSearch.indexOf(searchValue) === -1) matches = false;
                 if (matches && unitValue && rowUnit !== unitValue) matches = false;
@@ -635,6 +645,11 @@
 
                 // Simple fallback to filter by month if they type month in search, or from Date range
                 row.hidden = !matches;
+                if (!matches) {
+                    row.setAttribute('data-filter-hidden', '');
+                } else {
+                    row.removeAttribute('data-filter-hidden');
+                }
                 
                 // Track for Kendaraan Chart
                 if (matches && scope === 'kendaraan') {
@@ -647,12 +662,14 @@
                     else if (jenisVeh === 'mobil') mobilCount++;
                     else if (jenisVeh === 'motor & mobil') bothCount++;
                     
-                    if (row.classList.contains('row-warn') || rowStatus === 'Peringatan') warnCount++;
+                    if (row.classList.contains('row-warn') || rowStatus === 'Peringatan' || rowSimStatus === 'warn') warnCount++;
 
-                    if (rowStatus === 'SIM Aktif') {
+                    // Dokumen berstatus "Peringatan" SIM-nya masih sah/aktif (belum expired),
+                    // sehingga di grafik/ringkasan tetap dikelompokkan ke "SIM Aktif"
+                    if (rowSimStatus === 'good' || rowSimStatus === 'warn' || rowStatus === 'SIM Aktif' || rowStatus === 'Peringatan') {
                         totalGoodSim++;
                         goodSimList.push({ nama: nama, plat: plat });
-                    } else if (rowStatus === 'Belum Mengisi') {
+                    } else if (rowSimStatus === 'empty' || rowStatus === 'Belum Mengisi') {
                         totalEmptySim++;
                         emptySimList.push({ nama: nama, plat: plat });
                     } else {
@@ -686,7 +703,11 @@
             });
 
             if (scope === 'kwh') {
-                syncKwhChartWithDateRange();
+                if (typeof window.updateKwhTrendChart === 'function') {
+                    window.updateKwhTrendChart(fromValue, toValue);
+                } else if (typeof syncKwhChartWithDateRange === 'function') {
+                    syncKwhChartWithDateRange();
+                }
                 
                 // Update elemen teks stat card
                 var elRecord = document.getElementById('stat-total-record');
@@ -771,7 +792,7 @@
                 if (statCards.length >= 2) statCards[1].innerHTML = motorCount + ' <small>/ ' + mobilCount + ' / ' + bothCount + '</small>';
                 if (statCards.length >= 3) statCards[2].textContent = warnCount;
 
-                var totalVeh = totalGoodSim + totalBadSim;
+                var totalVeh = totalGoodSim + totalBadSim + totalEmptySim;
                 var boxGood = document.getElementById('summary-box-good');
                 var boxBad = document.getElementById('summary-box-bad');
 
@@ -836,25 +857,39 @@
                     }
                 }
             }
+
+            // Trigger pagination refresh immediately after filter runs
+            if (scope === 'kwh') {
+                if (typeof pagFoto !== 'undefined' && pagFoto) pagFoto.refresh();
+                if (typeof pagPencatatan !== 'undefined' && pagPencatatan) pagPencatatan.refresh();
+            } else if (scope === 'input_monitoring') {
+                if (typeof pagInput !== 'undefined' && pagInput) pagInput.refresh();
+            } else if (scope === 'kendaraan') {
+                if (typeof pagKendaraan !== 'undefined' && pagKendaraan) pagKendaraan.refresh();
+            }
         }
 
         var trigger = document.querySelector('[data-filter-trigger="' + scope + '"]', scopeEl);
-        if (trigger) trigger.addEventListener('click', run);
-        
-        var debounceTimer;
-        var debouncedRun = function() {
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(run, 150);
-        };
+        if (trigger) {
+            trigger.style.cursor = 'pointer';
+            trigger.addEventListener('click', function() {
+                run();
+            });
+        }
 
-        [fromInput, toInput, panelInput, statusInput, jenisInput, searchInput, unitInput, deptInput, operatorInput].forEach(function(input) {
+        // Hanya jalankan filter saat tombol Cari diklik atau tombol Enter ditekan
+        [fromInput, toInput, panelInput, statusInput, jenisInput, searchInput, unitInput, deptInput, operatorInput, bulanTahunInput].forEach(function(input) {
             if (!input) return;
-            // Gunakan event change untuk tanggal & select agar tidak memicu run terlalu sering saat belum selesai pilih
-            if (input.type === 'date' || input.tagName === 'SELECT') {
-                input.addEventListener('change', run);
-            } else {
-                input.addEventListener('input', debouncedRun);
-            }
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (trigger) {
+                        trigger.click();
+                    } else {
+                        run();
+                    }
+                }
+            });
         });
 
         run();
@@ -975,29 +1010,12 @@
         perPage = perPage || 15;
         var currentPage = 1;
 
-        function getVisibleRows() {
-            var allRows = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
-            return allRows.filter(function(row) {
-                // Include rows that are not hidden by filter (hidden attribute) 
-                // but treat pagination display separately
-                return !row.hasAttribute('data-filter-hidden');
-            });
-        }
-
         function getAllRows() {
             return Array.prototype.slice.call(tbody.querySelectorAll('tr'));
         }
 
         function render() {
             var allRows = getAllRows();
-            
-            // First, mark rows hidden by filter vs pagination
-            allRows.forEach(function(row) {
-                if (row.hidden && !row.hasAttribute('data-pag-hidden')) {
-                    row.setAttribute('data-filter-hidden', '');
-                }
-            });
-
             var visibleRows = allRows.filter(function(row) {
                 return !row.hasAttribute('data-filter-hidden');
             });
@@ -1011,19 +1029,23 @@
             var startIdx = (currentPage - 1) * perPage;
             var endIdx = startIdx + perPage;
 
-            // Show/hide rows based on pagination
-            visibleRows.forEach(function(row, idx) {
-                if (idx >= startIdx && idx < endIdx) {
-                    row.hidden = false;
-                    row.removeAttribute('data-pag-hidden');
-                } else {
+            // Update row visibility based on pagination
+            allRows.forEach(function(row) {
+                if (row.hasAttribute('data-filter-hidden')) {
                     row.hidden = true;
-                    row.setAttribute('data-pag-hidden', '');
                 }
             });
 
-            // Build pagination controls
-            if (totalPages <= 1) {
+            visibleRows.forEach(function(row, idx) {
+                if (idx >= startIdx && idx < endIdx) {
+                    row.hidden = false;
+                } else {
+                    row.hidden = true;
+                }
+            });
+
+            // Build pagination controls (hanya tampil jika data lebih dari 15 / perPage)
+            if (totalRows <= perPage) {
                 pagContainer.innerHTML = '';
                 return;
             }
@@ -1031,7 +1053,7 @@
             var html = '';
 
             // Prev button
-            html += '<button class="pag-btn" data-pag-action="prev"' + (currentPage <= 1 ? ' disabled' : '') + '>';
+            html += '<button type="button" class="pag-btn" data-pag-action="prev"' + (currentPage <= 1 ? ' disabled' : '') + '>';
             html += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>';
             html += '</button>';
 
@@ -1041,21 +1063,21 @@
             if (endPage - startPage < 4) startPage = Math.max(1, endPage - 4);
 
             if (startPage > 1) {
-                html += '<button class="pag-btn" data-pag-page="1">1</button>';
+                html += '<button type="button" class="pag-btn" data-pag-page="1">1</button>';
                 if (startPage > 2) html += '<span class="pag-info">...</span>';
             }
 
             for (var p = startPage; p <= endPage; p++) {
-                html += '<button class="pag-btn' + (p === currentPage ? ' is-active' : '') + '" data-pag-page="' + p + '">' + p + '</button>';
+                html += '<button type="button" class="pag-btn' + (p === currentPage ? ' is-active' : '') + '" data-pag-page="' + p + '">' + p + '</button>';
             }
 
             if (endPage < totalPages) {
                 if (endPage < totalPages - 1) html += '<span class="pag-info">...</span>';
-                html += '<button class="pag-btn" data-pag-page="' + totalPages + '">' + totalPages + '</button>';
+                html += '<button type="button" class="pag-btn" data-pag-page="' + totalPages + '">' + totalPages + '</button>';
             }
 
             // Next button
-            html += '<button class="pag-btn" data-pag-action="next"' + (currentPage >= totalPages ? ' disabled' : '') + '>';
+            html += '<button type="button" class="pag-btn" data-pag-action="next"' + (currentPage >= totalPages ? ' disabled' : '') + '>';
             html += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>';
             html += '</button>';
 
@@ -1066,38 +1088,31 @@
 
             // Attach events
             pagContainer.querySelectorAll('[data-pag-page]').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    currentPage = parseInt(btn.getAttribute('data-pag-page'));
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    currentPage = parseInt(btn.getAttribute('data-pag-page'), 10);
                     render();
                 });
             });
 
             var prevBtn = pagContainer.querySelector('[data-pag-action="prev"]');
             var nextBtn = pagContainer.querySelector('[data-pag-action="next"]');
-            if (prevBtn) prevBtn.addEventListener('click', function() { if (currentPage > 1) { currentPage--; render(); } });
-            if (nextBtn) nextBtn.addEventListener('click', function() { if (currentPage < totalPages) { currentPage++; render(); } });
+            if (prevBtn) prevBtn.addEventListener('click', function(e) { e.preventDefault(); if (currentPage > 1) { currentPage--; render(); } });
+            if (nextBtn) nextBtn.addEventListener('click', function(e) { e.preventDefault(); if (currentPage < totalPages) { currentPage++; render(); } });
         }
 
         // Initial render
         render();
 
         // Re-render pagination when filters change
-        return { refresh: function() { 
-            getAllRows().forEach(function(row) {
-                // If it's currently hidden, it means the filter hid it
-                // (because run() unconditionally sets row.hidden = !matches)
-                if (row.hidden) {
-                    row.setAttribute('data-filter-hidden', '');
-                } else {
-                    row.removeAttribute('data-filter-hidden');
-                }
-                // Clear any leftover pagination markers so render() can start fresh
-                row.removeAttribute('data-pag-hidden');
-            });
-            currentPage = 1;
-            render();
-        }};
-    }
+        return { 
+            refresh: function() { 
+                currentPage = 1;
+                render();
+            },
+            render: render
+        };
+    };
 
     // Initialize pagination for all tables
     var pagFoto = window.initTablePagination('table-foto', 'pag-foto', 15);
@@ -1105,63 +1120,11 @@
     var pagInput = window.initTablePagination('table-input', 'pag-input', 15);
     var pagKendaraan = window.initTablePagination('table-kendaraan', 'pag-kendaraan', 15);
 
-    // Hook pagination refresh into filter system
-    var origFilterTrigger = document.querySelector('[data-filter-trigger="kwh"]');
-    if (origFilterTrigger) {
-        origFilterTrigger.addEventListener('click', function() {
-            setTimeout(function() {
-                if (pagFoto) pagFoto.refresh();
-                if (pagPencatatan) pagPencatatan.refresh();
-            }, 200);
-        });
-    }
-
-    var inputFilterTrigger = document.querySelector('[data-filter-trigger="input_monitoring"]');
-    if (inputFilterTrigger) {
-        inputFilterTrigger.addEventListener('click', function() {
-            setTimeout(function() {
-                if (pagInput) pagInput.refresh();
-            }, 200);
-        });
-    }
-
-    var kendFilterTrigger = document.querySelector('[data-filter-trigger="kendaraan"]');
-    if (kendFilterTrigger) {
-        kendFilterTrigger.addEventListener('click', function() {
-            setTimeout(function() {
-                if (pagKendaraan) pagKendaraan.refresh();
-            }, 200);
-        });
-    }
-    
     // Auto-refresh hook for ajax updates
     window.refreshKendaraanPag = function() {
         if (pagKendaraan) pagKendaraan.refresh();
     };
 
-    // Also refresh pagination on filter input changes
-    ['f_dari', 'f_sampai'].forEach(function(id) {
-        var el = document.getElementById(id);
-        if (el) {
-            el.addEventListener('change', function() {
-                setTimeout(function() {
-                    if (pagFoto) pagFoto.refresh();
-                    if (pagPencatatan) pagPencatatan.refresh();
-                }, 200);
-            });
-        }
-    });
-
-    ['f_bulan_tahun', 'f_panel'].forEach(function(id) {
-        var el = document.getElementById(id);
-        if (el) {
-            el.addEventListener('change', function() {
-                setTimeout(function() {
-                    if (pagInput) pagInput.refresh();
-                }, 200);
-            });
-        }
-    });
 
     function downloadPdf(reportTitle) {
         // Jika bukan halaman konsumsi KWH, langsung print saja
