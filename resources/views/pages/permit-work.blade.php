@@ -4,81 +4,23 @@
 
 @section('content')
 <style>
-    /* PTW Badges */
-    .ptw-role {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 4px 12px;
-        font-size: 12px;
-        font-weight: 600;
-        border-radius: 99px;
-        white-space: nowrap;
+    /* Stat grid cols-4 */
+    .stat-row-ptw {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
     }
-    .ptw-role.karyawan {
-        background: rgba(37, 99, 235, 0.1);
-        color: #1d4ed8;
-        border: 1px solid rgba(37, 99, 235, 0.25);
-    }
-    .ptw-role.kontraktor {
-        background: rgba(249, 115, 22, 0.1);
-        color: #c2410c;
-        border: 1px solid rgba(249, 115, 22, 0.25);
-    }
-    .ptw-dot {
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: currentColor;
-    }
-
-    /* Jenis Pekerjaan Badges */
-    .ptw-job {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 4px 10px;
-        font-size: 11.5px;
-        font-weight: 600;
-        border-radius: 8px;
-        white-space: nowrap;
-    }
-    .ptw-job-height {
-        background: rgba(249, 115, 22, 0.1);
-        color: #c2410c;
-        border: 1px solid rgba(249, 115, 22, 0.2);
-    }
-    .ptw-job-hot {
-        background: rgba(225, 29, 72, 0.1);
-        color: #be123c;
-        border: 1px solid rgba(225, 29, 72, 0.2);
-    }
-    .ptw-job-confined {
-        background: rgba(147, 51, 234, 0.1);
-        color: #7e22ce;
-        border: 1px solid rgba(147, 51, 234, 0.2);
-    }
-    .ptw-job-flammable {
-        background: rgba(245, 158, 11, 0.1);
-        color: #b45309;
-        border: 1px solid rgba(245, 158, 11, 0.25);
-    }
-    .ptw-job-alone {
-        background: rgba(2, 132, 199, 0.1);
-        color: #0369a1;
-        border: 1px solid rgba(2, 132, 199, 0.2);
-    }
-    .ptw-job-general {
-        background: rgba(16, 185, 129, 0.1);
-        color: #047857;
-        border: 1px solid rgba(16, 185, 129, 0.2);
+    @media (min-width: 900px) {
+        .stat-row-ptw {
+            grid-template-columns: repeat(4, 1fr);
+        }
     }
 </style>
 
 <div class="page-head-row">
     <div class="page-title">
         <h1>Monitoring Permit to Work</h1>
-        <p>Pantau izin kerja keselamatan (PTW) untuk Karyawan PCI dan Kontraktor.</p>
+        <p>Pantau izin kerja keselamatan (PTW) untuk Karyawan dan Kontraktor.</p>
         <p class="sync-info" style="cursor: default;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4"/><path d="m16.2 7.8 2.9-2.9"/><path d="M18 12h4"/><path d="m16.2 16.2 2.9 2.9"/><path d="M12 18v4"/><path d="m4.9 19.1 2.9-2.9"/><path d="M2 12h4"/><path d="m4.9 4.9 2.9 2.9"/></svg>
             @if($isDummy)
@@ -121,10 +63,26 @@
     </div>
     
     <div class="panel-body">
-        <div class="stat-row" style="grid-template-columns: minmax(260px, 340px);">
+        <div class="stat-row-ptw">
             <div class="stat-card">
-                <span class="stat-label">TOTAL IZIN KERJA</span>
+                <span class="stat-label">Total Izin Kerja</span>
                 <span class="stat-value" id="stat_total_ptw">0</span>
+                <span class="stat-delta flat" style="color: var(--ink-3); font-size: 11.5px; margin-top: 4px;">Semua izin terdaftar</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Izin Karyawan</span>
+                <span class="stat-value" id="stat_karyawan" style="color: #1d4ed8;">0</span>
+                <span class="stat-delta flat" style="color: var(--ink-3); font-size: 11.5px; margin-top: 4px;">Pemohon internal</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Izin Kontraktor</span>
+                <span class="stat-value" id="stat_kontraktor" style="color: #c2410c;">0</span>
+                <span class="stat-delta flat" style="color: var(--ink-3); font-size: 11.5px; margin-top: 4px;">Vendor &amp; rekanan luar</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Instansi Terlibat</span>
+                <span class="stat-value" id="stat_instansi" style="color: #047857;">0</span>
+                <span class="stat-delta flat" style="color: var(--ink-3); font-size: 11.5px; margin-top: 4px;">Perusahaan rekanan</span>
             </div>
         </div>
     </div>
@@ -162,41 +120,11 @@
     var dummyData = @json($dummyData);
     var pagPtw = null;
 
-    function getSebagaiBadge(sebagai) {
-        var s = (sebagai || '').trim();
-        if (s.toLowerCase().includes('karyawan') || s.toLowerCase().includes('pci')) {
-            return '<span class="ptw-role karyawan"><span class="ptw-dot"></span>Karyawan PCI</span>';
-        }
-        return '<span class="ptw-role kontraktor"><span class="ptw-dot"></span>Kontraktor</span>';
-    }
-
-    function getJenisPekerjaanBadge(jenis) {
-        var j = (jenis || '').toLowerCase().trim();
-        
-        if (j.includes('height') || j.includes('tinggi')) {
-            return '<span class="ptw-job ptw-job-height"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg> Working at Height</span>';
-        }
-        if (j.includes('hot') || j.includes('las') || j.includes('api')) {
-            return '<span class="ptw-job ptw-job-hot"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg> Hot Work</span>';
-        }
-        if (j.includes('confined') || j.includes('terbatas')) {
-            return '<span class="ptw-job ptw-job-confined"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="4"/></svg> Confined Space</span>';
-        }
-        if (j.includes('flam') || j.includes('chamber')) {
-            return '<span class="ptw-job ptw-job-flammable"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10 2v7.31M14 9.3V1.99M8.5 2h7M14 9.3a6.5 6.5 0 1 1-4 0"/></svg> Flammable Chamber Test</span>';
-        }
-        if (j.includes('alone') || j.includes('sendiri')) {
-            return '<span class="ptw-job ptw-job-alone"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Working Alone</span>';
-        }
-        return '<span class="ptw-job ptw-job-general"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> General Safety</span>';
-    }
-
     function renderTable(data) {
         var tbody = document.getElementById('table-body-ptw');
         tbody.innerHTML = '';
         
         document.getElementById('badge-total-records').textContent = data.length.toLocaleString('id-ID') + ' Record';
-        document.getElementById('stat_total_ptw').textContent = data.length.toLocaleString('id-ID');
 
         if (data.length === 0) {
             tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 36px; color: var(--ink-3);">Tidak ada data Permit to Work yang sesuai filter.</td></tr>';
@@ -206,25 +134,12 @@
 
         data.forEach(function(row) {
             var tr = document.createElement('tr');
-            var roleBadge = getSebagaiBadge(row.sebagai);
-            var jobBadge = getJenisPekerjaanBadge(row.jenis_pekerjaan);
-            
             tr.innerHTML = `
-                <td style="font-weight: 600; color: var(--ink); white-space: nowrap;">
-                    ${row.tanggal}
-                </td>
-                <td style="font-weight: 600; color: var(--ink);">
-                    ${row.nama}
-                </td>
-                <td>
-                    <span style="color: var(--ink-2); font-weight: 500;">${row.instansi}</span>
-                </td>
-                <td>
-                    ${roleBadge}
-                </td>
-                <td>
-                    ${jobBadge}
-                </td>
+                <td style="white-space: nowrap;">${row.tanggal || '-'}</td>
+                <td style="font-weight: 500;">${row.nama || '-'}</td>
+                <td>${row.instansi || '-'}</td>
+                <td>${row.sebagai || '-'}</td>
+                <td>${row.jenis_pekerjaan || '-'}</td>
             `;
             tbody.appendChild(tr);
         });
@@ -285,7 +200,34 @@
             return 0;
         });
 
+        renderStats(filteredData);
         renderTable(filteredData);
+    }
+
+    function renderStats(data) {
+        var total = data.length;
+        var karyawanCount = 0;
+        var kontraktorCount = 0;
+        var instansiSet = new Set();
+
+        data.forEach(function(r) {
+            var s = (r.sebagai || '').toLowerCase();
+            if (s.includes('karyawan') || s.includes('pci')) {
+                karyawanCount++;
+            } else {
+                kontraktorCount++;
+            }
+
+            var inst = (r.instansi || '').trim();
+            if (inst && inst !== '-') {
+                instansiSet.add(inst);
+            }
+        });
+
+        document.getElementById('stat_total_ptw').textContent = total.toLocaleString('id-ID');
+        document.getElementById('stat_karyawan').textContent = karyawanCount.toLocaleString('id-ID');
+        document.getElementById('stat_kontraktor').textContent = kontraktorCount.toLocaleString('id-ID');
+        document.getElementById('stat_instansi').textContent = instansiSet.size.toLocaleString('id-ID');
     }
 
     function resetFilter() {

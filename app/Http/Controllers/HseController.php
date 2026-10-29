@@ -2327,7 +2327,7 @@ class HseController extends Controller
                                     
                                     $sebagai = $dataRow['membuat_ptw_sebagai'] ?? ($dataRow['sebagai'] ?? ($dataRow['status'] ?? ''));
                                     if (stripos($sebagai, 'karyawan') !== false || stripos($sebagai, 'pci') !== false) {
-                                        $sebagai = 'Karyawan PCI';
+                                        $sebagai = 'Karyawan';
                                     } else {
                                         $sebagai = 'Kontraktor';
                                     }
@@ -2368,7 +2368,7 @@ class HseController extends Controller
                 'tanggal' => '2026-10-14',
                 'nama' => 'Bambang Supratman',
                 'instansi' => 'PT PCI Elektronik Internasional',
-                'sebagai' => 'Karyawan PCI',
+                'sebagai' => 'Karyawan',
                 'jenis_pekerjaan' => 'Working Alone',
             ],
             [
@@ -2389,7 +2389,7 @@ class HseController extends Controller
                 'tanggal' => '2026-10-13',
                 'nama' => 'Dwi Cahyono',
                 'instansi' => 'PT PCI Elektronik Internasional',
-                'sebagai' => 'Karyawan PCI',
+                'sebagai' => 'Karyawan',
                 'jenis_pekerjaan' => 'Flammable Chamber Test',
             ],
             [
@@ -2417,7 +2417,7 @@ class HseController extends Controller
                 'tanggal' => '2026-10-11',
                 'nama' => 'Yusuf Maulana',
                 'instansi' => 'PT PCI Elektronik Internasional',
-                'sebagai' => 'Karyawan PCI',
+                'sebagai' => 'Karyawan',
                 'jenis_pekerjaan' => 'General Safety',
             ],
             [
@@ -2431,7 +2431,7 @@ class HseController extends Controller
                 'tanggal' => '2026-10-10',
                 'nama' => 'Ahmad Jais',
                 'instansi' => 'PT PCI Elektronik Internasional',
-                'sebagai' => 'Karyawan PCI',
+                'sebagai' => 'Karyawan',
                 'jenis_pekerjaan' => 'Flammable Chamber Test',
             ],
             [

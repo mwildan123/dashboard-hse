@@ -237,7 +237,6 @@
     <section class="panel" aria-labelledby="h-tabel">
         <div class="panel-head">
             <h2 id="h-tabel">Riwayat Checklist Terbaru</h2>
-            <p>100 checklist terakhir yang masuk.</p>
         </div>
         <div class="table-scroll">
             @php

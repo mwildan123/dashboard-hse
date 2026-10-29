@@ -1,6 +1,6 @@
 {
-    "expires_at": 1792648846,
-    "cached_at": "2026-10-22 06:00:41",
+    "expires_at": 1793246118,
+    "cached_at": "2026-10-29 03:55:13",
     "data": [
         {
             "nama": "nauvalia octora",
@@ -3151,6 +3151,20 @@
             "foto_sim_c": "",
             "foto_stnk": "https://drive.google.com/open?id=1dPS9uqdFCTViDLiUd96H7wMRf4cv8aaS",
             "updated_at": "10/14/2026 18:15:19"
+        },
+        {
+            "nama": "Ivan Satrio Hakim",
+            "jenis": "Motor",
+            "plat": "T 5285 RQ",
+            "sim": "SIM C",
+            "sim_exp": "3/27/2027",
+            "sim_status": "good",
+            "stnk_exp": "-",
+            "stnk_status": "good",
+            "foto_sim_a": "https://drive.google.com/open?id=1DATz36g6LyrUl9r_7luk8MYV3buIAxTF",
+            "foto_sim_c": "",
+            "foto_stnk": "https://drive.google.com/open?id=1E9UhMAM_0nKFHdp2rgjkNnQpXV2FJ1Em",
+            "updated_at": "10/22/2026 18:58:26"
         }
     ]
 }
