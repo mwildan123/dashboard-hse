@@ -15,6 +15,31 @@
             grid-template-columns: 1fr;
         }
     }
+
+    /* Filter PTE bar sejajar & proporsional */
+    .filter-bar.filter-pte-responsive {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        align-items: flex-end;
+    }
+    .filter-bar.filter-pte-responsive .field-cari {
+        grid-column: span 2;
+    }
+    .filter-bar.filter-pte-responsive .field-btn {
+        grid-column: span 2;
+        justify-content: flex-end;
+    }
+    @media (min-width: 640px) {
+        .filter-bar.filter-pte-responsive {
+            grid-template-columns: 155px 155px minmax(200px, 1fr) auto;
+        }
+        .filter-bar.filter-pte-responsive .field-cari,
+        .filter-bar.filter-pte-responsive .field-btn {
+            grid-column: auto;
+            justify-content: auto;
+        }
+    }
 </style>
 
 <div class="page-head-row">
@@ -41,21 +66,21 @@
             <p>Saring data kunjungan berdasarkan tanggal, instansi (PT/CV), atau tipe kunjungan.</p>
         </div>
         
-        <div class="filter-bar">
+        <div class="filter-bar filter-pte-responsive">
             <div class="field">
-                <label class="label" for="f_tanggal_mulai">Dari Tanggal</label>
+                <label class="label" for="f_tanggal_mulai">Dari</label>
                 <input class="input" type="date" id="f_tanggal_mulai">
             </div>
             <div class="field">
-                <label class="label" for="f_tanggal_sampai">Sampai Tanggal</label>
+                <label class="label" for="f_tanggal_sampai">Sampai</label>
                 <input class="input" type="date" id="f_tanggal_sampai">
             </div>
-            <div class="field" style="flex: 1;">
+            <div class="field field-cari">
                 <label class="label" for="f_cari">Cari Nama / Instansi</label>
-                <input class="input" type="text" id="f_cari" placeholder="Ketik untuk mencari...">
+                <input class="input" type="text" id="f_cari" placeholder="Ketik nama atau instansi...">
             </div>
-            <div class="field" style="display:flex; align-items:flex-end;">
-                <button type="button" class="btn btn-primary" onclick="applyFilter()" title="Terapkan Filter" style="padding: 0; min-width: 0; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer;">
+            <div class="field field-btn" style="display:flex; align-items:flex-end;">
+                <button type="button" class="btn btn-primary" onclick="applyFilter()" title="Terapkan Filter" style="padding: 0; min-width: 44px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                 </button>
             </div>
@@ -179,6 +204,35 @@
         return '-';
     }
 
+    function formatTanggalSlash(dateStr) {
+        if (!dateStr) return '-';
+        var clean = String(dateStr).trim();
+        if (clean.includes('/')) return clean;
+        var parts = clean.split('-');
+        if (parts.length === 3) {
+            if (parts[0].length === 4) {
+                return parts[2] + '/' + parts[1] + '/' + parts[0];
+            }
+            return parts[0] + '/' + parts[1] + '/' + parts[2];
+        }
+        return clean;
+    }
+
+    function formatTanggalIndo(dateStr) {
+        if (!dateStr) return '-';
+        var parts = dateStr.split('-');
+        if (parts.length !== 3) return dateStr;
+        var bulan = [
+            '', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+        ];
+        var d = parseInt(parts[2], 10);
+        var m = parseInt(parts[1], 10);
+        var y = parts[0];
+        if (isNaN(d) || isNaN(m)) return dateStr;
+        return d + ' ' + (bulan[m] || parts[1]) + ' ' + y;
+    }
+
     function renderTable(data) {
         var tbody = document.getElementById('table-body');
         tbody.innerHTML = '';
@@ -192,7 +246,7 @@
         data.forEach(function(row) {
             var tr = document.createElement('tr');
             tr.innerHTML = `
-                <td>${row.tanggal}</td>
+                <td style="white-space: nowrap;">${formatTanggalSlash(row.tanggal)}</td>
                 <td style="font-weight: 500;">${row.nama}</td>
                 <td><span class="badge slate">${row.instansi}</span></td>
                 <td>${row.jam_masuk}</td>
@@ -284,7 +338,7 @@
         
         // Sort dates ascending
         var sortedDates = Object.keys(trenCounts).sort();
-        var trenLabels = sortedDates;
+        var trenLabels = sortedDates.map(function(d) { return formatTanggalSlash(d); });
         var trenData = sortedDates.map(d => trenCounts[d]);
 
         // Prepare Instansi by Jam (Horizontal Bar Chart)
@@ -411,9 +465,10 @@
             filteredData = filteredData.filter(row => row.tanggal <= end);
         }
         if (cari !== '') {
-            filteredData = filteredData.filter(row => {
-                var searchStr = Object.values(row).join(' ').toLowerCase();
-                return searchStr.includes(cari);
+            filteredData = filteredData.filter(function(row) {
+                var nama = (row.nama || '').toLowerCase();
+                var instansi = (row.instansi || '').toLowerCase();
+                return nama.includes(cari) || instansi.includes(cari);
             });
         }
         
