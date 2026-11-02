@@ -73,3 +73,6 @@ Route::get('/api/vehicles', [HseController::class, 'apiVehicles'])->name('api.ve
 Route::post('/api/vehicle-webhook', [HseController::class, 'vehicleWebhook'])->name('api.vehicle-webhook');
 Route::get('/vehicle-refresh', [HseController::class, 'vehicleRefresh'])->name('vehicle.refresh');
 
+// ── Permit to Work API ──────────────────────────────────────────
+Route::get('/api/permit-work', [HseController::class, 'apiPermitWork'])->name('api.permit-work');
+

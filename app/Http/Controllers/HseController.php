@@ -2283,70 +2283,184 @@ class HseController extends Controller
     }
 
     /**
-     * Baca data Permit to Work dari Google Spreadsheet CSV atau fallback ke demo data HSE lengkap.
+     * Cache key & TTL untuk data Permit to Work dari Google Spreadsheet
+     */
+    private function permitWorkCacheFile(): string
+    {
+        return storage_path('app/permit_work_cache.json');
+    }
+
+    private function getPermitWorkCache(): ?array
+    {
+        $cacheFile = $this->permitWorkCacheFile();
+        if (! file_exists($cacheFile)) {
+            return null;
+        }
+
+        $content = json_decode((string) file_get_contents($cacheFile), true);
+        if (! is_array($content) || ! isset($content['expires_at'])) {
+            return null;
+        }
+
+        // Cache expired (5 detik untuk sinkronisasi real-time)
+        if (time() > $content['expires_at']) {
+            return null;
+        }
+
+        return $content['data'] ?? null;
+    }
+
+    private function setPermitWorkCache(array $data): void
+    {
+        $directory = dirname($this->permitWorkCacheFile());
+        if (! is_dir($directory)) {
+            mkdir($directory, 0777, true);
+        }
+
+        file_put_contents($this->permitWorkCacheFile(), json_encode([
+            'expires_at' => time() + 5,
+            'cached_at' => now()->format('Y-m-d H:i:s'),
+            'data' => $data,
+        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+    }
+
+    /**
+     * Parse raw CSV data into structured Permit to Work records
+     */
+    private function parsePermitWorkCsvContent(string $csvData): array
+    {
+        $stream = fopen('php://memory', 'r+');
+        fwrite($stream, $csvData);
+        rewind($stream);
+        $headers = fgetcsv($stream);
+        if (! $headers) {
+            fclose($stream);
+            return [];
+        }
+
+        $normHeaders = array_map(function ($h) {
+            return strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '_', $h), '_'));
+        }, $headers);
+
+        $records = [];
+        while (($row = fgetcsv($stream)) !== false) {
+            if (count($row) < count($normHeaders)) {
+                $row = array_pad($row, count($normHeaders), '');
+            }
+            $dataRow = array_combine($normHeaders, array_slice($row, 0, count($normHeaders)));
+
+            // 1. Nama Pemohon
+            $nama = trim($dataRow['nama_lengkap_anda'] ?? ($dataRow['nama'] ?? ($dataRow['nama_pemohon'] ?? ($dataRow['pemohon'] ?? ($dataRow['name'] ?? '')))));
+            if (empty($nama)) {
+                continue;
+            }
+
+            // 2. Tanggal Pelaksanaan
+            $rawTgl = trim($dataRow['tanggal_pelaksanaan_aktivitas'] ?? ($dataRow['tanggal'] ?? ($dataRow['tanggal_pekerjaan'] ?? ($dataRow['start_time'] ?? ($dataRow['completion_time'] ?? '')))));
+            $formattedDate = '';
+            if (preg_match('/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})/', $rawTgl, $m)) {
+                $month = (int) $m[1];
+                $day = (int) $m[2];
+                $year = (int) $m[3];
+                if ($year < 100) $year += 2000;
+                $formattedDate = sprintf('%04d-%02d-%02d', $year, $month, $day);
+            } elseif (preg_match('/^(\d{4})-(\d{1,2})-(\d{1,2})/', $rawTgl, $m)) {
+                $formattedDate = sprintf('%04d-%02d-%02d', $m[1], $m[2], $m[3]);
+            }
+            if (empty($formattedDate)) {
+                $formattedDate = date('Y-m-d');
+            }
+
+            // 3. Instansi / Perusahaan
+            $instansi = trim($dataRow['nama_perusahaan'] ?? ($dataRow['nama_instansi'] ?? ($dataRow['instansi'] ?? ($dataRow['perusahaan'] ?? ($dataRow['asal_instansi'] ?? ($dataRow['departemen_yang_melaksanakan_aktivitas_kerja_ini'] ?? '-'))))));
+            if (empty($instansi)) {
+                $instansi = '-';
+            }
+
+            // 4. Sebagai (Karyawan vs Kontraktor)
+            $sebagaiRaw = trim($dataRow['saya_membuat_ptw_sebagai'] ?? ($dataRow['membuat_ptw_sebagai'] ?? ($dataRow['sebagai'] ?? ($dataRow['status'] ?? ''))));
+            $sebagai = 'Kontraktor';
+            if (stripos($sebagaiRaw, 'karyawan') !== false || stripos($sebagaiRaw, 'pci') !== false || stripos($instansi, 'pci') !== false || stripos($instansi, 'prysmian') !== false) {
+                $sebagai = 'Karyawan';
+            }
+
+            // 5. Jenis Pekerjaan
+            $izinRaw = trim($dataRow['izin_yang_dibutuhkan'] ?? ($dataRow['jenis_pekerjaan'] ?? ($dataRow['kategori'] ?? ($dataRow['tipe_pekerjaan'] ?? ''))));
+            $pekerjaan = 'General Safety';
+            if (stripos($izinRaw, 'height') !== false || stripos($izinRaw, 'ketinggian') !== false || stripos($izinRaw, 'scaffolding') !== false) {
+                $pekerjaan = 'Working at Height';
+            } elseif (stripos($izinRaw, 'hot') !== false || stripos($izinRaw, 'pengelasan') !== false || stripos($izinRaw, 'gerinda') !== false || stripos($izinRaw, 'kebakaran') !== false) {
+                $pekerjaan = 'Hot Work';
+            } elseif (stripos($izinRaw, 'confined') !== false || stripos($izinRaw, 'ruang terbatas') !== false) {
+                $pekerjaan = 'Confined Space';
+            } elseif (stripos($izinRaw, 'chamber') !== false) {
+                $pekerjaan = 'Flammable Chamber Test';
+            } elseif (stripos($izinRaw, 'alone') !== false) {
+                $pekerjaan = 'Working Alone';
+            }
+
+            // 6. Deskripsi, Lokasi, Waktu, Jumlah Pekerja
+            $deskripsi = trim($dataRow['deskripsi_pekerjaan'] ?? ($dataRow['deskripsi'] ?? ''));
+            $area = trim($dataRow['area_lokasi_pekerjaan'] ?? ($dataRow['area'] ?? ($dataRow['lokasi'] ?? '')));
+            $areaSpesifik = trim($dataRow['lokasi_area_spesifik_contoh_mesin_ar1_warehouse_faraday_loading_bay_logistik_dsb'] ?? ($dataRow['area_spesifik'] ?? ''));
+            $lokasiParts = array_filter([trim($area, '; '), trim($areaSpesifik, '; ')]);
+            $lokasi = implode(' - ', $lokasiParts);
+            $waktu = trim($dataRow['waktu_pelaksanaan_aktivitas_contoh_08_00'] ?? ($dataRow['waktu'] ?? ''));
+            $jumlahPekerja = trim($dataRow['berapa_orang_pekerja_yang_akan_terlibat'] ?? ($dataRow['jumlah_pekerja'] ?? ''));
+
+            $records[] = [
+                'id' => trim($dataRow['id'] ?? (string)(count($records) + 1)),
+                'tanggal' => $formattedDate,
+                'nama' => $nama,
+                'instansi' => $instansi,
+                'sebagai' => $sebagai,
+                'jenis_pekerjaan' => $pekerjaan,
+                'deskripsi' => $deskripsi,
+                'lokasi' => $lokasi,
+                'waktu' => $waktu,
+                'jumlah_pekerja' => $jumlahPekerja,
+                'status' => 'Aktif',
+            ];
+        }
+        fclose($stream);
+
+        // Sort descending: data terbaru di posisi teratas
+        usort($records, function ($a, $b) {
+            if ($a['tanggal'] === $b['tanggal']) {
+                return (int)($b['id'] ?? 0) <=> (int)($a['id'] ?? 0);
+            }
+            return strcmp($b['tanggal'], $a['tanggal']);
+        });
+
+        return $records;
+    }
+
+    /**
+     * Baca data Permit to Work dari Google Spreadsheet CSV atau fallback ke cache/demo.
      */
     public function readPermitWorkData(): array
     {
-        $csvUrl = env('PERMIT_WORK_CSV_URL');
+        // 1. Cek cache real-time
+        $cached = $this->getPermitWorkCache();
+        if ($cached !== null && count($cached) > 0) {
+            return $cached;
+        }
+
+        // 2. Baca langsung dari Google Spreadsheet CSV
+        $defaultUrl = 'https://docs.google.com/spreadsheets/d/100QGd4V6baMY9ZZGwLYDlTIm3U9RC3MN9GvmHhBl_Dc/export?format=csv';
+        $csvUrl = env('PERMIT_WORK_CSV_URL', $defaultUrl);
+
         if (!empty($csvUrl)) {
             try {
                 $response = \Illuminate\Support\Facades\Http::timeout(25)->withOptions(['verify' => false])->get($csvUrl);
                 if ($response->successful()) {
                     $csvData = trim($response->body());
                     if ($csvData) {
-                        $stream = fopen('php://memory', 'r+');
-                        fwrite($stream, $csvData);
-                        rewind($stream);
-                        $headers = fgetcsv($stream);
-                        if ($headers) {
-                            $headers = array_map(function ($h) {
-                                return strtolower(trim(preg_replace('/[^a-zA-Z0-9]+/', '_', $h), '_'));
-                            }, $headers);
-
-                            $records = [];
-                            while (($row = fgetcsv($stream)) !== false) {
-                                if (count($row) < count($headers)) {
-                                    $row = array_pad($row, count($headers), '');
-                                }
-                                $dataRow = array_combine($headers, array_slice($row, 0, count($headers)));
-                                
-                                $nama = $dataRow['nama'] ?? ($dataRow['nama_pemohon'] ?? ($dataRow['pemohon'] ?? ''));
-                                if (!empty($nama)) {
-                                    $tgl = $dataRow['tanggal'] ?? ($dataRow['tanggal_pekerjaan'] ?? ($dataRow['timestamp'] ?? date('Y-m-d')));
-                                    if (str_contains($tgl, ' ')) {
-                                        $tgl = explode(' ', $tgl)[0];
-                                    }
-                                    $tglParts = explode('/', $tgl);
-                                    if (count($tglParts) === 3) {
-                                        $tgl = sprintf('%04d-%02d-%02d', $tglParts[2], $tglParts[0], $tglParts[1]);
-                                    } else {
-                                        $tgl = str_replace('/', '-', $tgl);
-                                    }
-
-                                    $instansi = $dataRow['nama_instansi'] ?? ($dataRow['instansi'] ?? ($dataRow['perusahaan'] ?? ($dataRow['asal_instansi'] ?? '-')));
-                                    
-                                    $sebagai = $dataRow['membuat_ptw_sebagai'] ?? ($dataRow['sebagai'] ?? ($dataRow['status'] ?? ''));
-                                    if (stripos($sebagai, 'karyawan') !== false || stripos($sebagai, 'pci') !== false) {
-                                        $sebagai = 'Karyawan';
-                                    } else {
-                                        $sebagai = 'Kontraktor';
-                                    }
-
-                                    $pekerjaan = $dataRow['jenis_pekerjaan'] ?? ($dataRow['kategori'] ?? ($dataRow['tipe_pekerjaan'] ?? 'General Safety'));
-
-                                    $records[] = [
-                                        'tanggal' => $tgl,
-                                        'nama' => $nama,
-                                        'instansi' => $instansi ?: '-',
-                                        'sebagai' => $sebagai,
-                                        'jenis_pekerjaan' => $pekerjaan ?: 'General Safety',
-                                    ];
-                                }
-                            }
-                            fclose($stream);
-                            if (count($records) > 0) {
-                                return $records;
-                            }
+                        $records = $this->parsePermitWorkCsvContent($csvData);
+                        if (count($records) > 0) {
+                            $this->setPermitWorkCache($records);
+                            @file_put_contents(storage_path('app/permit_work.csv'), $csvData);
+                            return $records;
                         }
                     }
                 }
@@ -2355,104 +2469,88 @@ class HseController extends Controller
             }
         }
 
-        // Demo data HSE Permit to Work sesuai 5 kolom yang diminta
+        // 3. Fallback ke file backup lokal jika ada
+        $localCsv = storage_path('app/permit_work.csv');
+        if (file_exists($localCsv)) {
+            $csvData = file_get_contents($localCsv);
+            if ($csvData) {
+                $records = $this->parsePermitWorkCsvContent($csvData);
+                if (count($records) > 0) {
+                    return $records;
+                }
+            }
+        }
+
+        // 4. Fallback ke demo data jika spreadsheet belum terisi sama sekali
         return [
             [
+                'id' => '1',
                 'tanggal' => '2026-10-14',
                 'nama' => 'Rudi Hermawan',
                 'instansi' => 'PT Maju Bersama Teknik',
                 'sebagai' => 'Kontraktor',
                 'jenis_pekerjaan' => 'Hot Work',
+                'deskripsi' => 'Pengelasan konstruksi tangki',
+                'lokasi' => 'Loading Bay Baru',
+                'waktu' => '08:00',
+                'jumlah_pekerja' => '4 orang',
+                'status' => 'Aktif',
             ],
             [
+                'id' => '2',
                 'tanggal' => '2026-10-14',
                 'nama' => 'Bambang Supratman',
                 'instansi' => 'PT PCI Elektronik Internasional',
                 'sebagai' => 'Karyawan',
                 'jenis_pekerjaan' => 'Working Alone',
+                'deskripsi' => 'Pemeriksaan panel kelistrikan',
+                'lokasi' => 'Substation 1',
+                'waktu' => '09:00',
+                'jumlah_pekerja' => '1 orang',
+                'status' => 'Aktif',
             ],
             [
+                'id' => '3',
                 'tanggal' => '2026-10-14',
                 'nama' => 'Hendra Gunawan',
                 'instansi' => 'CV Multi Sarana Cipta',
                 'sebagai' => 'Kontraktor',
                 'jenis_pekerjaan' => 'Working at Height',
-            ],
-            [
-                'tanggal' => '2026-10-13',
-                'nama' => 'Irfan Hakim',
-                'instansi' => 'PT Duta Sarana Mandiri',
-                'sebagai' => 'Kontraktor',
-                'jenis_pekerjaan' => 'Confined Space',
-            ],
-            [
-                'tanggal' => '2026-10-13',
-                'nama' => 'Dwi Cahyono',
-                'instansi' => 'PT PCI Elektronik Internasional',
-                'sebagai' => 'Karyawan',
-                'jenis_pekerjaan' => 'Flammable Chamber Test',
-            ],
-            [
-                'tanggal' => '2026-10-13',
-                'nama' => 'Slamet Riyadi',
-                'instansi' => 'PT Tri Karya Sentosa',
-                'sebagai' => 'Kontraktor',
-                'jenis_pekerjaan' => 'General Safety',
-            ],
-            [
-                'tanggal' => '2026-10-12',
-                'nama' => 'Agus Priyono',
-                'instansi' => 'PT Maju Bersama Teknik',
-                'sebagai' => 'Kontraktor',
-                'jenis_pekerjaan' => 'Hot Work',
-            ],
-            [
-                'tanggal' => '2026-10-12',
-                'nama' => 'Fajar Santoso',
-                'instansi' => 'PT Samudera Teknik Mandiri',
-                'sebagai' => 'Kontraktor',
-                'jenis_pekerjaan' => 'Working at Height',
-            ],
-            [
-                'tanggal' => '2026-10-11',
-                'nama' => 'Yusuf Maulana',
-                'instansi' => 'PT PCI Elektronik Internasional',
-                'sebagai' => 'Karyawan',
-                'jenis_pekerjaan' => 'General Safety',
-            ],
-            [
-                'tanggal' => '2026-10-11',
-                'nama' => 'Wahyu Ramadhan',
-                'instansi' => 'PT Cahaya Inti Perkasa',
-                'sebagai' => 'Kontraktor',
-                'jenis_pekerjaan' => 'Hot Work',
-            ],
-            [
-                'tanggal' => '2026-10-10',
-                'nama' => 'Ahmad Jais',
-                'instansi' => 'PT PCI Elektronik Internasional',
-                'sebagai' => 'Karyawan',
-                'jenis_pekerjaan' => 'Flammable Chamber Test',
-            ],
-            [
-                'tanggal' => '2026-10-10',
-                'nama' => 'Eko Prasetyo',
-                'instansi' => 'CV Prima Isolasi Mandiri',
-                'sebagai' => 'Kontraktor',
-                'jenis_pekerjaan' => 'Working at Height',
+                'deskripsi' => 'Perbaikan atap gudang',
+                'lokasi' => 'Warehouse Farady',
+                'waktu' => '08:30',
+                'jumlah_pekerja' => '3 orang',
+                'status' => 'Aktif',
             ],
         ];
     }
 
+    /**
+     * Endpoint API untuk sinkronisasi Real-Time AJAX Permit to Work.
+     */
+    public function apiPermitWork(Request $request)
+    {
+        $records = $this->readPermitWorkData();
+        $collection = collect($records);
+
+        return response()->json([
+            'status' => 'ok',
+            'count' => count($records),
+            'karyawanCount' => $collection->filter(fn ($r) => strtolower($r['sebagai']) === 'karyawan')->count(),
+            'kontraktorCount' => $collection->filter(fn ($r) => strtolower($r['sebagai']) === 'kontraktor')->count(),
+            'instansiCount' => $collection->pluck('instansi')->filter(fn ($i) => $i && $i !== '-')->unique()->count(),
+            'data' => $records,
+            'lastSync' => now()->translatedFormat('d M Y, H:i'),
+        ]);
+    }
+
     public function permitWork(Request $request)
     {
-        $csvUrl = env('PERMIT_WORK_CSV_URL');
-        $isDummy = empty($csvUrl);
         $data = $this->readPermitWorkData();
 
         return view('pages.permit-work', [
             'dummyData' => $data,
-            'isDummy' => $isDummy,
+            'isDummy' => false,
         ]);
     }
 }
