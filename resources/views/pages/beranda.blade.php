@@ -16,7 +16,7 @@
         padding: 2.25rem 2rem 2rem;
         background-image:
             linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 58, 138, 0.65) 100%),
-            url('{{ asset("image/pabrik prysmian.jpeg") }}');
+            url('{{ asset("image/pabrik prysmian.jpeg") }}?v={{ file_exists(public_path("image/pabrik prysmian.jpeg")) ? filemtime(public_path("image/pabrik prysmian.jpeg")) : time() }}');
         background-size: cover;
         background-position: center;
         border-radius: 20px;
